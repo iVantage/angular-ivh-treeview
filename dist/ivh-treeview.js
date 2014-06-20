@@ -160,18 +160,19 @@ angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', ['$timeout', f
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($compile) {
+angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreeviewSettings', function($compile, ivhTreeviewSettings) {
   'use strict';
   return {
     restrict: 'A',
     link: function(scope, element, attrs) {
-      var ivhTreeviewAttr = attrs.ivhTreeview
+      var settings = ivhTreeviewSettings.get()
+        , ivhTreeviewAttr = attrs.ivhTreeview
         , filterAttr = attrs.ivhTreeviewFilter
-        , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || 'label'
-        , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || 'children'
-        , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || 'selected'
-        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || '__ivhTreeviewIntermediate'
-        , visibleAttr = attrs.ivhTreeviewVisibleAttribute || '__ivhTreeviewVisible';
+        , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || settings.labelAttribute
+        , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || settings.childrenAttribute
+        , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
+        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || settings.indeterminateAttribute
+        , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute;
       
       var ivhTreeview = scope.$eval(ivhTreeviewAttr)
         , parent = scope.$eval(attrs.ivhTreeviewParent);
@@ -253,3 +254,34 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($c
   };
 }]);
 
+
+
+/**
+ * Configurable settings for `ivh-treeview`
+ *
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
+  'use strict';
+  var settings = {
+    labelAttribute: 'label',
+    childrenAttribute: 'children',
+    selectedAttribute: 'selected',
+    indeterminateAttribute: '__ivhTreeviewIntermediate',
+    visibleAttribute: '__ivhTreeviewVisible'
+  };
+
+  this.set = function(opts) {
+    angular.extend(settings, opts);
+  };
+
+  this.$get = function() {
+    return {
+      get: function() {
+        return angular.copy(settings);
+      }
+    };
+  };
+});
