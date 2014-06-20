@@ -5,48 +5,52 @@
  * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
-ul.ivh-tree {
+ul.ivh-treeview {
   list-style-type: none;
+  padding-left: 0;
+}
+ul.ivh-treeview ul.ivh-treeview {
   padding-left: 25px;
 }
-ul.ivh-tree li .ivh-tree-toggle-right {
+ul.ivh-treeview li .ivh-treeview-toggle-right {
   display: none;
 }
-ul.ivh-tree li .ivh-tree-toggle-leaf {
+ul.ivh-treeview li .ivh-treeview-toggle-leaf {
   display: none;
 }
-ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-toggle-down {
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-toggle-down {
   display: none;
 }
-ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-toggle-leaf {
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-toggle-leaf {
   display: inline-block;
 }
-ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-node-label {
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-node-label {
   cursor: auto;
 }
-ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-toggle {
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-toggle {
   cursor: auto;
 }
-ul.ivh-tree li.ivh-tree-node-collapsed .ivh-tree-toggle-right {
+ul.ivh-treeview li.ivh-treeview-node-collapsed .ivh-treeview-toggle-right {
   display: inline-block;
 }
-ul.ivh-tree li.ivh-tree-node-collapsed .ivh-tree-toggle-down {
+ul.ivh-treeview li.ivh-treeview-node-collapsed .ivh-treeview-toggle-down {
   display: none;
 }
-ul.ivh-tree li.ivh-tree-node-collapsed ul.ivh-tree {
+ul.ivh-treeview li.ivh-treeview-node-collapsed ul.ivh-treeview {
   display: none;
 }
-ul.ivh-tree li .ivh-tree-checkbox {
+ul.ivh-treeview li .ivh-treeview-checkbox {
   position: relative;
   top: 2px;
 }
-ul.ivh-tree li .ivh-tree-node-label {
+ul.ivh-treeview li .ivh-treeview-node-label {
   cursor: pointer;
 }
-ul.ivh-tree li .ivh-tree-toggle {
+ul.ivh-treeview li .ivh-treeview-toggle {
   font-size: 65%;
   position: relative;
   top: -1px;
   margin-right: 5px;
   cursor: pointer;
+  width: 14px;
 }
