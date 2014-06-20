@@ -24,12 +24,11 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($c
     link: function(scope, element, attrs) {
       var ivhTreeviewAttr = attrs.ivhTreeview
         , filterAttr = attrs.ivhTreeviewFilter
-        , labelAttr = attrs.ivhTreeviewLabelAttribute || 'label'
-        , valAttr = attrs.ivhTreeviewValueAttribute || 'value'
-        , childrenAttr = attrs.ivhTreeviewChildrenAttribute || 'children'
-        , selectedAttribute = attrs.ivhTreeviewSelectedAttribute || 'selected'
-        , indeterminateAttribute = attrs.ivhTreeviewIndeterminateAttribute || '__ivhTreeviewIntermediate'
-        , visibleAttribute = attrs.ivhTreeviewVisibleAttribute || '__ivhTreeviewVisible';
+        , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || 'label'
+        , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || 'children'
+        , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || 'selected'
+        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || '__ivhTreeviewIntermediate'
+        , visibleAttr = attrs.ivhTreeviewVisibleAttribute || '__ivhTreeviewVisible';
       
       var ivhTreeview = scope.$eval(ivhTreeviewAttr)
         , parent = scope.$eval(attrs.ivhTreeviewParent);
@@ -43,20 +42,20 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($c
           '<li ng-repeat="itm in ' + ivhTreeviewAttr + '"',
               'ng-class="{\'ivh-treeview-node-leaf\': !itm.'+childrenAttr+'.length}"',
               'ivh-treeview-node="itm"',
-              'ivh-treeview-node-visible-attribute="' + visibleAttribute + '"',
+              'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-node-hook="itm"', // Hook for external use
               'ivh-treeview-filter="' + filterAttr + '"',
-              'ng-show="itm.' + visibleAttribute + '">',
+              'ng-show="itm.' + visibleAttr + '">',
             '<div ivh-treeview-node-hook class="ivh-treeview-node">',
               '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-right glyphicon glyphicon-chevron-right"></span>',
               '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-down glyphicon glyphicon-chevron-down"></span>',
               '<span class="ivh-treeview-toggle ivh-treeview-toggle-leaf">&#9679;</span>',
               '<input',
                 'ivh-treeview-checkbox',
-                'ivh-treeview-checkbox-indeterminate="itm.' + indeterminateAttribute + '"',
+                'ivh-treeview-checkbox-indeterminate="itm.' + indeterminateAttr + '"',
                 'class="ivh-treeview-checkbox"',
                 'type="checkbox"',
-                'ng-model="itm.' + selectedAttribute + '" />',
+                'ng-model="itm.' + selectedAttr + '" />',
               '<span ivh-treeview-node-toggle="true" class="ivh-treeview-node-label">',
                 '{{itm.' + labelAttr + '}}',
               '</span>',
@@ -64,7 +63,12 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($c
             '<div',
               'ivh-treeview="itm.' + childrenAttr + '"',
               'ivh-treeview-parent="itm"',
-              'ivh-treeview-filter="' + filterAttr + '"></div>',
+              'ivh-treeview-filter="' + filterAttr + '"',
+              'ivh-treeview-label-attribute="' + labelAttr + '"',
+              'ivh-treeview-children-attribute="' + childrenAttr + '"',
+              'ivh-treeview-selected-attribute="' + selectedAttr + '"',
+              'ivh-treeview-visible-attribute="' + visibleAttr + '"',
+              '></div>',
           '</li>',
         '</ul>'
       ].join('\n');
@@ -74,8 +78,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($c
       
       scope.$on('event_ivhTreeviewSelectAll', function(event, isSelected) {
         angular.forEach(ivhTreeview, function(node) {
-          node[selectedAttribute] = isSelected;
-          node[indeterminateAttribute] = false;
+          node[selectedAttr] = isSelected;
+          node[indeterminateAttr] = false;
         });
       });
       
@@ -85,19 +89,19 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', function($c
             , numSelected = 0
             , numIndeterminate = 0;
           angular.forEach(ivhTreeview, function(node) {
-            if(node[selectedAttribute]) { numSelected++; }
-            if(node[indeterminateAttribute]) { numIndeterminate++; }
+            if(node[selectedAttr]) { numSelected++; }
+            if(node[indeterminateAttr]) { numIndeterminate++; }
           });
           
           if(0 === numSelected) {
-            parent[selectedAttribute] = false;
-            parent[indeterminateAttribute] = !!numIndeterminate;
+            parent[selectedAttr] = false;
+            parent[indeterminateAttr] = !!numIndeterminate;
           } else if(numSelected === numNodes) {
-            parent[selectedAttribute] = true;
-            parent[indeterminateAttribute] = false;
+            parent[selectedAttr] = true;
+            parent[indeterminateAttr] = false;
           } else {
-            parent[selectedAttribute] = false;
-            parent[indeterminateAttribute] = true;
+            parent[selectedAttr] = false;
+            parent[indeterminateAttr] = true;
           }
           
         });

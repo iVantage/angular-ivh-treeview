@@ -50,7 +50,8 @@ ul.ivh-treeview li .ivh-treeview-toggle {
   font-size: 65%;
   position: relative;
   top: -1px;
-  margin-right: 5px;
+  margin-right: 3px;
   cursor: pointer;
-  width: 14px;
+  width: 12px;
+  text-align: center;
 }
