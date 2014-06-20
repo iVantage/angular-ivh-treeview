@@ -1,11 +1,14 @@
 # Angular IVH Treeview
 
-[![Build Status](https://travis-ci.org/ivantage/angular-ivh-treeview.svg?branch=master)](https://travis-ci.org/ivantage/angular-ivh-treeview)
+[![Build Status][travis-img]][travis-link]
 
 > A treeview for AngularJS with filtering and checkbox support.
 
+Default styles depend on [Bootstrap 3][bootstrap].
 
 ## Example usage
+
+In your controller...
 
 ```javascript
 app.controller('MyCtrl', function() {
@@ -23,6 +26,8 @@ app.controller('MyCtrl', function() {
 });
 ```
 
+In your view...
+
 ```html
 <div ng-controller="MyCtrl as fancy">
   <input type="text" ng-model="bagSearch" />
@@ -33,6 +38,35 @@ app.controller('MyCtrl', function() {
 </div>
 ```
 
+## Options
+
+IVH Treeview is pretty configurable. By default it expects your elements to have
+`label` and `children` properties for node display text and child nodes
+respectively. It'll also make use of a `selected` attribute to manage selected
+states. Those attributes can all be changed:
+
+```html
+<div ng-controller="MyCtrl as fancy">
+  <div
+    ivh-treeview="fancy.bag"
+    ivh-treeview-label-attribute="'text'"
+    ivh-treeview-children-attribute="'items'"
+    ivh-treeview-selected-attribute="'isSelected'">
+</div>
+```
+
+There's also a provider if you'd rather change the defaults globally:
+
+```javascript
+app.config(function(ivhTreeviewSettingsProvider) {
+  ivhTreeviewSettingsProvider.set({
+    labelAttribute: 'text',
+    childrenAttribute: 'items',
+    selectedAttribute: 'isSelected'
+  });
+});
+```
+
 
 ## Release history
 
@@ -41,4 +75,9 @@ app.controller('MyCtrl', function() {
 
 ## License
 
-[MIT license](https://raw.github.com/ivantage/angular-ivh-treeview/master/LICENSE-MIT), copyright iVantage Health Analytics, Inc.
+[MIT license][license], copyright iVantage Health Analytics, Inc.
+
+[license]: https://raw.github.com/ivantage/angular-ivh-treeview/master/LICENSE-MIT 
+[bootstrap]: http://getbootstrap.com/
+[travis-img]: https://travis-ci.org/ivantage/angular-ivh-treeview.svg?branch=master
+[travis-link]: https://travis-ci.org/ivantage/angular-ivh-treeview
