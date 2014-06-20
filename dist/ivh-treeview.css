@@ -1,0 +1,52 @@
+/**
+ * Treeview styles
+ *
+ * @private
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+ul.ivh-tree {
+  list-style-type: none;
+  padding-left: 25px;
+}
+ul.ivh-tree li .ivh-tree-toggle-right {
+  display: none;
+}
+ul.ivh-tree li .ivh-tree-toggle-leaf {
+  display: none;
+}
+ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-toggle-down {
+  display: none;
+}
+ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-toggle-leaf {
+  display: inline-block;
+}
+ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-node-label {
+  cursor: auto;
+}
+ul.ivh-tree li.ivh-tree-node-leaf .ivh-tree-toggle {
+  cursor: auto;
+}
+ul.ivh-tree li.ivh-tree-node-collapsed .ivh-tree-toggle-right {
+  display: inline-block;
+}
+ul.ivh-tree li.ivh-tree-node-collapsed .ivh-tree-toggle-down {
+  display: none;
+}
+ul.ivh-tree li.ivh-tree-node-collapsed ul.ivh-tree {
+  display: none;
+}
+ul.ivh-tree li .ivh-tree-checkbox {
+  position: relative;
+  top: 2px;
+}
+ul.ivh-tree li .ivh-tree-node-label {
+  cursor: pointer;
+}
+ul.ivh-tree li .ivh-tree-toggle {
+  font-size: 65%;
+  position: relative;
+  top: -1px;
+  margin-right: 5px;
+  cursor: pointer;
+}
