@@ -172,7 +172,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
         , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || settings.childrenAttribute
         , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || settings.indeterminateAttribute
-        , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute;
+        , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute
+        , useCheckboses = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboses;
       
       var ivhTreeview = scope.$eval(ivhTreeviewAttr)
         , parent = scope.$eval(attrs.ivhTreeviewParent);
@@ -180,6 +181,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
       if(!ivhTreeview || !ivhTreeview.length) {
         return;
       }
+
+      var tplCheckbox = [
+        '<input',
+          'ivh-treeview-checkbox',
+          'ivh-treeview-checkbox-indeterminate="itm.' + indeterminateAttr + '"',
+          'class="ivh-treeview-checkbox"',
+          'type="checkbox"',
+          'ng-model="itm.' + selectedAttr + '" />',
+      ].join('\n');
       
       var tpl = [
         '<ul class="ivh-treeview">',
@@ -197,12 +207,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
               '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-right glyphicon glyphicon-chevron-right"></span>',
               '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-down glyphicon glyphicon-chevron-down"></span>',
               '<span class="ivh-treeview-toggle ivh-treeview-toggle-leaf">&#9679;</span>',
-              '<input',
-                'ivh-treeview-checkbox',
-                'ivh-treeview-checkbox-indeterminate="itm.' + indeterminateAttr + '"',
-                'class="ivh-treeview-checkbox"',
-                'type="checkbox"',
-                'ng-model="itm.' + selectedAttr + '" />',
+              useCheckboses ? tplCheckbox : '',
               '<span ivh-treeview-node-toggle="true" class="ivh-treeview-node-label">',
                 '{{itm.' + labelAttr + '}}',
               '</span>',
@@ -215,6 +220,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
               'ivh-treeview-children-attribute="' + childrenAttr + '"',
               'ivh-treeview-selected-attribute="' + selectedAttr + '"',
               'ivh-treeview-visible-attribute="' + visibleAttr + '"',
+              'ivh-treeview-use-checkboxes="' + useCheckboses + '"',
               '></div>',
           '</li>',
         '</ul>'
@@ -294,6 +300,14 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
      * @todo Implement handling non-zero values
      */
     expandByDefaultDepth: 0,
+
+    /**
+     * Whether or not to use checkboxes
+     *
+     * If `false` the markup to support checkboxes is not included in the
+     * directive.
+     */
+    useCheckboses: true,
 
     /**
      * (internal) Collection item attribute to track intermediate states

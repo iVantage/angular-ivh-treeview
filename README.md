@@ -55,14 +55,27 @@ states. Those attributes can all be changed:
 </div>
 ```
 
-There's also a provider if you'd rather change the defaults globally:
+IVH Treeview attaches checkboxes to each item in your tree for hierarchical
+selection model. If you'd rather not have these checkboxes use
+`ivh-treeview-use-checkboxes="false"`:
+
+```html
+<div ng-controller="MyCtrl as fancy">
+  <div
+    ivh-treeview="fancy.bag"
+    ivh-treeview-use-checkboxes="false">
+</div>
+```
+
+There's also a provider if you'd like to change the global defaults:
 
 ```javascript
 app.config(function(ivhTreeviewSettingsProvider) {
   ivhTreeviewSettingsProvider.set({
     labelAttribute: 'text',
     childrenAttribute: 'items',
-    selectedAttribute: 'isSelected'
+    selectedAttribute: 'isSelected',
+    useCheckboses: false
   });
 });
 ```
