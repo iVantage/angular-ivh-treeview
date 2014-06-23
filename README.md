@@ -4,7 +4,7 @@
 
 > A treeview for AngularJS with filtering and checkbox support.
 
-Default styles depend on [Bootstrap 3][bootstrap].
+Default styles use [Bootstrap 3][bootstrap].
 
 ## Example usage
 
@@ -83,7 +83,7 @@ app.config(function(ivhTreeviewSettingsProvider) {
 
 ## Release history
 
-- *soon* (2014-06-20 v0.1.0 Initial release)
+- 2014-06-20 v0.1.0 Initial release
 
 
 ## License
