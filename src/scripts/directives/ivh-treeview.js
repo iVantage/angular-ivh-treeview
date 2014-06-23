@@ -41,7 +41,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
       var tpl = [
         '<ul class="ivh-treeview">',
           '<li ng-repeat="itm in ' + ivhTreeviewAttr + '"',
-              'ng-class="{\'ivh-treeview-node-leaf\': !itm.'+childrenAttr+'.length}"',
+              /**
+               * @todo check settings.expandByDefaultDepth
+               */
+              'ng-class="{\'ivh-treeview-node-leaf\': !itm.'+childrenAttr+'.length, \'ivh-treeview-node-collapsed\': itm.'+childrenAttr+'.length}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-node-hook="itm"', // Hook for external use

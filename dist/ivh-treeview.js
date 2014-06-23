@@ -184,7 +184,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
       var tpl = [
         '<ul class="ivh-treeview">',
           '<li ng-repeat="itm in ' + ivhTreeviewAttr + '"',
-              'ng-class="{\'ivh-treeview-node-leaf\': !itm.'+childrenAttr+'.length}"',
+              /**
+               * @todo check settings.expandByDefaultDepth
+               */
+              'ng-class="{\'ivh-treeview-node-leaf\': !itm.'+childrenAttr+'.length, \'ivh-treeview-node-collapsed\': itm.'+childrenAttr+'.length}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-node-hook="itm"', // Hook for external use
@@ -266,10 +269,40 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
 angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
   'use strict';
   var settings = {
+    /**
+     * Collection item attribute to use for labels
+     */
     labelAttribute: 'label',
+
+    /**
+     * Collection item attribute to use for child nodes
+     */
     childrenAttribute: 'children',
+
+    /**
+     * Collection item attribute to use for selected state
+     */
     selectedAttribute: 'selected',
+
+    /**
+     * Controls whether branches are initially expanded or collapsed
+     *
+     * A value of `0` means the tree will be entirely collapsd (the default
+     * state) otherwise branches will be expanded up to the specified depth. Use
+     * `-1` to have the tree entirely expanded.
+     *
+     * @todo Implement handling non-zero values
+     */
+    expandByDefaultDepth: 0,
+
+    /**
+     * (internal) Collection item attribute to track intermediate states
+     */
     indeterminateAttribute: '__ivhTreeviewIntermediate',
+
+    /**
+     * (internal) Collection item attribute to track visible states
+     */
     visibleAttribute: '__ivhTreeviewVisible'
   };
 
