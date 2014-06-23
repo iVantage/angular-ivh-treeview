@@ -41,8 +41,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
 
       var tplCheckbox = [
         '<input',
-          'ivh-treeview-checkbox',
-          'ivh-treeview-checkbox-indeterminate="itm[\'' + indeterminateAttr + '\']"',
+          'ivh-treeview-checkbox="itm"',
+          'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + ']"',
           'class="ivh-treeview-checkbox"',
           'type="checkbox"',
           'ng-model="itm[\'' + selectedAttr + '\']" />',
@@ -91,6 +91,11 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
           node[selectedAttr] = isSelected;
           node[indeterminateAttr] = false;
         });
+
+        if(parent) {
+          parent[selectedAttr] = isSelected;
+          parent[indeterminateAttr] = false;
+        }
       });
       
       if(parent) {
