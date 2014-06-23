@@ -51,25 +51,35 @@ module.exports = function(grunt) {
       }
     },
 
-    watch: {
-      livereload: {
+    jasmine: {
+      spec: {
+        src: ['src/scripts/*.js', 'src/scripts/**/*.js'],
         options: {
-          livereload: true
-        },
-        files: ['src/scripts/**/*.js', 'src/styles/**/*.less'],
-        tasks: ['jshint', 'build']
+          specs: 'test/spec/**/*.js',
+          vendor: [
+            'bower_components/jquery/dist/jquery.js',
+            'bower_components/angular/angular.js',
+            'bower_components/angular-mocks/angular-mocks.js'
+          ]
+        }
       }
     },
 
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js',
-        autoWatch: false,
-        singleRun: true,
-        browsers: [process.env.KARMA_BROWSER || 'Firefox']
+    watch: {
+      scripts: {
+        files: 'src/srcipts/**/*.js',
+        tasks: ['test', 'build:scripts']
+      },
+      styles: {
+        files: 'src/styles/**/*.less',
+        tasks: ['build:styles']
+      },
+      tests: {
+        files: 'test/spec/**/*.js',
+        tasks: ['test']
       }
     },
-    
+
     bump: {
       options: {
         commitMessage: 'chore: Bump for release (v%VERSION%)',
@@ -83,26 +93,24 @@ module.exports = function(grunt) {
   // Load plugins
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  // Register tasks
-  grunt.registerTask('serve', [
-    'clean',
-    'jshint',
-    'build',
-    'watch'
-  ]);
-
-  grunt.registerTask('server', ['serve']);
-
   grunt.registerTask('test', [
     'jshint',
-    //'karma'
+    'jasmine'
+  ]);
+
+  grunt.registerTask('build:scripts', [
+    'concat',
+    'uglify'
+  ]);
+
+  grunt.registerTask('build:styles', [
+    'less',
+    'cssmin'
   ]);
 
   grunt.registerTask('build', [
-    'concat',
-    'uglify',
-    'less',
-    'cssmin'
+    'build:scripts',
+    'build:styles'
   ]);
 
   grunt.registerTask('default', [
