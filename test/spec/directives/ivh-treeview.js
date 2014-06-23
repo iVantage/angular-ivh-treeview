@@ -71,7 +71,8 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should hide filtered out nodes', function() {
-      expect($el.find('li').length).toBe(3);
+      expect(scope.bag1[0].__ivhTreeviewVisible).toBe(false);
+      expect(scope.bag1[1].__ivhTreeviewVisible).toBe(true);
     });
   });
 });
