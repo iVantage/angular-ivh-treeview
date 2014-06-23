@@ -18,9 +18,12 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', functio
         , filterAttr = attrs.ivhTreeviewFilter
         , visibleAttr = attrs.ivhTreeviewNodeVisibleAttribute
         , node = scope.$eval(attrs.ivhTreeviewNode);
-      
+
       // Nothing to do if we don't have a filter
-      if(!filterAttr || filterAttr === 'undefined') { return; }
+      if(!filterAttr || filterAttr === 'undefined') {
+        node[visibleAttr] = true;
+        return;
+      }
       
       var map = Array.prototype.map || function(fn) {
         var mapped = [];

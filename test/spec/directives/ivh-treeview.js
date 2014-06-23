@@ -19,7 +19,7 @@ describe('Directive ivhTreeview', function() {
       '></div>'
   ].join('\n');
 
-  beforeEach(inject(function($rootScope, $compile, $timeout) {
+  beforeEach(inject(function($rootScope, $compile) {
     scope = $rootScope.$new();
     scope.bag1 = [{
       label: 'top hat',
@@ -36,7 +36,6 @@ describe('Directive ivhTreeview', function() {
     compile = function(tpl, scp) {
       var $el = $compile(ng.element(tpl))(scp);
       scp.$apply();
-      $timeout.flush();
       return $el;
     };
   }));
