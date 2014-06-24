@@ -7,8 +7,6 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-/*global console*/
-
 angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', function($timeout) {
   'use strict';
   return {

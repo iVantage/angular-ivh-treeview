@@ -22,22 +22,24 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
   return {
     restrict: 'A',
     link: function(scope, element, attrs) {
+
       var settings = ivhTreeviewSettings.get()
         , ivhTreeviewAttr = attrs.ivhTreeview
-        , ivhTreeview = scope.$eval(ivhTreeviewAttr);
-
-      if(!ivhTreeview || !ivhTreeview.length) {
-        return;
-      }
-
-      var filterAttr = attrs.ivhTreeviewFilter
+        , filterAttr = attrs.ivhTreeviewFilter
         , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || settings.labelAttribute
         , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || settings.childrenAttribute
         , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || settings.indeterminateAttribute
         , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute
-        , useCheckboses = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboses
-        , parent = scope.$eval(attrs.ivhTreeviewParent);
+        , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes;
+
+      var getTreeview = function() {
+        return scope.$eval(ivhTreeviewAttr);
+      };
+
+      var getParent = function() {
+        return scope.$eval(attrs.ivhTreeviewParent);
+      };
 
       var tplCheckbox = [
         '<input',
@@ -64,7 +66,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
               '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-right glyphicon glyphicon-chevron-right"></span>',
               '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-down glyphicon glyphicon-chevron-down"></span>',
               '<span class="ivh-treeview-toggle ivh-treeview-toggle-leaf">&#9679;</span>',
-              useCheckboses ? tplCheckbox : '',
+              useCheckboxes ? tplCheckbox : '',
               '<span ivh-treeview-node-toggle="true" class="ivh-treeview-node-label">',
                 '{{itm.' + labelAttr + '}}',
               '</span>',
@@ -77,17 +79,28 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
               'ivh-treeview-children-attribute="' + childrenAttr + '"',
               'ivh-treeview-selected-attribute="' + selectedAttr + '"',
               'ivh-treeview-visible-attribute="' + visibleAttr + '"',
-              'ivh-treeview-use-checkboxes="' + useCheckboses + '"',
+              'ivh-treeview-use-checkboxes="' + useCheckboxes + '"',
               '></div>',
           '</li>',
         '</ul>'
       ].join('\n');
 
-      var $el = $compile(tpl)(scope);
-      element.html('').append($el);
+
+      var link = function() {
+        var ivhTreeview = getTreeview();
+        if(ivhTreeview && ivhTreeview.length) {
+          var $el = $compile(tpl)(scope);
+          element.html('').append($el);
+        }
+      };
+
+      scope.$watch(attrs.ivhTreeview, link);
 
       scope.$on('event_ivhTreeviewSelectAll', function(event, isSelected) {
-        angular.forEach(ivhTreeview, function(node) {
+        var ivhTreeview = getTreeview()
+          , parent = getParent();
+
+        angular.forEach(getTreeview(), function(node) {
           node[selectedAttr] = isSelected;
           node[indeterminateAttr] = false;
         });
@@ -98,29 +111,34 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
         }
       });
 
-      if(parent) {
-        scope.$on('event_ivhTreeviewValidate', function() {
-          var numNodes = ivhTreeview.length
-            , numSelected = 0
-            , numIndeterminate = 0;
-          angular.forEach(ivhTreeview, function(node) {
-            if(node[selectedAttr]) { numSelected++; }
-            if(node[indeterminateAttr]) { numIndeterminate++; }
-          });
+      scope.$on('event_ivhTreeviewValidate', function() {
+        var ivhTreeview = getTreeview()
+          , parent = getParent()
+          , numNodes = ivhTreeview.length
+          , numSelected = 0
+          , numIndeterminate = 0;
 
-          if(0 === numSelected) {
-            parent[selectedAttr] = false;
-            parent[indeterminateAttr] = !!numIndeterminate;
-          } else if(numSelected === numNodes) {
-            parent[selectedAttr] = true;
-            parent[indeterminateAttr] = false;
-          } else {
-            parent[selectedAttr] = false;
-            parent[indeterminateAttr] = true;
-          }
+        if(!ivhTreeview || !ivhTreeview.length || !parent) {
+          return;
+        }
 
+        angular.forEach(ivhTreeview, function(node) {
+          if(node[selectedAttr]) { numSelected++; }
+          if(node[indeterminateAttr]) { numIndeterminate++; }
         });
-      }
+
+        if(0 === numSelected) {
+          parent[selectedAttr] = false;
+          parent[indeterminateAttr] = !!numIndeterminate;
+        } else if(numSelected === numNodes) {
+          parent[selectedAttr] = true;
+          parent[indeterminateAttr] = false;
+        } else {
+          parent[selectedAttr] = false;
+          parent[indeterminateAttr] = true;
+        }
+
+      });
     }
   };
 }]);
