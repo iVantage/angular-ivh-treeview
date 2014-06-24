@@ -41,7 +41,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
      * If `false` the markup to support checkboxes is not included in the
      * directive.
      */
-    useCheckboses: true,
+    useCheckboxes: true,
 
     /**
      * (internal) Collection item attribute to track intermediate states
