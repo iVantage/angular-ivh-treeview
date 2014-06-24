@@ -181,7 +181,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
       var settings = ivhTreeviewSettings.get()
         , ivhTreeviewAttr = attrs.ivhTreeview
         , ivhTreeview = scope.$eval(ivhTreeviewAttr);
-      
+
       if(!ivhTreeview || !ivhTreeview.length) {
         return;
       }
@@ -203,7 +203,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
           'type="checkbox"',
           'ng-model="itm[\'' + selectedAttr + '\']" />',
       ].join('\n');
-      
+
       var tpl = [
         '<ul class="ivh-treeview">',
           '<li ng-repeat="itm in ' + ivhTreeviewAttr + '"',
@@ -241,7 +241,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
 
       var $el = $compile(tpl)(scope);
       element.html('').append($el);
-      
+
       scope.$on('event_ivhTreeviewSelectAll', function(event, isSelected) {
         angular.forEach(ivhTreeview, function(node) {
           node[selectedAttr] = isSelected;
@@ -253,7 +253,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
           parent[indeterminateAttr] = false;
         }
       });
-      
+
       if(parent) {
         scope.$on('event_ivhTreeviewValidate', function() {
           var numNodes = ivhTreeview.length
@@ -263,7 +263,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
             if(node[selectedAttr]) { numSelected++; }
             if(node[indeterminateAttr]) { numIndeterminate++; }
           });
-          
+
           if(0 === numSelected) {
             parent[selectedAttr] = false;
             parent[indeterminateAttr] = !!numIndeterminate;
@@ -274,7 +274,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
             parent[selectedAttr] = false;
             parent[indeterminateAttr] = true;
           }
-          
+
         });
       }
     }
