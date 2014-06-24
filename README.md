@@ -1,6 +1,6 @@
 # Angular IVH Treeview
 
-[![Build Status][travis-img]][travis-link]
+[ ![Build Status][travis-img] ](travis-link)
 
 > A treeview for AngularJS with filtering and checkbox support.
 
@@ -90,7 +90,7 @@ app.config(function(ivhTreeviewSettingsProvider) {
 
 [MIT license][license], copyright iVantage Health Analytics, Inc.
 
-[license]: https://raw.github.com/ivantage/angular-ivh-treeview/master/LICENSE-MIT 
+[license]: https://raw.github.com/iVantage/angular-ivh-treeview/master/LICENSE-MIT 
 [bootstrap]: http://getbootstrap.com/
-[travis-img]: https://travis-ci.org/ivantage/angular-ivh-treeview.svg?branch=master
-[travis-link]: https://travis-ci.org/ivantage/angular-ivh-treeview
+[travis-img]: https://travis-ci.org/iVantage/angular-ivh-treeview.svg?branch=master
+[travis-link]: https://travis-ci.org/iVantage/angular-ivh-treeview
