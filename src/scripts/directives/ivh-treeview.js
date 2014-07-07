@@ -17,7 +17,7 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreeviewSettings', function($compile, ivhTreeviewSettings) {
+angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 'ivhTreeviewSettings', function($compile, $filter, ivhTreeviewSettings) {
   'use strict';
   return {
     restrict: 'A',
@@ -31,10 +31,11 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
         , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || settings.indeterminateAttribute
         , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute
-        , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes;
+        , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes
+        , asArray = $filter('ivhTreeviewAsArray');
 
       var getTreeview = function() {
-        return scope.$eval(ivhTreeviewAttr);
+        return asArray(scope.$eval(ivhTreeviewAttr));
       };
 
       var getParent = function() {
@@ -52,7 +53,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
 
       var tpl = [
         '<ul class="ivh-treeview">',
-          '<li ng-repeat="itm in ' + ivhTreeviewAttr + '"',
+          '<li ng-repeat="itm in ' + ivhTreeviewAttr + ' | ivhTreeviewAsArray"',
               /**
                * @todo check settings.expandByDefaultDepth
                */
@@ -100,7 +101,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
         var ivhTreeview = getTreeview()
           , parent = getParent();
 
-        angular.forEach(getTreeview(), function(node) {
+        angular.forEach(ivhTreeview, function(node) {
           node[selectedAttr] = isSelected;
           node[indeterminateAttr] = false;
         });
