@@ -188,7 +188,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
         , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes;
 
       var getTreeview = function() {
-        return scope.$eval(ivhTreeviewAttr);
+        return scope.$eval(ivhTreeviewAttr + ' | ivhTreeviewAsArray');
       };
 
       var getParent = function() {
@@ -206,7 +206,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
 
       var tpl = [
         '<ul class="ivh-treeview">',
-          '<li ng-repeat="itm in ' + ivhTreeviewAttr + '"',
+          '<li ng-repeat="itm in ' + ivhTreeviewAttr + ' | ivhTreeviewAsArray"',
               /**
                * @todo check settings.expandByDefaultDepth
                */
@@ -298,6 +298,16 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', 'ivhTreevie
 }]);
 
 
+
+angular.module('ivh.treeview').filter('ivhTreeviewAsArray', function() {
+  'use strict';
+  return function(arr) {
+    if(!angular.isArray(arr) && angular.isObject(arr)) {
+      return [arr];
+    }
+    return arr;
+  };
+});
 
 /**
  * Configurable settings for `ivh-treeview`
