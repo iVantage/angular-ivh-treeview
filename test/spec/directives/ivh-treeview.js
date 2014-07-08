@@ -11,6 +11,7 @@ describe('Directive ivhTreeview', function() {
   beforeEach(module('ivh.treeview'));
 
   var tplBasic = '<div ivh-treeview="bag1"></div>';
+  var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
 
   var tplFilter = [
     '<div',
@@ -43,11 +44,8 @@ describe('Directive ivhTreeview', function() {
   describe('basics', function() {
     var $el;
 
-    beforeEach(function() {
-      $el = compile(tplBasic, scope);
-    });
-
     it('should create a tree layout', function() {
+      $el = compile(tplBasic, scope);
       expect($el
         .find('ul').eq(0) // Entire tree
         .find('ul').eq(0) // tree.children (flat cap tree)
@@ -59,6 +57,11 @@ describe('Directive ivhTreeview', function() {
     /**
      * @todo Collapsing/Expanding
      */
+     
+    it('should allow roots objects', function() {
+      $el = compile(tplObjRoot, scope);
+      expect($el.find('ul').eq(0).find('ul').length).toBe(2);
+    });
   });
 
   describe('filtering', function() {
