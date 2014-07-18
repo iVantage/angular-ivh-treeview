@@ -6,7 +6,7 @@ describe('Directive ivhTreeview', function() {
   var ng = angular
     , $ = jQuery;
 
-  var scope, compile;
+  var scope, compile, flushTimeouts;
 
   beforeEach(module('ivh.treeview'));
 
@@ -20,7 +20,7 @@ describe('Directive ivhTreeview', function() {
       '></div>'
   ].join('\n');
 
-  beforeEach(inject(function($rootScope, $compile) {
+  beforeEach(inject(function($rootScope, $compile, $timeout) {
     scope = $rootScope.$new();
     scope.bag1 = [{
       label: 'top hat',
@@ -38,6 +38,10 @@ describe('Directive ivhTreeview', function() {
       var $el = $compile(ng.element(tpl))(scp);
       scp.$apply();
       return $el;
+    };
+
+    flushTimeouts = function() {
+      $timeout.flush();
     };
   }));
 
@@ -70,6 +74,7 @@ describe('Directive ivhTreeview', function() {
     it('should honor initial selections', function() {
       scope.bag1[0].children[1].selected = true;
       $el = compile(tplBasic, scope);
+      flushTimeouts();
       expect(scope.bag1[0].children[1].children[0].selected).toBe(true);
       expect(scope.bag1[0].__ivhTreeviewIntermediate).toBe(true);
     });
@@ -78,6 +83,7 @@ describe('Directive ivhTreeview', function() {
       $el = compile(tplBasic, scope);
       scope.bag1[0].children[1].selected = true;
       scope.$apply();
+      flushTimeouts();
       expect(scope.bag1[0].children[1].children[0].selected).toBe(true);
       expect(scope.bag1[0].__ivhTreeviewIntermediate).toBe(true);
     });

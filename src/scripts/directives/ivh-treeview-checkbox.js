@@ -11,43 +11,62 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
   'use strict';
   return {
     link: function(scope, element, attrs) {
-      var itm = scope.$eval(attrs.ivhTreeviewCheckbox)
-        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute;
+      var node = scope[attrs.ivhTreeviewCheckbox]
+        , parent = scope[attrs.ivhTreeviewParent]
+        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
+        , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
 
-      element.bind('change', function() {
-        scope.$broadcast('event_ivhTreeviewSelectAll', element.prop('checked'));
+      var validateCb = function() {
         $timeout(function() {
-          scope.$parent.$emit('event_ivhTreeviewValidate');
+          var isIndeterminate = node.__ivhTreeviewIntermediate;
+          element.prop('indeterminate', isIndeterminate);
         });
-      });
-      
+      };
+
+      var makeDeterminate = function() {
+        node[indeterminateAttr] = false;
+      };
+
       /**
        * Checkbox click handler
        *
        * Note that this fires *after* the change event
        */
       element.bind('click', function(event) {
-        var isIndeterminate = itm[indeterminateAttr];
+        var isIndeterminate = node[indeterminateAttr];
         if(isIndeterminate) {
-          element.prop('checked', false);
+          node[selectedAttr] = true;
+          makeDeterminate();
           event.preventDefault();
           event.stopImmediatePropagation();
         }
       });
-      
-      var validateCb = function() {
-        $timeout(function() {
-          var isIndeterminate = itm.__ivhTreeviewIntermediate;
-          element.prop('indeterminate', isIndeterminate);
-        });
-      };
 
-      var makeDeterminate = function() {
-        element.prop('indeterminate', false);
-      };
-
+      /**
+       * Internal event registration
+       */
       scope.$on('event_ivhTreeviewValidate', validateCb);
       scope.$on('event_ivhTreeviewSelectAll', makeDeterminate);
+
+      /**
+       * Watch for selected status changes
+       */
+      scope.$watch(function() {
+        return node[selectedAttr];
+      }, function(newVal, oldVal) {
+        if(!angular.isUndefined(newVal)) {
+          /**
+           * @todo Only bother with updates if our selected status differs from
+           * the parent node.
+           */
+          if(!node[indeterminateAttr]) {
+            scope.$broadcast('event_ivhTreeviewSelectAll', node[selectedAttr]);
+          }
+          $timeout(function() {
+            scope.$parent.$emit('event_ivhTreeviewValidate');
+          });
+        }
+      });
     }
   };
 }]);

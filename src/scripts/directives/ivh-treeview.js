@@ -39,13 +39,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
       };
 
       var getParent = function() {
-        return scope.$eval(attrs.ivhTreeviewParent);
+        return scope[attrs.ivhTreeviewParent];
       };
 
       var tplCheckbox = [
         '<input',
           'ivh-treeview-checkbox="itm"',
-          'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + ']"',
+          'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + '"',
+          'ivh-treeview-selected-attribute="' + selectedAttr + '"',
+          'ivh-treeview-parent="' + attrs.ivhTreeviewParent + '"',
           'class="ivh-treeview-checkbox"',
           'type="checkbox"',
           'ng-model="itm[\'' + selectedAttr + '\']" />',
@@ -60,6 +62,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
               'ng-class="{\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length, \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
+              'ivh-treeview-node-selected-attribute="' + selectedAttr + '"',
               'ivh-treeview-node-hook="itm"', // Hook for external use
               'ivh-treeview-filter="' + filterAttr + '"',
               'ng-show="itm.' + visibleAttr + '">',
@@ -85,7 +88,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
           '</li>',
         '</ul>'
       ].join('\n');
-
 
       var link = function() {
         var ivhTreeview = getTreeview();
