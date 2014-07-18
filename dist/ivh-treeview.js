@@ -41,15 +41,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
        *
        * Note that this fires *after* the change event
        */
-      element.bind('click', function(event) {
-        var isIndeterminate = node[indeterminateAttr];
-        if(isIndeterminate) {
-          node[selectedAttr] = true;
-          makeDeterminate();
-          event.preventDefault();
-          event.stopImmediatePropagation();
-        }
-      });
+      element.bind('click', makeDeterminate);
 
       /**
        * Internal event registration
