@@ -9,7 +9,7 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', ['$timeout', function($timeout) {
+angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
   'use strict';
   return {
     restrict: 'A',
