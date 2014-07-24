@@ -76,7 +76,7 @@ describe('Directive ivhTreeview', function() {
       $el = compile(tplBasic, scope);
       flushTimeouts();
       expect(scope.bag1[0].children[1].children[0].selected).toBe(true);
-      expect(scope.bag1[0].__ivhTreeviewIntermediate).toBe(true);
+      expect(scope.bag1[0].__ivhTreeviewIndeterminate).toBe(true);
     });
 
     it('selected status changes should effect parent and child nodes', function() {
@@ -85,7 +85,7 @@ describe('Directive ivhTreeview', function() {
       scope.$apply();
       flushTimeouts();
       expect(scope.bag1[0].children[1].children[0].selected).toBe(true);
-      expect(scope.bag1[0].__ivhTreeviewIntermediate).toBe(true);
+      expect(scope.bag1[0].__ivhTreeviewIndeterminate).toBe(true);
     });
   });
 

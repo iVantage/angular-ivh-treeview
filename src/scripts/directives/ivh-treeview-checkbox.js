@@ -18,7 +18,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
 
       var validateCb = function() {
         $timeout(function() {
-          var isIndeterminate = node.__ivhTreeviewIntermediate;
+          var isIndeterminate = node[indeterminateAttr];
           element.prop('indeterminate', isIndeterminate);
         });
       };

@@ -46,7 +46,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
     /**
      * (internal) Collection item attribute to track intermediate states
      */
-    indeterminateAttribute: '__ivhTreeviewIntermediate',
+    indeterminateAttribute: '__ivhTreeviewIndeterminate',
 
     /**
      * (internal) Collection item attribute to track visible states
