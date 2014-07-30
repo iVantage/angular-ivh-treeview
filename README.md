@@ -1,6 +1,6 @@
 # Angular IVH Treeview
 
-[ ![Build Status][travis-img] ](travis-link)
+[ ![Build Status][travis-img] ][travis-link]
 
 > A treeview for AngularJS with filtering and checkbox support.
 
