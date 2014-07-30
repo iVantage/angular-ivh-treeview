@@ -59,6 +59,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
               /**
                * @todo check settings.expandByDefaultDepth
                */
+              'title="{{itm[\'' + labelAttr + '\']}}"',
               'ng-class="{\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length, \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',

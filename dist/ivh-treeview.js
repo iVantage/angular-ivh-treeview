@@ -16,7 +16,7 @@ angular.module('ivh.treeview', []);
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', function($timeout) {
+angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   'use strict';
   return {
     link: function(scope, element, attrs) {
@@ -25,12 +25,10 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
         , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
 
-      var validateCb = function() {
-        $timeout(function() {
-          var isIndeterminate = node.__ivhTreeviewIntermediate;
-          element.prop('indeterminate', isIndeterminate);
-        });
-      };
+      //var validateCb = function() {
+      //    var isIndeterminate = node[indeterminateAttr];
+      //    element.prop('indeterminate', isIndeterminate);
+      //};
 
       var makeDeterminate = function() {
         node[indeterminateAttr] = false;
@@ -41,13 +39,20 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
        *
        * Note that this fires *after* the change event
        */
-      element.bind('click', makeDeterminate);
+      element.bind('click', function(event) {
+        makeDeterminate();
+      });
 
       /**
        * Internal event registration
        */
-      scope.$on('event_ivhTreeviewValidate', validateCb);
       scope.$on('event_ivhTreeviewSelectAll', makeDeterminate);
+
+      scope.$watch(function() {
+        return node[indeterminateAttr];
+      }, function(newVal, oldVal) {
+        element.prop('indeterminate', node[indeterminateAttr]);
+      });
 
       /**
        * Watch for selected status changes
@@ -63,9 +68,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
           if(!node[indeterminateAttr]) {
             scope.$broadcast('event_ivhTreeviewSelectAll', node[selectedAttr]);
           }
-          $timeout(function() {
-            scope.$parent.$emit('event_ivhTreeviewValidate');
-          });
+          scope.$parent.$emit('event_ivhTreeviewValidate');
         }
       });
     }
@@ -224,6 +227,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
               /**
                * @todo check settings.expandByDefaultDepth
                */
+              'title="{{itm[\'' + labelAttr + '\']}}"',
               'ng-class="{\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length, \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
@@ -248,6 +252,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
               'ivh-treeview-children-attribute="' + childrenAttr + '"',
               'ivh-treeview-selected-attribute="' + selectedAttr + '"',
               'ivh-treeview-visible-attribute="' + visibleAttr + '"',
+              'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + '"',
               'ivh-treeview-use-checkboxes="' + useCheckboxes + '"',
               '></div>',
           '</li>',
@@ -370,7 +375,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
     /**
      * (internal) Collection item attribute to track intermediate states
      */
-    indeterminateAttribute: '__ivhTreeviewIntermediate',
+    indeterminateAttribute: '__ivhTreeviewIndeterminate',
 
     /**
      * (internal) Collection item attribute to track visible states

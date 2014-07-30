@@ -6,7 +6,7 @@ describe('Directive ivhTreeview', function() {
   var ng = angular
     , $ = jQuery;
 
-  var scope, compile, flushTimeouts;
+  var scope, compile;
 
   beforeEach(module('ivh.treeview'));
 
@@ -20,7 +20,7 @@ describe('Directive ivhTreeview', function() {
       '></div>'
   ].join('\n');
 
-  beforeEach(inject(function($rootScope, $compile, $timeout) {
+  beforeEach(inject(function($rootScope, $compile) {
     scope = $rootScope.$new();
     scope.bag1 = [{
       label: 'top hat',
@@ -28,7 +28,10 @@ describe('Directive ivhTreeview', function() {
         label: 'flat cap'
       },{
         label: 'fedora',
-        children: [{label: 'gatsby'}]
+        children: [
+          {label: 'gatsby'},
+          {label: 'gatsby 2'}
+        ]
       }]
     },{
       label: 'baseball'
@@ -39,10 +42,10 @@ describe('Directive ivhTreeview', function() {
       scp.$apply();
       return $el;
     };
+  }));
 
-    flushTimeouts = function() {
-      $timeout.flush();
-    };
+  afterEach(inject(function($timeout) {
+    $timeout.verifyNoPendingTasks();
   }));
 
   describe('basics', function() {
@@ -50,12 +53,12 @@ describe('Directive ivhTreeview', function() {
 
     it('should create a tree layout', function() {
       $el = compile(tplBasic, scope);
-      expect($el
-        .find('ul').eq(0) // Entire tree
-        .find('ul').eq(0) // tree.children (flat cap tree)
-        .find('ul').eq(0) // tree.children.children (gasby tree)
-        .find('li').length
-      ).toBe(1);
+      expect($el.find('ul ul ul li').length).toBe(2);
+    });
+
+    it('should add label titles to tree nodes', function() {
+      $el = compile(tplBasic, scope);
+      expect($el.find('li[title="fedora"]').length).toBe(1);
     });
 
     /**
@@ -64,7 +67,23 @@ describe('Directive ivhTreeview', function() {
      
     it('should allow roots objects', function() {
       $el = compile(tplObjRoot, scope);
-      expect($el.find('ul').eq(0).find('ul').length).toBe(2);
+      expect($el.find('ul').first().find('ul').length).toBe(2);
+    });
+
+    it('should update indeterminate statuses', function() {
+      $el = compile(tplBasic, scope);
+      $el.find('li[title="fedora"] input').first().click();
+      scope.$apply();
+      expect(scope.bag1[0].__ivhTreeviewIndeterminate).toBe(true);
+      expect($el.find('input').first().prop('indeterminate')).toBe(true);
+
+      // I've noticed that deselecting a child can leave ancestors up to root
+      // unchecked and not-indeterminate when they should be.
+      $el.find('li[title="gatsby"] input').first().click();
+      scope.$apply();
+      expect($el.find('li[title="fedora"] input').first().prop('indeterminate')).toBe(true);
+      expect(scope.bag1[0].children[1].__ivhTreeviewIndeterminate).toBe(true);
+      expect(scope.bag1[0].children[1].selected).toBe(false);
     });
   });
 
@@ -74,7 +93,6 @@ describe('Directive ivhTreeview', function() {
     it('should honor initial selections', function() {
       scope.bag1[0].children[1].selected = true;
       $el = compile(tplBasic, scope);
-      flushTimeouts();
       expect(scope.bag1[0].children[1].children[0].selected).toBe(true);
       expect(scope.bag1[0].__ivhTreeviewIndeterminate).toBe(true);
     });
@@ -83,7 +101,6 @@ describe('Directive ivhTreeview', function() {
       $el = compile(tplBasic, scope);
       scope.bag1[0].children[1].selected = true;
       scope.$apply();
-      flushTimeouts();
       expect(scope.bag1[0].children[1].children[0].selected).toBe(true);
       expect(scope.bag1[0].__ivhTreeviewIndeterminate).toBe(true);
     });

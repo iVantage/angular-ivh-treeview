@@ -7,7 +7,7 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', function($timeout) {
+angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   'use strict';
   return {
     link: function(scope, element, attrs) {
@@ -16,12 +16,10 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
         , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
 
-      var validateCb = function() {
-        $timeout(function() {
-          var isIndeterminate = node[indeterminateAttr];
-          element.prop('indeterminate', isIndeterminate);
-        });
-      };
+      //var validateCb = function() {
+      //    var isIndeterminate = node[indeterminateAttr];
+      //    element.prop('indeterminate', isIndeterminate);
+      //};
 
       var makeDeterminate = function() {
         node[indeterminateAttr] = false;
@@ -32,13 +30,20 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
        *
        * Note that this fires *after* the change event
        */
-      element.bind('click', makeDeterminate);
+      element.bind('click', function(event) {
+        makeDeterminate();
+      });
 
       /**
        * Internal event registration
        */
-      scope.$on('event_ivhTreeviewValidate', validateCb);
       scope.$on('event_ivhTreeviewSelectAll', makeDeterminate);
+
+      scope.$watch(function() {
+        return node[indeterminateAttr];
+      }, function(newVal, oldVal) {
+        element.prop('indeterminate', node[indeterminateAttr]);
+      });
 
       /**
        * Watch for selected status changes
@@ -54,9 +59,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', ['$timeout', fun
           if(!node[indeterminateAttr]) {
             scope.$broadcast('event_ivhTreeviewSelectAll', node[selectedAttr]);
           }
-          $timeout(function() {
-            scope.$parent.$emit('event_ivhTreeviewValidate');
-          });
+          scope.$parent.$emit('event_ivhTreeviewValidate');
         }
       });
     }
