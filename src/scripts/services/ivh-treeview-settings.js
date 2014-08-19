@@ -33,7 +33,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
      *
      * @todo Implement handling non-zero values
      */
-    expandByDefaultDepth: 0,
+    expandToDepth: 0,
 
     /**
      * Whether or not to use checkboxes
