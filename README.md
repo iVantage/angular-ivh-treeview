@@ -75,14 +75,32 @@ app.config(function(ivhTreeviewSettingsProvider) {
     labelAttribute: 'text',
     childrenAttribute: 'items',
     selectedAttribute: 'isSelected',
-    useCheckboses: false
+    useCheckboses: false,
+    expandToDepth: 2
   });
 });
 ```
 
+### Expand To...
+
+If you want to tree to start out expanded to a certain depth use the
+`ivh-treeview-expand-to-depth` attribute:
+
+```html
+<div ng-controller="MyCtrl as fancy">
+  <div
+    ivh-treeview="fancy.bag"
+    ivh-treeview-expand-to-depth="2"
+    ivh-treeview-use-checkboxes="false">
+</div>
+```
+
+You can also sue the `ivhTreeviewSettingsProvider` to set a global default.
+
 
 ## Release history
 
+- 2014-08-25 v0.2.0 Allow for initial expansion
 - 2014-06-20 v0.1.0 Initial release
 
 
