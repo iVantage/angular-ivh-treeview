@@ -194,6 +194,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
       var settings = ivhTreeviewSettings.get()
         , ivhTreeviewAttr = attrs.ivhTreeview
         , filterAttr = attrs.ivhTreeviewFilter
+        , depth = scope.$eval(attrs.ivhTreeviewDepth) || 0
+        , expandToDepth = scope.$eval(attrs.ivhTreeviewExpandToDepth) || 0
         , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || settings.labelAttribute
         , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || settings.childrenAttribute
         , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
@@ -201,6 +203,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
         , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute
         , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes
         , asArray = $filter('ivhTreeviewAsArray');
+
+      expandToDepth = expandToDepth === -1 ? Infinity : expandToDepth;
 
       var getTreeview = function() {
         return asArray(scope.$eval(ivhTreeviewAttr));
@@ -225,10 +229,13 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
         '<ul class="ivh-treeview">',
           '<li ng-repeat="itm in ' + ivhTreeviewAttr + ' | ivhTreeviewAsArray"',
               /**
-               * @todo check settings.expandByDefaultDepth
+               * @todo check settings.expandToDepth
                */
               'title="{{itm[\'' + labelAttr + '\']}}"',
-              'ng-class="{\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length, \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length}"',
+              'ng-class="{' +
+                '\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length' +
+                (expandToDepth <= depth ? ', \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length > 1' : '') +
+              '}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-node-selected-attribute="' + selectedAttr + '"',
@@ -254,6 +261,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
               'ivh-treeview-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + '"',
               'ivh-treeview-use-checkboxes="' + useCheckboxes + '"',
+              'ivh-treeview-depth="' + (1+depth) + '"',
+              'ivh-treeview-expand-to-depth="' + expandToDepth + '"',
               '></div>',
           '</li>',
         '</ul>'
@@ -359,10 +368,8 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
      * A value of `0` means the tree will be entirely collapsd (the default
      * state) otherwise branches will be expanded up to the specified depth. Use
      * `-1` to have the tree entirely expanded.
-     *
-     * @todo Implement handling non-zero values
      */
-    expandByDefaultDepth: 0,
+    expandToDepth: 0,
 
     /**
      * Whether or not to use checkboxes

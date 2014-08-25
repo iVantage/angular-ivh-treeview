@@ -30,8 +30,6 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
      * A value of `0` means the tree will be entirely collapsd (the default
      * state) otherwise branches will be expanded up to the specified depth. Use
      * `-1` to have the tree entirely expanded.
-     *
-     * @todo Implement handling non-zero values
      */
     expandToDepth: 0,
 

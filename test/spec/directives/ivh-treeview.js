@@ -11,7 +11,7 @@ describe('Directive ivhTreeview', function() {
   beforeEach(module('ivh.treeview'));
 
   var tplBasic = '<div ivh-treeview="bag1"></div>';
-  var tplExpand = '<div ivh-treeview="bag1" ivh-treeview-expand-to-depth="2"></div>';
+  var tplExpand = '<div ivh-treeview="bag1" ivh-treeview-expand-to-depth="1"></div>';
   var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
 
   var tplFilter = [
@@ -69,6 +69,7 @@ describe('Directive ivhTreeview', function() {
     it('should allow expansion by default to a given depth', function() {
       $el = compile(tplExpand, scope);
       expect($el.find('li[title="top hat"]').hasClass('ivh-treeview-node-collapsed')).toBe(false);
+      expect($el.find('li[title="fedora"]').hasClass('ivh-treeview-node-collapsed')).toBe(true);
     });
      
     it('should allow roots objects', function() {

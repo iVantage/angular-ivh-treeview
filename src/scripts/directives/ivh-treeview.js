@@ -26,6 +26,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
       var settings = ivhTreeviewSettings.get()
         , ivhTreeviewAttr = attrs.ivhTreeview
         , filterAttr = attrs.ivhTreeviewFilter
+        , depth = scope.$eval(attrs.ivhTreeviewDepth) || 0
+        , expandToDepth = scope.$eval(attrs.ivhTreeviewExpandToDepth) || 0
         , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || settings.labelAttribute
         , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || settings.childrenAttribute
         , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
@@ -33,6 +35,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
         , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute
         , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes
         , asArray = $filter('ivhTreeviewAsArray');
+
+      expandToDepth = expandToDepth === -1 ? Infinity : expandToDepth;
 
       var getTreeview = function() {
         return asArray(scope.$eval(ivhTreeviewAttr));
@@ -60,7 +64,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
                * @todo check settings.expandToDepth
                */
               'title="{{itm[\'' + labelAttr + '\']}}"',
-              'ng-class="{\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length, \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length}"',
+              'ng-class="{' +
+                '\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length' +
+                (expandToDepth <= depth ? ', \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length > 1' : '') +
+              '}"',
               'ivh-treeview-node="itm"',
               'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-node-selected-attribute="' + selectedAttr + '"',
@@ -86,6 +93,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
               'ivh-treeview-visible-attribute="' + visibleAttr + '"',
               'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + '"',
               'ivh-treeview-use-checkboxes="' + useCheckboxes + '"',
+              'ivh-treeview-depth="' + (1+depth) + '"',
+              'ivh-treeview-expand-to-depth="' + expandToDepth + '"',
               '></div>',
           '</li>',
         '</ul>'
