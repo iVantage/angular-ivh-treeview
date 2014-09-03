@@ -13,7 +13,7 @@
  * </div>
  * ```
  *
- * @package <package-name>
+ * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
