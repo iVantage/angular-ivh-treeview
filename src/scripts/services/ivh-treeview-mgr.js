@@ -82,11 +82,13 @@ angular.module('ivh.treeview')
       isSelected = angular.isDefined(isSelected) ? isSelected : true;
 
       var useId = angular.isString(node)
-        , proceed = true;
+        , proceed = true
+        , idAttr = opts.idAttribute;
 
       ivhTreeviewBfs(tree, opts, function(n, p) {
         var isNode = proceed && (useId ?
-          node === n[opts.idAttribute] : node === n);
+          node === n[idAttr] :
+          node === n);
         
         if(isNode) {
           // I've been looking for you all my life
@@ -96,7 +98,7 @@ angular.module('ivh.treeview')
             makeSelected.bind(opts) :
             makeDeselected.bind(opts);
 
-          ivhTreeviewBfs(node, opts, cb);
+          ivhTreeviewBfs(n, opts, cb);
           ng.forEach(p, validateParent.bind(opts));
         }
 
