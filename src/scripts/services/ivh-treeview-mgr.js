@@ -11,6 +11,10 @@
 
 angular.module('ivh.treeview').provider('ivhTreeviewMgr', function() {
   'use strict';
+  
+  // Save some key presses
+  var ng = angular;
+
   var options = {
     /**
      * Collection item attribute to use for labels
@@ -61,7 +65,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewMgr', function() {
    * @param {Object} opts options object to override defaults with
    */
   this.options = function(opts) {
-    angular.extend(options, opts);
+    ng.extend(options, opts);
   };
 
   this.$get = function() {
@@ -73,7 +77,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewMgr', function() {
      * @return {Object} The options object
      */
     exports.options = function() {
-      return angular.copy(options);
+      return ng.copy(options);
     };
 
     /**
@@ -91,7 +95,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewMgr', function() {
      * @return {Object} Returns the ivhTreeviewMgr instance for chaining
      */
     exports.select = function(tree, node, opts, isSelected) {
-      opts = angular.extend({}, options, opts);
+      opts = ng.extend({}, options, opts);
 
       return exports;
     };
@@ -127,7 +131,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewMgr', function() {
      * @return {Object} Returns the ivhTreeviewMgr instance for chaining
      */
     exports.validate = function(tree, bias, opts) {
-      opts = angular.extend({}, options, opts);
+      opts = ng.extend({}, options, opts);
       /*code*/
     };
 
