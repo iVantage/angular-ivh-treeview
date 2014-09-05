@@ -17,8 +17,8 @@ describe('Service: ivhTreeviewMgr', function() {
     , messenger
     , backpack;
 
-  beforeEach(inject(function(_ivhTreeviewMrg_) {
-    ivhTreeviewMgr = _ivhTreeviewMrg_;
+  beforeEach(inject(function(_ivhTreeviewMgr_) {
+    ivhTreeviewMgr = _ivhTreeviewMgr_;
   }));
 
   beforeEach(function() {
@@ -85,8 +85,8 @@ describe('Service: ivhTreeviewMgr', function() {
     
     it('should deselect all child nodes', function() {
       ivhTreeviewMgr.deselect(tree, hats);
-      expect(fedora.selected).toBe(true);
-      expect(flatcap.selected).toBe(true);
+      expect(fedora.selected).toBe(false);
+      expect(flatcap.selected).toBe(false);
     });
 
     it('should make parents indeterminate if there are selected siblings', function() {
@@ -110,7 +110,7 @@ describe('Service: ivhTreeviewMgr', function() {
       expect(stuff.__ivhTreeviewIndeterminate).toBe(true);
 
       expect(hats.selected).toBe(false);
-      expect(hats.__ivhTreeviewIndeterminate).toBe(true);
+      expect(hats.__ivhTreeviewIndeterminate).toBe(false);
 
       expect(bags.selected).toBe(true);
       expect(bags.__ivhTreeviewIndeterminate).toBe(false);
@@ -128,10 +128,6 @@ describe('Service: ivhTreeviewMgr', function() {
       expect(backpack.__ivhTreeviewIndeterminate).toBe(false);
     });
 
-  });
-
-  describe('#options', function() {
-    // ... different options every time
   });
 
 });

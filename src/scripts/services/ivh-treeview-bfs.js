@@ -6,7 +6,7 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewMgr', function(ivhTreeviewMgr) {
+angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewOptions', function(ivhTreeviewOptions) {
   'use strict';
 
   var ng = angular;
@@ -14,7 +14,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewMgr', func
   /**
    * Breadth first search of `tree`
    *
-   * `opts` is optional and may override settings from `ivhTreeviewMgr.options`.
+   * `opts` is optional and may override settings from `ivhTreeviewOptions.options`.
    * The callback `cb` will be invoked on each node in the tree as we traverse,
    * if it returns `false` traversal of that branch will not continue. The
    * callback is given the current node as the first parameter and the node
@@ -29,7 +29,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewMgr', func
       cb = opts;
       opts = {};
     }
-    opts = angular.extend({}, ivhTreeviewMgr.options(), opts);
+    opts = angular.extend({}, ivhTreeviewOptions(), opts);
     cb = cb || ng.noop;
 
     var queue = []

@@ -17,13 +17,13 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 'ivhTreeviewMgr', function($compile, $filter, ivhTreeviewMgr) {
+angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 'ivhTreeviewOptions', function($compile, $filter, ivhTreeviewOptions) {
   'use strict';
   return {
     restrict: 'A',
     link: function(scope, element, attrs) {
 
-      var settings = ivhTreeviewMgr.options()
+      var settings = ivhTreeviewOptions()
         , ivhTreeviewAttr = attrs.ivhTreeview
         , filterAttr = attrs.ivhTreeviewFilter
         , depth = scope.$eval(attrs.ivhTreeviewDepth) || 0

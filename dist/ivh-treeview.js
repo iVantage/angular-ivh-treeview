@@ -185,13 +185,13 @@ angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 'ivhTreeviewSettings', function($compile, $filter, ivhTreeviewSettings) {
+angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 'ivhTreeviewOptions', function($compile, $filter, ivhTreeviewOptions) {
   'use strict';
   return {
     restrict: 'A',
     link: function(scope, element, attrs) {
 
-      var settings = ivhTreeviewSettings.get()
+      var settings = ivhTreeviewOptions()
         , ivhTreeviewAttr = attrs.ivhTreeview
         , filterAttr = attrs.ivhTreeviewFilter
         , depth = scope.$eval(attrs.ivhTreeviewDepth) || 0
@@ -338,67 +338,214 @@ angular.module('ivh.treeview').filter('ivhTreeviewAsArray', function() {
 });
 
 /**
- * Configurable settings for `ivh-treeview`
+ * Breadth first searching for treeview data stores
  *
  * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
+angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewOptions', function(ivhTreeviewOptions) {
   'use strict';
-  var settings = {
-    /**
-     * Collection item attribute to use for labels
-     */
-    labelAttribute: 'label',
 
-    /**
-     * Collection item attribute to use for child nodes
-     */
-    childrenAttribute: 'children',
+  var ng = angular;
 
-    /**
-     * Collection item attribute to use for selected state
-     */
-    selectedAttribute: 'selected',
+  /**
+   * Breadth first search of `tree`
+   *
+   * `opts` is optional and may override settings from `ivhTreeviewOptions.options`.
+   * The callback `cb` will be invoked on each node in the tree as we traverse,
+   * if it returns `false` traversal of that branch will not continue. The
+   * callback is given the current node as the first parameter and the node
+   * ancestors, from closest to farthest, as an array in the second parameter.
+   *
+   * @param {Array|Object} tree The tree data
+   * @param {Object} opts [optional] Settings overrides
+   * @param {Function} cb [optional] Callback to run against each node
+   */
+  return function(tree, opts, cb) {
+    if(arguments.length === 2 && ng.isFunction(opts)) {
+      cb = opts;
+      opts = {};
+    }
+    opts = angular.extend({}, ivhTreeviewOptions(), opts);
+    cb = cb || ng.noop;
 
-    /**
-     * Controls whether branches are initially expanded or collapsed
-     *
-     * A value of `0` means the tree will be entirely collapsd (the default
-     * state) otherwise branches will be expanded up to the specified depth. Use
-     * `-1` to have the tree entirely expanded.
-     */
-    expandToDepth: 0,
+    var queue = []
+      , childAttr = opts.childrenAttribute
+      , next, node, parents, ix, numChildren;
 
-    /**
-     * Whether or not to use checkboxes
-     *
-     * If `false` the markup to support checkboxes is not included in the
-     * directive.
-     */
-    useCheckboxes: true,
+    if(ng.isArray(tree)) {
+      ng.forEach(tree, function(n) {
+        // node and parents
+        queue.push([n, []]);
+      });
+      next = queue.shift();
+    } else {
+      // node and parents
+      next = [tree, []];
+    }
 
-    /**
-     * (internal) Collection item attribute to track intermediate states
-     */
-    indeterminateAttribute: '__ivhTreeviewIndeterminate',
-
-    /**
-     * (internal) Collection item attribute to track visible states
-     */
-    visibleAttribute: '__ivhTreeviewVisible'
+    while(next) {
+      node = next[0];
+      parents = next[1];
+      // cb might return `undefined` so we have to actually check for equality
+      // against `false`
+      if(cb(node, parents) !== false) {
+        if(node[childAttr] && ng.isArray(node[childAttr])) {
+          numChildren = node[childAttr].length;
+          for(ix = 0; ix < numChildren; ix++) {
+            queue.push([node[childAttr][ix], [node].concat(parents)]);
+          }
+        }
+      }
+      next = queue.shift();
+    }
   };
+}]);
 
-  this.set = function(opts) {
-    angular.extend(settings, opts);
-  };
 
-  this.$get = function() {
-    return {
-      get: function() {
-        return angular.copy(settings);
+/**
+ * Manager for treeview data stores
+ *
+ * Used to assist treeview operations, e.g. selecting or validating a tree-like
+ * collection.
+ *
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview')
+  .factory('ivhTreeviewMgr', ['ivhTreeviewOptions', 'ivhTreeviewBfs', function(ivhTreeviewOptions, ivhTreeviewBfs) {
+    'use strict';
+    
+    var ng = angular
+      , options = ivhTreeviewOptions()
+      , exports = {};
+
+    // The make* methods and validateParent need to be bound to an options
+    // object
+    var makeDeselected = function(node) {
+      node[this.selectedAttribute] = false;
+      node[this.indeterminateAttribute] = false;
+    };
+
+    var makeSelected = function(node) {
+      node[this.selectedAttribute] = true;
+      node[this.indeterminateAttribute] = false;
+    };
+
+    var validateParent = function(node) {
+      var children = node[this.childrenAttribute]
+        , selectedAttr = this.selectedAttribute
+        , indeterminateAttr = this.indeterminateAttribute
+        , numSelected = 0
+        , numIndeterminate = 0;
+      ng.forEach(children, function(n, ix) {
+        if(n[selectedAttr]) {
+          numSelected++;
+        } else {
+          if(n[indeterminateAttr]) {
+            numIndeterminate++;
+          }
+        }
+      });
+
+      if(0 === numSelected) {
+        node[selectedAttr] = false;
+        node[indeterminateAttr] = false;
+      } else if(numSelected === children.length) {
+        node[selectedAttr] = true;
+        node[indeterminateAttr] = false;
+      } else {
+        node[selectedAttr] = false;
+        node[indeterminateAttr] = true;
       }
     };
-  };
-});
+
+    /**
+     * Select (or deselect) a tree node
+     *
+     * This method will update the rest of the tree to account for your change.
+     *
+     * You may alternatively pass an id as `node`, in which case the tree will
+     * be searched for your item.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to (de)select
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isSelected [optional] Whether or not to select `node`, defaults to `true`
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.select = function(tree, node, opts, isSelected) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isSelected = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isSelected = angular.isDefined(isSelected) ? isSelected : true;
+
+      var useId = angular.isString(node)
+        , proceed = true;
+
+      ivhTreeviewBfs(tree, opts, function(n, p) {
+        var isNode = proceed && (useId ?
+          node === n[opts.idAttribute] : node === n);
+        
+        if(isNode) {
+          // I've been looking for you all my life
+          proceed = false;
+
+          var cb = isSelected ?
+            makeSelected :
+            makeDeselected;
+
+          ivhTreeviewBfs(node, opts, cb.bind(opts));
+          ng.forEach(p, validateParent.bind(opts));
+        }
+
+        return proceed;
+      });
+
+      return exports;
+    };
+
+    /**
+     * Deselect a tree node
+     *
+     * Delegates to `ivhTreeviewMgr.select`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to (de)select
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.deselect = function(tree, node, opts) {
+      return exports.select(tree, node, opts, false);
+    };
+
+    /**
+     * Validate tree for parent/child selection consistency
+     *
+     * Assumes `bias` as default selected state. The first element with
+     * `node.select !== bias` will be assumed correct. For example, if `bias` is
+     * `true` (the default) we'll traverse the tree until we come to an
+     * unselected node at which point we stop and deselect each of that node's
+     * children (and their children, etc.).
+     *
+     * Indeterminate states will also be resolved.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} bias [optional] Default selected state
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.validate = function(tree, bias, opts) {
+      opts = ng.extend({}, options, opts);
+      /*code*/
+    };
+
+    return exports;
+  }
+]);
