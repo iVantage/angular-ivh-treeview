@@ -16,11 +16,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
         , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
 
-      //var validateCb = function() {
-      //    var isIndeterminate = node[indeterminateAttr];
-      //    element.prop('indeterminate', isIndeterminate);
-      //};
-
       var makeDeterminate = function() {
         node[indeterminateAttr] = false;
       };

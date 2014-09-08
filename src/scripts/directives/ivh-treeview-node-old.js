@@ -9,21 +9,15 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', function($compile) {
+angular.module('ivh.treeview').directive('ivhTreeviewNodeOld', ['$compile', function($compile) {
   'use strict';
   return {
     restrict: 'A',
-    scope: {
-      node: '=ivhTreeviewNode'
-    },
-    require: '^ivhTreeview',
-    link: function(scope, element, attrs, ctrl) {
-      var opts = ctrl.opts()
-        , filterAttr = opts.ivhTreeviewFilter
-        , visibleAttr = opts.ivhTreeviewNodeVisibleAttribute
+    link: function(scope, element, attrs) {
+      var nodeAttr = attrs.ivhTreeviewNode
+        , filterAttr = attrs.ivhTreeviewFilter
+        , visibleAttr = attrs.ivhTreeviewNodeVisibleAttribute
         , node = scope.$eval(attrs.ivhTreeviewNode);
-
-      scope.ctrl = ctrl;
 
       // Nothing to do if we don't have a filter
       if(!filterAttr || filterAttr === 'undefined') {
@@ -58,25 +52,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', functio
       angular.forEach(filterVars, function(f) {
         scope.$watch(f, applyFilters);
       });
-    },
-    template: [
-      <div>
-        <div title="{{ctrl.label(node)}}">
-          (x)
-          <input
-            type="checkbox"
-            ng-if="ctrl.useCheckboxes()"
-            ivh-treeview-checkbox="node"/>
-          <span class="ivh-treeview-node-label">
-            {{ctrl.label(node)}}
-          </span>
-        </div>
-        <ul class="ivh-treeview">
-          <li ng-repeat="node in ctrl.children(node)">
-          </li>
-        </ul>
-      </div>
-    ].join('\n')
+    }
   };
 }]);
-

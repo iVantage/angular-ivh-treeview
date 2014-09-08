@@ -34,7 +34,7 @@ In your view...
 
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-filter="filter:bagSearch"></div>
+    ivh-treeview-filter="bagSearch"></div>
 </div>
 ```
 

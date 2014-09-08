@@ -25,11 +25,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
         , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
         , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
 
-      //var validateCb = function() {
-      //    var isIndeterminate = node[indeterminateAttr];
-      //    element.prop('indeterminate', isIndeterminate);
-      //};
-
       var makeDeterminate = function() {
         node[indeterminateAttr] = false;
       };
@@ -128,39 +123,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', functio
       
       angular.forEach(filterVars, function(f) {
         scope.$watch(f, applyFilters);
-      });
-    }
-  };
-}]);
-
-
-/**
- * Toggle logic for treeview nodes
- *
- * Handles expand/collapse on click. Does nothing for leaf nodes.
- *
- * @private
- * @package ivh.treeview
- * @copyright 2014 iVantage Health Analytics, Inc.
- */
-
-angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
-  'use strict';
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs) {
-      var canToggle = scope.$eval(attrs.ivhTreeviewNodeToggle);
-
-      var $li = element.parent();
-
-      while($li && $li.prop('nodeName') !== 'LI') {
-        $li = $li.parent();
-      }
-
-      element.bind('click', function() {
-        if(!$li.hasClass('ivh-treeview-node-leaf')) {
-          $li.toggleClass('ivh-treeview-node-collapsed');
-        }
       });
     }
   };
@@ -320,6 +282,40 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 
           parent[indeterminateAttr] = true;
         }
 
+      });
+    }
+  };
+}]);
+
+
+
+/**
+ * Toggle logic for treeview nodes
+ *
+ * Handles expand/collapse on click. Does nothing for leaf nodes.
+ *
+ * @private
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
+  'use strict';
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      var canToggle = scope.$eval(attrs.ivhTreeviewNodeToggle);
+
+      var $li = element.parent();
+
+      while($li && $li.prop('nodeName') !== 'LI') {
+        $li = $li.parent();
+      }
+
+      element.bind('click', function() {
+        if(!$li.hasClass('ivh-treeview-node-leaf')) {
+          $li.toggleClass('ivh-treeview-node-collapsed');
+        }
       });
     }
   };
@@ -541,6 +537,30 @@ angular.module('ivh.treeview')
         node[selectedAttr] = isSelected;
         node[indeterminateAttr] = false;
       });
+
+      return exports;
+    };
+
+    /**
+     * Select or deselect each of the passed items
+     *
+     * Eventually it would be nice if this did something more intelligent than
+     * just calling `select` on each item in the array...
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Array} nodes The array of nodes or node ids
+     * @param {Object} opts [optional] Default options overrides
+     * @param {Boolean} isSelected [optional] Whether or not to select items
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.selectEach = function(tree, nodes, opts, isSelected) {
+      /**
+       * @todo Surely we can do something better than this...
+       */
+      ng.forEach(nodes, function(node) {
+        exports.select(tree, node, opts, isSelected);
+      });
+      return exports;
     };
 
     /**
@@ -568,6 +588,21 @@ angular.module('ivh.treeview')
      */
     exports.deselectAll = function(tree, opts) {
       return exports.selectAll(tree, opts, false);
+    };
+
+    /**
+     * Deselect each of the passed items
+     *
+     * Delegates to `ivhTreeviewMgr.selectEach` with `isSelected` set to
+     * `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Array} nodes The array of nodes or node ids
+     * @param {Object} opts [optional] Default options overrides
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.deselectEach = function(tree, nodes, opts) {
+      return exports.selectEach(tree, nodes, opts, false);
     };
 
     /**
