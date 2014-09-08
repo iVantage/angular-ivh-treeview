@@ -484,24 +484,26 @@ angular.module('ivh.treeview')
         }
       }
       opts = ng.extend({}, options, opts);
-      isSelected = angular.isDefined(isSelected) ? isSelected : true;
+      isSelected = ng.isDefined(isSelected) ? isSelected : true;
 
       var useId = angular.isString(node)
-        , proceed = true;
+        , proceed = true
+        , idAttr = opts.idAttribute;
 
       ivhTreeviewBfs(tree, opts, function(n, p) {
         var isNode = proceed && (useId ?
-          node === n[opts.idAttribute] : node === n);
+          node === n[idAttr] :
+          node === n);
         
         if(isNode) {
           // I've been looking for you all my life
           proceed = false;
 
           var cb = isSelected ?
-            makeSelected :
-            makeDeselected;
+            makeSelected.bind(opts) :
+            makeDeselected.bind(opts);
 
-          ivhTreeviewBfs(node, opts, cb.bind(opts));
+          ivhTreeviewBfs(n, opts, cb);
           ng.forEach(p, validateParent.bind(opts));
         }
 
@@ -512,9 +514,39 @@ angular.module('ivh.treeview')
     };
 
     /**
+     * Select all nodes in a tree
+     *
+     * `opts` will default to an empty object, `isSelected` defaults to `true`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object} opts [optional] Default options overrides
+     * @param {Boolean} isSelected [optional] Whether or not to select items
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.selectAll = function(tree, opts, isSelected) {
+      if(arguments.length > 1) {
+        if(typeof opts === 'boolean') {
+          isSelected = opts;
+          opts = {};
+        }
+      }
+
+      opts = ng.extend({}, options, opts);
+      isSelected = ng.isDefined(isSelected) ? isSelected : true;
+
+      var selectedAttr = opts.selectedAttribute
+        , indeterminateAttr = opts.indeterminateAttribute;
+
+      ivhTreeviewBfs(tree, opts, function(node) {
+        node[selectedAttr] = isSelected;
+        node[indeterminateAttr] = false;
+      });
+    };
+
+    /**
      * Deselect a tree node
      *
-     * Delegates to `ivhTreeviewMgr.select`.
+     * Delegates to `ivhTreeviewMgr.select` with `isSelected` set to `false`.
      *
      * @param {Object|Array} tree The tree data
      * @param {Object|String} node The node (or id) to (de)select
@@ -523,6 +555,19 @@ angular.module('ivh.treeview')
      */
     exports.deselect = function(tree, node, opts) {
       return exports.select(tree, node, opts, false);
+    };
+
+    /**
+     * Deselect all nodes in a tree
+     *
+     * Delegates to `ivhTreeviewMgr.selectAll` with `isSelected` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object} opts [optional] Default options overrides
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.deselectAll = function(tree, opts) {
+      return exports.selectAll(tree, opts, false);
     };
 
     /**
@@ -541,11 +586,118 @@ angular.module('ivh.treeview')
      * @param {Boolean} bias [optional] Default selected state
      * @return {Object} Returns the ivhTreeviewMgr instance for chaining
      */
-    exports.validate = function(tree, bias, opts) {
+    exports.validate = function(tree, opts, bias) {
+      if(arguments.length > 1) {
+        if(typeof opts === 'boolean') {
+          bias = opts;
+          opts = {};
+        }
+      }
       opts = ng.extend({}, options, opts);
-      /*code*/
+      bias = ng.isDefined(bias) ? bias : opts.defaultSelectedState;
+
+      var selectedAttr = opts.selectedAttribute
+        , indeterminateAttr = opts.indeterminateAttribute;
+      
+      ivhTreeviewBfs(tree, opts, function(node, parents) {
+        if(ng.isDefined(node[selectedAttr]) && node[selectedAttr] !== bias) {
+          exports.select(tree, node, opts, !bias);
+          return false;
+        } else {
+          node[selectedAttr] = bias;
+          node[indeterminateAttr] = false;
+        }
+      });
     };
 
     return exports;
   }
 ]);
+
+
+/**
+ * Global options for ivhTreeview
+ *
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
+  'use strict';
+
+  var options = {
+    /**
+     * ID attribute
+     *
+     * For selecting nodes by identifier rather than reference
+     */
+    idAttribute: 'id',
+
+    /**
+     * Collection item attribute to use for labels
+     */
+    labelAttribute: 'label',
+
+    /**
+     * Collection item attribute to use for child nodes
+     */
+    childrenAttribute: 'children',
+
+    /**
+     * Collection item attribute to use for selected state
+     */
+    selectedAttribute: 'selected',
+
+    /**
+     * Controls whether branches are initially expanded or collapsed
+     *
+     * A value of `0` means the tree will be entirely collapsd (the default
+     * state) otherwise branches will be expanded up to the specified depth. Use
+     * `-1` to have the tree entirely expanded.
+     */
+    expandToDepth: 0,
+
+    /**
+     * Whether or not to use checkboxes
+     *
+     * If `false` the markup to support checkboxes is not included in the
+     * directive.
+     */
+    useCheckboxes: true,
+
+    /**
+     * (internal) Collection item attribute to track intermediate states
+     */
+    indeterminateAttribute: '__ivhTreeviewIndeterminate',
+
+    /**
+     * (internal) Collection item attribute to track visible states
+     */
+    visibleAttribute: '__ivhTreeviewVisible',
+
+    /**
+     * Default selected state when validating
+     */
+    defaultSelectedState: true
+  };
+
+  /**
+   * Update global options
+   *
+   * @param {Object} opts options object to override defaults with
+   */
+  this.update = function(opts) {
+    angular.extend(options, opts);
+  };
+
+  this.$get = function() {
+    /**
+     * Get a copy of the global options
+     *
+     * @return {Object} The options object
+     */
+    return function() {
+      return angular.copy(options);
+    };
+  };
+});

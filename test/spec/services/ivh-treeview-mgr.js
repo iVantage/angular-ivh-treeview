@@ -81,6 +81,42 @@ describe('Service: ivhTreeviewMgr', function() {
 
   });
 
+  describe('#selectAll', function() {
+    
+    it('should select all nodes in a tree', function() {
+      ivhTreeviewMgr.selectAll(tree);
+      nodes.forEach(function(n) {
+        expect(n.selected).toBe(true);
+        expect(n.__ivhTreeviewIndeterminate).toBe(false);
+      });
+    });
+
+  });
+
+  describe('#selectEach', function() {
+    
+    it('should select with an array of node references', function() {
+      ivhTreeviewMgr.selectEach(tree, [flatcap, bags]);
+      [flatcap, bags, messenger, backpack].forEach(function(n) {
+        expect(n.selected).toBe(true);
+      });
+      [stuff, hats, fedora].forEach(function(n) {
+        expect(n.selected).not.toBe(true);
+      });
+    });
+
+    it('should select with an array of node ids', function() {
+      ivhTreeviewMgr.selectEach(tree, ['flatcap', 'bags']);
+      [flatcap, bags, messenger, backpack].forEach(function(n) {
+        expect(n.selected).toBe(true);
+      });
+      [stuff, hats, fedora].forEach(function(n) {
+        expect(n.selected).not.toBe(true);
+      });
+    });
+
+  });
+
   describe('#deselect', function() {
 
     beforeEach(function() {
@@ -99,6 +135,52 @@ describe('Service: ivhTreeviewMgr', function() {
       ivhTreeviewMgr.deselect(tree, hats);
       expect(stuff.__ivhTreeviewIndeterminate).toBe(true);
       expect(stuff.selected).toBe(false); // Indeterminte nodes are not selected
+    });
+
+  });
+
+  describe('#deselectAll', function() {
+    beforeEach(function() {
+      nodes.forEach(function(n) {
+        n.selected = true;
+      });
+    });
+    
+    it('should deselect all nodes in a tree', function() {
+      ivhTreeviewMgr.deselectAll(tree);
+      nodes.forEach(function(n) {
+        expect(n.selected).toBe(false);
+        expect(n.__ivhTreeviewIndeterminate).toBe(false);
+      });
+    });
+
+  });
+
+  describe('#deselectEach', function() {
+    beforeEach(function() {
+      angular.forEach(nodes, function(n) {
+        n.selected = true;
+      });
+    });
+    
+    it('should deselect with an array of node references', function() {
+      ivhTreeviewMgr.deselectEach(tree, [flatcap, bags]);
+      [stuff, hats, flatcap, bags, messenger, backpack].forEach(function(n) {
+        expect(n.selected).toBe(false);
+      });
+      [fedora].forEach(function(n) {
+        expect(n.selected).toBe(true);
+      });
+    });
+
+    it('should deselect with an array of node ids', function() {
+      ivhTreeviewMgr.deselectEach(tree, ['flatcap', 'bags']);
+      [stuff, hats, flatcap, bags, messenger, backpack].forEach(function(n) {
+        expect(n.selected).toBe(false);
+      });
+      [fedora].forEach(function(n) {
+        expect(n.selected).toBe(true);
+      });
     });
 
   });

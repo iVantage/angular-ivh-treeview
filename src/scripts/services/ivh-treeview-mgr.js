@@ -79,7 +79,7 @@ angular.module('ivh.treeview')
         }
       }
       opts = ng.extend({}, options, opts);
-      isSelected = angular.isDefined(isSelected) ? isSelected : true;
+      isSelected = ng.isDefined(isSelected) ? isSelected : true;
 
       var useId = angular.isString(node)
         , proceed = true
@@ -109,9 +109,63 @@ angular.module('ivh.treeview')
     };
 
     /**
+     * Select all nodes in a tree
+     *
+     * `opts` will default to an empty object, `isSelected` defaults to `true`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object} opts [optional] Default options overrides
+     * @param {Boolean} isSelected [optional] Whether or not to select items
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.selectAll = function(tree, opts, isSelected) {
+      if(arguments.length > 1) {
+        if(typeof opts === 'boolean') {
+          isSelected = opts;
+          opts = {};
+        }
+      }
+
+      opts = ng.extend({}, options, opts);
+      isSelected = ng.isDefined(isSelected) ? isSelected : true;
+
+      var selectedAttr = opts.selectedAttribute
+        , indeterminateAttr = opts.indeterminateAttribute;
+
+      ivhTreeviewBfs(tree, opts, function(node) {
+        node[selectedAttr] = isSelected;
+        node[indeterminateAttr] = false;
+      });
+
+      return exports;
+    };
+
+    /**
+     * Select or deselect each of the passed items
+     *
+     * Eventually it would be nice if this did something more intelligent than
+     * just calling `select` on each item in the array...
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Array} nodes The array of nodes or node ids
+     * @param {Object} opts [optional] Default options overrides
+     * @param {Boolean} isSelected [optional] Whether or not to select items
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.selectEach = function(tree, nodes, opts, isSelected) {
+      /**
+       * @todo Surely we can do something better than this...
+       */
+      ng.forEach(nodes, function(node) {
+        exports.select(tree, node, opts, isSelected);
+      });
+      return exports;
+    };
+
+    /**
      * Deselect a tree node
      *
-     * Delegates to `ivhTreeviewMgr.select`.
+     * Delegates to `ivhTreeviewMgr.select` with `isSelected` set to `false`.
      *
      * @param {Object|Array} tree The tree data
      * @param {Object|String} node The node (or id) to (de)select
@@ -120,6 +174,34 @@ angular.module('ivh.treeview')
      */
     exports.deselect = function(tree, node, opts) {
       return exports.select(tree, node, opts, false);
+    };
+
+    /**
+     * Deselect all nodes in a tree
+     *
+     * Delegates to `ivhTreeviewMgr.selectAll` with `isSelected` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object} opts [optional] Default options overrides
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.deselectAll = function(tree, opts) {
+      return exports.selectAll(tree, opts, false);
+    };
+
+    /**
+     * Deselect each of the passed items
+     *
+     * Delegates to `ivhTreeviewMgr.selectEach` with `isSelected` set to
+     * `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Array} nodes The array of nodes or node ids
+     * @param {Object} opts [optional] Default options overrides
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.deselectEach = function(tree, nodes, opts) {
+      return exports.selectEach(tree, nodes, opts, false);
     };
 
     /**
