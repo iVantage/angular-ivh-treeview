@@ -169,7 +169,7 @@ set to `false`.
 A convenience method, delegates to `ivhTreeviewMgr.selectEach` with `isSelected`
 set to `false`.
 
-#### `ivhTreeviewMgr.validat(tree[, opts][, bias])`
+#### `ivhTreeviewMgr.validate(tree[, opts][, bias])`
 
 Validate a `tree` data store, `bias` is a convenient redundancy for
 `opts.defaultSelectedState`.
