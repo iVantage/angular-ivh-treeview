@@ -665,6 +665,8 @@ angular.module('ivh.treeview')
           node[indeterminateAttr] = false;
         }
       });
+
+      return exports;
     };
 
     return exports;
