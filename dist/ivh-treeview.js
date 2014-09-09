@@ -214,8 +214,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       var ng = angular
         , ctrl = this;
 
-      var root = ctrl.root = $scope.root;
-
       // Merge any locally set options with those registered with hte
       // ivhTreeviewOptions provider
       var localOpts = ng.extend({}, ivhTreeviewOptions());
@@ -270,7 +268,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       };
 
       ctrl.select = function(node, isSelected) {
-        ivhTreeviewMgr.select(root, node, localOpts, isSelected);
+        ivhTreeviewMgr.select($scope.root, node, localOpts, isSelected);
       };
 
       ctrl.isExpanded = function(depth) {
