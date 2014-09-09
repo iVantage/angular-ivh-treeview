@@ -81,7 +81,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
    *
    * @param {Object} opts options object to override defaults with
    */
-  this.update = function(opts) {
+  this.set = function(opts) {
     angular.extend(options, opts);
   };
 
