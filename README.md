@@ -124,6 +124,73 @@ ivhTreeviewOptionsProvider.set({
 });
 ```
 
+## Treeview Manager Service
+
+`ivh.treeview` supplies a service, `ivhTreeviewMgr`, for interacting with your
+tree data directly.
+
+#### `ivhTreeviewMgr.select(tree, node[, opts][, isSelected])`
+
+Select (or deselect) an item in `tree`, `node` can be either a reference to the
+actual tree node or its ID.
+
+We'll use settings registered with `ivhTreeviewOptions` by default, but you can
+override any of them with the optional `opts` parameter.
+
+`isSelected` is also optional and defaults to `true` (i.e. the node will be
+selected).
+
+When an item is selected each of its children are also selected and the
+indeterminate state of each of the node's parents is validated.
+
+#### `ivhTreeviewMgr.selectAll(tree[, opts][, isSelected])`
+
+Like `ivhTreeviewMgr.select` except every node in `tree` is either selected or
+deselected.
+
+#### `ivhTreeviewMgr.selectEach(tree, nodes[, opts][, isSelected])`
+
+Like `ivhTreeviewMgr.select` except an array of nodes (or node IDs) is used.
+Each node in `tree` corresponding to one of the passed `nodes` will be selected
+or deselected.
+
+#### `ivhTreeviewMgr.deselect(tree, node[, opts])`
+
+A convenience method, delegates to `ivhTreeviewMgr.select` with `isSelected` set
+to `false`.
+
+#### `ivhTreeviewMgr.deselectAll(tree[, opts])`
+
+A convenience method, delegates to `ivhTreeviewMgr.selectAll` with `isSelected`
+set to `false`.
+
+#### `ivhTreeviewMgr.deselectEach(tree, nodes[, opts])`
+
+A convenience method, delegates to `ivhTreeviewMgr.selectEach` with `isSelected`
+set to `false`.
+
+#### `ivhTreeviewMgr.validat(tree[, opts][, bias])`
+
+Validate a `tree` data store, `bias` is a convenient redundancy for
+`opts.defaultSelectedState`.
+
+When validating tree data we look for the first node in each branch which has a
+selected state defined that differs from `opts.defaultSelectedState` (or
+`bias`). Each of that node's children are updated to match the differing node
+and parent indeterminate states are updated.
+
+## Tree Traversal
+
+The internal tree traversal service is exposed as `ivhTreeviewBfs` (bfs -->
+breadth first search).
+
+#### `ivhTreeviewBfs(tree[, opts][, cb])`
+
+We preform a breadth first traversal of `tree` applying the function `cb` to
+each node as it is reached. `cb` is passed two parameters, the node itself and
+an array of parents nodes ordered nearest to farthest. If the `cb` returns
+`false` traversal of that branch is stopped.
+
 ## Release history
 
 - 2014-08-25 v0.2.0 Allow for initial expansion
