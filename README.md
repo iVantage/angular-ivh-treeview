@@ -4,8 +4,6 @@
 
 > A treeview for AngularJS with filtering and checkbox support.
 
-Default styles use [Bootstrap 3][bootstrap].
-
 ## Example usage
 
 In your controller...
@@ -43,26 +41,26 @@ In your view...
 IVH Treeview is pretty configurable. By default it expects your elements to have
 `label` and `children` properties for node display text and child nodes
 respectively. It'll also make use of a `selected` attribute to manage selected
-states. Those attributes can all be changed:
+states. If you would like to pick out nodes by ID rather than reference it'll
+also use an `id` attribute. Those attributes can all be changed, for example:
 
 ```html
 <div ng-controller="MyCtrl as fancy">
-  <div
-    ivh-treeview="fancy.bag"
+  <div ivh-treeview="fancy.bag"
+    ivh-treeview-id-attribute="'uuid'"
     ivh-treeview-label-attribute="'text'"
     ivh-treeview-children-attribute="'items'"
     ivh-treeview-selected-attribute="'isSelected'">
 </div>
 ```
 
-IVH Treeview attaches checkboxes to each item in your tree for hierarchical
+IVH Treeview attaches checkboxes to each item in your tree for a hierarchical
 selection model. If you'd rather not have these checkboxes use
 `ivh-treeview-use-checkboxes="false"`:
 
 ```html
 <div ng-controller="MyCtrl as fancy">
-  <div
-    ivh-treeview="fancy.bag"
+  <div ivh-treeview="fancy.bag"
     ivh-treeview-use-checkboxes="false">
 </div>
 ```
@@ -70,18 +68,24 @@ selection model. If you'd rather not have these checkboxes use
 There's also a provider if you'd like to change the global defaults:
 
 ```javascript
-app.config(function(ivhTreeviewSettingsProvider) {
-  ivhTreeviewSettingsProvider.set({
-    labelAttribute: 'text',
-    childrenAttribute: 'items',
-    selectedAttribute: 'isSelected',
-    useCheckboses: false,
-    expandToDepth: 2
+app.config(function(ivhTreeviewOptionsProvider) {
+  ivhTreeviewOptionsProvider.set({
+    idAttribute: 'id',
+    labelAttribute: 'label',
+    childrenAttribute: 'children',
+    selectedAttribute: 'selected',
+    useCheckboses: true,
+    expandToDepth: 0,
+    indeterminateAttribute: '__ivhTreeviewIndeterminate',
+    defaultSelectedState: true,
+    twistieExpandedTpl: '(-)',
+    twistieCollapsedTpl: '(+)',
+    twistieLeafTpl: 'o'
   });
 });
 ```
 
-### Expand To...
+### Expanded by default
 
 If you want to tree to start out expanded to a certain depth use the
 `ivh-treeview-expand-to-depth` attribute:
@@ -95,8 +99,30 @@ If you want to tree to start out expanded to a certain depth use the
 </div>
 ```
 
-You can also sue the `ivhTreeviewSettingsProvider` to set a global default.
+You can also sue the `ivhTreeviewOptionsProvider` to set a global default.
 
+If you want the tree *entirely* expanded use a depth of `-1`.
+
+### Default selected state
+
+When using checkboxes you can have a default selected state of `true` or
+`false`. This is only relevant if you validate your tree data using
+`ivhTreeviewMgr.validate` which will assume this state by default. Use the
+`ivh-treeview-default-selected-state` attribute or `defaultSelectedState`.
+
+### Twisties
+
+The basic twisties that ship with this `ivh.treeview` are little more than ASCII
+art. You're encouraged to use your own twistie templates. For example, if you've
+got bootstrap on your page you might do something like this:
+
+```javascript
+ivhTreeviewOptionsProvider.set({
+  twistieCollapsedTpl: '<span class="glyphicon glyphicon-chevron-right"></span>',
+  twistieExpandedTpl: '<span class="glyphicon glyphicon-chevron-down"></span>',
+  twistieLeafTpl: '&#9679;'
+});
+```
 
 ## Release history
 
