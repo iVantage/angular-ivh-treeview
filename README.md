@@ -193,6 +193,8 @@ an array of parents nodes ordered nearest to farthest. If the `cb` returns
 
 ## Release history
 
+- 2014-09-09 v0.3.0 Complete refactor. Directive no longer propagates changes
+  automatically on programmatic changes, use ivhTreeviewMgr.
 - 2014-08-25 v0.2.0 Allow for initial expansion
 - 2014-06-20 v0.1.0 Initial release
 
