@@ -55,11 +55,6 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
 
     /**
-     * (internal) Collection item attribute to track visible states
-     */
-    visibleAttribute: '__ivhTreeviewVisible',
-
-    /**
      * Default selected state when validating
      */
     defaultSelectedState: true

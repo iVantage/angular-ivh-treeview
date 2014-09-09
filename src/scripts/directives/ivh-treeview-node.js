@@ -12,19 +12,37 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
   return {
     restrict: 'A',
     scope: {
-      node: '=ivhTreeviewNode'
+      node: '=ivhTreeviewNode',
+      depth: '=ivhTreeviewDepth'
     },
     require: '^ivhTreeview',
     compile: function(tElement) {
       return ivhTreeviewCompiler
         .compile(tElement, function(scope, element, attrs, ctrl) {
           scope.ctrl = ctrl;
+
+          scope.childDepth = scope.depth + 1;
+
+          var node = scope.node
+            , children = scope.children = ctrl.children(node);
+
+          if(!children.length) {
+            element.addClass('ivh-treeview-node-leaf');
+          }
+
+          if(!ctrl.isExpanded(scope.depth)) {
+            element.addClass('ivh-treeview-node-collapsed');
+          }
+
+          element.attr('title', ctrl.label(node));
         });
     },
     template: [
-      '<div ng-show="ctrl.isVisible(node)">',
-        '<div title="{{ctrl.label(node)}}">',
-          '(-)',
+      '<div>',
+        '<div>',
+          '<span ivh-treeview-toggle="node">',
+            '(-)',
+          '</span>',
           '<span ng-if="ctrl.useCheckboxes()"',
               'ivh-treeview-checkbox="node">',
           '</span>',
@@ -32,9 +50,11 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
             '{{ctrl.label(node)}}',
           '</span>',
         '</div>',
-        '<ul class="ivh-treeview">',
-          '<li ng-repeat="child in ctrl.children(node)"',
-              'ivh-treeview-node="child">',
+        '<ul ng-if="children.length" class="ivh-treeview">',
+          '<li ng-repeat="child in children"',
+              'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+              'ivh-treeview-node="child"',
+              'ivh-treeview-depth="childDepth">',
           '</li>',
         '</ul>',
       '</div>'

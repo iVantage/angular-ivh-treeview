@@ -40,7 +40,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       filter: '=ivhTreeviewFilter'
     },
     controllerAs: 'ctrl',
-    controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewMgr', 'ivhTreeviewOptions', function($scope, $element, $attrs, $transclude, ivhTreeviewMgr, ivhTreeviewOptions) {
+    controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewMgr', 'ivhTreeviewOptions', 'filterFilter', function($scope, $element, $attrs, $transclude, ivhTreeviewMgr, ivhTreeviewOptions, filterFilter) {
       var ng = angular
         , ctrl = this;
 
@@ -79,8 +79,20 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
         return node[localOpts.labelAttribute];
       };
 
+      ctrl.hasFilter = function() {
+        return ng.isDefined($scope.filter);
+      };
+
+      ctrl.getFilter = function() {
+        return $scope.filter || '';
+      };
+
       ctrl.isVisible = function(node) {
-        return true;
+        var filter = ctrl.getFilter();
+        if(!filter) {
+          return true;
+        }
+        return !!filterFilter([node], filter).length;
       };
 
       ctrl.useCheckboxes = function() {
@@ -90,11 +102,19 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       ctrl.select = function(node, isSelected) {
         ivhTreeviewMgr.select(root, node, localOpts, isSelected);
       };
+
+      ctrl.isExpanded = function(depth) {
+        var expandTo = localOpts.expandToDepth === -1 ?
+          Infinity : localOpts.expandToDepth;
+        return depth < expandTo;
+      };
     }],
     template: [
-      '<ul>',
+      '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
-            'ivh-treeview-node="child">',
+            'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+            'ivh-treeview-node="child"',
+            'ivh-treeview-depth="0">',
         '</li>',
       '</ul>'
     ].join('\n')

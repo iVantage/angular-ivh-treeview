@@ -19,54 +19,42 @@ angular.module('ivh.treeview', []);
 angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   'use strict';
   return {
-    link: function(scope, element, attrs) {
-      var node = scope[attrs.ivhTreeviewCheckbox]
-        , parent = scope[attrs.ivhTreeviewParent]
-        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
-        , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
+    restrict: 'A',
+    scope: {
+      node: '=ivhTreeviewCheckbox'
+    },
+    require: '^ivhTreeview',
+    link: function(scope, element, attrs, ctrl) {
+      var node = scope.node
+        , opts = ctrl.opts()
+        , indeterminateAttr = opts.indeterminateAttribute
+        , selectedAttr = opts.selectedAttribute;
 
-      var makeDeterminate = function() {
-        node[indeterminateAttr] = false;
-      };
+      // Set initial selected state of this checkbox
+      scope.isSelected = node[selectedAttr];
 
-      /**
-       * Checkbox click handler
-       *
-       * Note that this fires *after* the change event
-       */
-      element.bind('click', function(event) {
-        makeDeterminate();
-      });
+      // Local access to the parent controller
+      scope.ctrl = ctrl;
 
-      /**
-       * Internal event registration
-       */
-      scope.$on('event_ivhTreeviewSelectAll', makeDeterminate);
-
-      scope.$watch(function() {
-        return node[indeterminateAttr];
-      }, function(newVal, oldVal) {
-        element.prop('indeterminate', node[indeterminateAttr]);
-      });
-
-      /**
-       * Watch for selected status changes
-       */
+      // Update the checkbox when the node's selected status changes
       scope.$watch(function() {
         return node[selectedAttr];
       }, function(newVal, oldVal) {
-        if(!angular.isUndefined(newVal)) {
-          /**
-           * @todo Only bother with updates if our selected status differs from
-           * the parent node.
-           */
-          if(!node[indeterminateAttr]) {
-            scope.$broadcast('event_ivhTreeviewSelectAll', node[selectedAttr]);
-          }
-          scope.$parent.$emit('event_ivhTreeviewValidate');
-        }
+        scope.isSelected = newVal;
       });
-    }
+
+      // Update the checkbox when the node's indeterminate status changes
+      scope.$watch(function() {
+        return node[indeterminateAttr];
+      }, function(newVal, oldVal) {
+        element.find('input').prop('indeterminate', newVal);
+      });
+    },
+    template: [
+      '<input type="checkbox"',
+        'ng-model="isSelected"',
+        'ng-change="ctrl.select(node, isSelected)" />'
+    ].join('\n')
   };
 }]);
 
@@ -74,55 +62,100 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
 /**
  * Treeview tree node directive
  *
- * Handles filtering.
+ * @private
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompiler', function(ivhTreeviewCompiler) {
+  'use strict';
+  return {
+    restrict: 'A',
+    scope: {
+      node: '=ivhTreeviewNode',
+      depth: '=ivhTreeviewDepth'
+    },
+    require: '^ivhTreeview',
+    compile: function(tElement) {
+      return ivhTreeviewCompiler
+        .compile(tElement, function(scope, element, attrs, ctrl) {
+          scope.ctrl = ctrl;
+
+          scope.childDepth = scope.depth + 1;
+
+          var node = scope.node
+            , children = scope.children = ctrl.children(node);
+
+          if(!children.length) {
+            element.addClass('ivh-treeview-node-leaf');
+          }
+
+          if(!ctrl.isExpanded(scope.depth)) {
+            element.addClass('ivh-treeview-node-collapsed');
+          }
+
+          element.attr('title', ctrl.label(node));
+        });
+    },
+    template: [
+      '<div>',
+        '<div>',
+          '<span ivh-treeview-toggle="node">',
+            '(-)',
+          '</span>',
+          '<span ng-if="ctrl.useCheckboxes()"',
+              'ivh-treeview-checkbox="node">',
+          '</span>',
+          '<span class="ivh-treeview-node-label">',
+            '{{ctrl.label(node)}}',
+          '</span>',
+        '</div>',
+        '<ul ng-if="children.length" class="ivh-treeview">',
+          '<li ng-repeat="child in children"',
+              'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+              'ivh-treeview-node="child"',
+              'ivh-treeview-depth="childDepth">',
+          '</li>',
+        '</ul>',
+      '</div>'
+    ].join('\n')
+  };
+}]);
+
+
+
+/**
+ * Toggle logic for treeview nodes
+ *
+ * Handles expand/collapse on click. Does nothing for leaf nodes.
  *
  * @private
  * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', function($compile) {
+angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
   'use strict';
   return {
     restrict: 'A',
-    link: function(scope, element, attrs) {
-      var nodeAttr = attrs.ivhTreeviewNode
-        , filterAttr = attrs.ivhTreeviewFilter
-        , visibleAttr = attrs.ivhTreeviewNodeVisibleAttribute
-        , node = scope.$eval(attrs.ivhTreeviewNode);
+    require: '^ivhTreeview',
+    scope: {
+      node: '=ivhTreeviewToggle'
+    },
+    link: function(scope, element, attrs, ctrl) {
 
-      // Nothing to do if we don't have a filter
-      if(!filterAttr || filterAttr === 'undefined') {
-        node[visibleAttr] = true;
+      if(!ctrl.children(scope.node).length) {
         return;
       }
-      
-      var map = Array.prototype.map || function(fn) {
-        var mapped = [];
-        angular.forEach(this, function(item) {
-          mapped.push(fn(item));
-        });
-        return mapped;
-      };
-      
-      var filters = map.call(filterAttr.split('|'), function(filterStr) {
-        var parts = filterStr.split(':');
-        return parts;
-      });
-      
-      var filterVars = [];
-      angular.forEach(filters, function(f) {
-        Array.prototype.push.apply(filterVars, f.slice(1));
-      });
-      
-      var filterString = '[' + nodeAttr + '] | ' + filterAttr;
-      var applyFilters = function() {
-        var filtered = scope.$eval(filterString);
-        node[visibleAttr] = filtered.length > 0;
-      };
-      
-      angular.forEach(filterVars, function(f) {
-        scope.$watch(f, applyFilters);
+
+      var $li = element.parent();
+
+      while($li && $li.prop('nodeName') !== 'LI') {
+        $li = $li.parent();
+      }
+
+      element.bind('click', function() {
+        $li.toggleClass('ivh-treeview-node-collapsed');
       });
     }
   };
@@ -139,7 +172,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', functio
  * ```
  * <div
  *   ivh-treeview="myHierarchicalData">
- *   ivh-treeview-filter="filter:myFilterText | filter:myOtherFilterText">
+ *   ivh-treeview-filter="myFilterText">
  * </div>
  * ```
  *
@@ -147,179 +180,109 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', functio
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeview', ['$compile', '$filter', 'ivhTreeviewOptions', function($compile, $filter, ivhTreeviewOptions) {
+angular.module('ivh.treeview').directive('ivhTreeview', function() {
   'use strict';
   return {
     restrict: 'A',
-    link: function(scope, element, attrs) {
+    scope: {
+      // The tree data store
+      root: '=ivhTreeview',
 
-      var settings = ivhTreeviewOptions()
-        , ivhTreeviewAttr = attrs.ivhTreeview
-        , filterAttr = attrs.ivhTreeviewFilter
-        , depth = scope.$eval(attrs.ivhTreeviewDepth) || 0
-        , expandToDepth = scope.$eval(attrs.ivhTreeviewExpandToDepth) || 0
-        , labelAttr = scope.$eval(attrs.ivhTreeviewLabelAttribute) || settings.labelAttribute
-        , childrenAttr = scope.$eval(attrs.ivhTreeviewChildrenAttribute) || settings.childrenAttribute
-        , selectedAttr = scope.$eval(attrs.ivhTreeviewSelectedAttribute) || settings.selectedAttribute
-        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute || settings.indeterminateAttribute
-        , visibleAttr = attrs.ivhTreeviewVisibleAttribute || settings.visibleAttribute
-        , useCheckboxes = angular.isDefined(attrs.ivhTreeviewUseCheckboxes) ? scope.$eval(attrs.ivhTreeviewUseCheckboxes) : settings.useCheckboxes
-        , asArray = $filter('ivhTreeviewAsArray');
+      // Config options
+      childrenAttribute: '=ivhTreeviewChildrenAttribute',
+      defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
+      expandToDepth: '=ivhTreeviewExpandToDepth',
+      idAttribute: '=ivhTreeviewIdAttribute',
+      indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
+      labelAttribute: '=ivhTreeviewLabelAttribute',
+      selectedAttribute: '=ivhTreeviewSelectedAttribute',
+      useCheckboxes: '=ivhTreeviewUseCheckboxes',
+      visibleAttribute: '=ivhTreeviewVisibleAttribute',
 
-      expandToDepth = expandToDepth === -1 ? Infinity : expandToDepth;
+      // The filter
+      filter: '=ivhTreeviewFilter'
+    },
+    controllerAs: 'ctrl',
+    controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewMgr', 'ivhTreeviewOptions', 'filterFilter', function($scope, $element, $attrs, $transclude, ivhTreeviewMgr, ivhTreeviewOptions, filterFilter) {
+      var ng = angular
+        , ctrl = this;
 
-      var getTreeview = function() {
-        return asArray(scope.$eval(ivhTreeviewAttr));
-      };
+      var root = ctrl.root = $scope.root;
 
-      var getParent = function() {
-        return scope[attrs.ivhTreeviewParent];
-      };
-
-      var tplCheckbox = [
-        '<input',
-          'ivh-treeview-checkbox="itm"',
-          'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + '"',
-          'ivh-treeview-selected-attribute="' + selectedAttr + '"',
-          'ivh-treeview-parent="' + attrs.ivhTreeviewParent + '"',
-          'class="ivh-treeview-checkbox"',
-          'type="checkbox"',
-          'ng-model="itm[\'' + selectedAttr + '\']" />',
-      ].join('\n');
-
-      var tpl = [
-        '<ul class="ivh-treeview">',
-          '<li ng-repeat="itm in ' + ivhTreeviewAttr + ' | ivhTreeviewAsArray"',
-              /**
-               * @todo check settings.expandToDepth
-               */
-              'title="{{itm[\'' + labelAttr + '\']}}"',
-              'ng-class="{' +
-                '\'ivh-treeview-node-leaf\': !itm[\''+childrenAttr+'\'].length' +
-                (expandToDepth <= depth ? ', \'ivh-treeview-node-collapsed\': itm[\''+childrenAttr+'\'].length > 1' : '') +
-              '}"',
-              'ivh-treeview-node="itm"',
-              'ivh-treeview-node-visible-attribute="' + visibleAttr + '"',
-              'ivh-treeview-node-selected-attribute="' + selectedAttr + '"',
-              'ivh-treeview-node-hook="itm"', // Hook for external use
-              'ivh-treeview-filter="' + filterAttr + '"',
-              'ng-show="itm.' + visibleAttr + '">',
-            '<div ivh-treeview-node-hook class="ivh-treeview-node">',
-              '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-right glyphicon glyphicon-chevron-right"></span>',
-              '<span ivh-treeview-node-toggle class="ivh-treeview-toggle ivh-treeview-toggle-down glyphicon glyphicon-chevron-down"></span>',
-              '<span class="ivh-treeview-toggle ivh-treeview-toggle-leaf">&#9679;</span>',
-              useCheckboxes ? tplCheckbox : '',
-              '<span ivh-treeview-node-toggle="true" class="ivh-treeview-node-label">',
-                '{{itm.' + labelAttr + '}}',
-              '</span>',
-            '</div>',
-            '<div',
-              'ivh-treeview="itm[\'' + childrenAttr + '\']"',
-              'ivh-treeview-parent="itm"',
-              filterAttr ? 'ivh-treeview-filter="' + filterAttr + '"' : '',
-              'ivh-treeview-label-attribute="' + labelAttr + '"',
-              'ivh-treeview-children-attribute="' + childrenAttr + '"',
-              'ivh-treeview-selected-attribute="' + selectedAttr + '"',
-              'ivh-treeview-visible-attribute="' + visibleAttr + '"',
-              'ivh-treeview-indeterminate-attribute="' + indeterminateAttr + '"',
-              'ivh-treeview-use-checkboxes="' + useCheckboxes + '"',
-              'ivh-treeview-depth="' + (1+depth) + '"',
-              'ivh-treeview-expand-to-depth="' + expandToDepth + '"',
-              '></div>',
-          '</li>',
-        '</ul>'
-      ].join('\n');
-
-      var link = function() {
-        var ivhTreeview = getTreeview();
-        if(ivhTreeview && ivhTreeview.length) {
-          var $el = $compile(tpl)(scope);
-          element.html('').append($el);
-        }
-      };
-
-      scope.$watch(attrs.ivhTreeview, link);
-
-      scope.$on('event_ivhTreeviewSelectAll', function(event, isSelected) {
-        var ivhTreeview = getTreeview()
-          , parent = getParent();
-
-        angular.forEach(ivhTreeview, function(node) {
-          node[selectedAttr] = isSelected;
-          node[indeterminateAttr] = false;
-        });
-
-        if(parent) {
-          parent[selectedAttr] = isSelected;
-          parent[indeterminateAttr] = false;
+      // Merge any locally set options with those registered with hte
+      // ivhTreeviewOptions provider
+      var localOpts = ng.extend({}, ivhTreeviewOptions());
+      ng.forEach([
+        'childrenAttribute',
+        'defaultSelectedState',
+        'expandToDepth',
+        'idAttribute',
+        'indeterminateAttribute',
+        'labelAttribute',
+        'selectedAttribute',
+        'useCheckboxes',
+        'visibleAttribute'
+      ], function(attr) {
+        if(ng.isDefined($scope[attr])) {
+          localOpts[attr] = $scope[attr];
         }
       });
 
-      scope.$on('event_ivhTreeviewValidate', function() {
-        var ivhTreeview = getTreeview()
-          , parent = getParent()
-          , numNodes = ivhTreeview.length
-          , numSelected = 0
-          , numIndeterminate = 0;
+      // Give child directives an easy way to get at merged options
+      ctrl.opts = function() {
+        return localOpts;
+      };
 
-        if(!ivhTreeview || !ivhTreeview.length || !parent) {
-          return;
+      ctrl.children = function(node) {
+        var children = node[localOpts.childrenAttribute];
+        return ng.isArray(children) ? children : [];
+      };
+
+      ctrl.label = function(node) {
+        return node[localOpts.labelAttribute];
+      };
+
+      ctrl.hasFilter = function() {
+        return ng.isDefined($scope.filter);
+      };
+
+      ctrl.getFilter = function() {
+        return $scope.filter || '';
+      };
+
+      ctrl.isVisible = function(node) {
+        var filter = ctrl.getFilter();
+        if(!filter) {
+          return true;
         }
+        return !!filterFilter([node], filter).length;
+      };
 
-        angular.forEach(ivhTreeview, function(node) {
-          if(node[selectedAttr]) { numSelected++; }
-          if(node[indeterminateAttr]) { numIndeterminate++; }
-        });
+      ctrl.useCheckboxes = function() {
+        return localOpts.useCheckboxes;
+      };
 
-        if(0 === numSelected) {
-          parent[selectedAttr] = false;
-          parent[indeterminateAttr] = !!numIndeterminate;
-        } else if(numSelected === numNodes) {
-          parent[selectedAttr] = true;
-          parent[indeterminateAttr] = false;
-        } else {
-          parent[selectedAttr] = false;
-          parent[indeterminateAttr] = true;
-        }
+      ctrl.select = function(node, isSelected) {
+        ivhTreeviewMgr.select(root, node, localOpts, isSelected);
+      };
 
-      });
-    }
+      ctrl.isExpanded = function(depth) {
+        var expandTo = localOpts.expandToDepth === -1 ?
+          Infinity : localOpts.expandToDepth;
+        return depth < expandTo;
+      };
+    }],
+    template: [
+      '<ul class="ivh-treeview">',
+        '<li ng-repeat="child in root | ivhTreeviewAsArray"',
+            'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+            'ivh-treeview-node="child"',
+            'ivh-treeview-depth="0">',
+        '</li>',
+      '</ul>'
+    ].join('\n')
   };
-}]);
-
-
-
-/**
- * Toggle logic for treeview nodes
- *
- * Handles expand/collapse on click. Does nothing for leaf nodes.
- *
- * @private
- * @package ivh.treeview
- * @copyright 2014 iVantage Health Analytics, Inc.
- */
-
-angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
-  'use strict';
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs) {
-      var canToggle = scope.$eval(attrs.ivhTreeviewNodeToggle);
-
-      var $li = element.parent();
-
-      while($li && $li.prop('nodeName') !== 'LI') {
-        $li = $li.parent();
-      }
-
-      element.bind('click', function() {
-        if(!$li.hasClass('ivh-treeview-node-leaf')) {
-          $li.toggleClass('ivh-treeview-node-collapsed');
-        }
-      });
-    }
-  };
-}]);
+});
 
 
 
@@ -401,6 +364,60 @@ angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewOptions', 
 
 
 /**
+ * Treeview tree node directive
+ *
+ * Thanks to http://stackoverflow.com/questions/14430655/recursion-in-angular-directives
+ *
+ * @private
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', function($compile){
+  'use strict';
+  return {
+    /**
+     * Manually compiles the element, fixing the recursion loop.
+     * @param {Object} element The angular element or template
+     * @param {Function} link [optional] A post-link function, or an object with function(s) registered via pre and post properties.
+     * @returns An object containing the linking functions.
+     */
+    compile: function(element, link){
+      // Normalize the link parameter
+      if(angular.isFunction(link)){
+        link = { post: link };
+      }
+
+      // Break the recursion loop by removing the contents
+      var contents = element.contents().remove();
+      var compiledContents;
+      return {
+        pre: (link && link.pre) ? link.pre : null,
+        /**
+         * Compiles and re-adds the contents
+         */
+        post: function(scope, element){
+          // Compile the contents
+          if(!compiledContents){
+            compiledContents = $compile(contents);
+          }
+          // Re-add the compiled contents to the element
+          compiledContents(scope, function(clone){
+            element.append(clone);
+          });
+
+          // Call the post-linking function, if any
+          if(link && link.post){
+            link.post.apply(null, arguments);
+          }
+        }
+      };
+    }
+  };
+}]);
+
+
+/**
  * Manager for treeview data stores
  *
  * Used to assist treeview operations, e.g. selecting or validating a tree-like
@@ -446,7 +463,7 @@ angular.module('ivh.treeview')
         }
       });
 
-      if(0 === numSelected) {
+      if(0 === numSelected && 0 === numIndeterminate) {
         node[selectedAttr] = false;
         node[indeterminateAttr] = false;
       } else if(numSelected === children.length) {
@@ -704,11 +721,6 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
      * (internal) Collection item attribute to track intermediate states
      */
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
-
-    /**
-     * (internal) Collection item attribute to track visible states
-     */
-    visibleAttribute: '__ivhTreeviewVisible',
 
     /**
      * Default selected state when validating

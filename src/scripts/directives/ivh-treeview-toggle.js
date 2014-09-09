@@ -9,12 +9,19 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
+angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
   'use strict';
   return {
     restrict: 'A',
-    link: function(scope, element, attrs) {
-      var canToggle = scope.$eval(attrs.ivhTreeviewNodeToggle);
+    require: '^ivhTreeview',
+    scope: {
+      node: '=ivhTreeviewToggle'
+    },
+    link: function(scope, element, attrs, ctrl) {
+
+      if(!ctrl.children(scope.node).length) {
+        return;
+      }
 
       var $li = element.parent();
 
@@ -23,9 +30,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNodeToggle', [function() {
       }
 
       element.bind('click', function() {
-        if(!$li.hasClass('ivh-treeview-node-leaf')) {
-          $li.toggleClass('ivh-treeview-node-collapsed');
-        }
+        $li.toggleClass('ivh-treeview-node-collapsed');
       });
     }
   };
