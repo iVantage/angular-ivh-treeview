@@ -41,12 +41,15 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
       '<div>',
         '<div>',
           '<span ivh-treeview-toggle="node">',
+          /**
+           * @todo Add directive `ivh-treeview-twistie`
+           */
             '(-)',
           '</span>',
           '<span ng-if="ctrl.useCheckboxes()"',
               'ivh-treeview-checkbox="node">',
           '</span>',
-          '<span class="ivh-treeview-node-label">',
+          '<span class="ivh-treeview-node-label" ivh-treeview-toggle="node">',
             '{{ctrl.label(node)}}',
           '</span>',
         '</div>',
