@@ -14,14 +14,12 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
   return {
     restrict: 'A',
     require: '^ivhTreeview',
-    scope: {
-      node: '=ivhTreeviewToggle'
-    },
     link: function(scope, element, attrs, ctrl) {
-
       if(!ctrl.children(scope.node).length) {
         return;
       }
+
+      element.addClass('ivh-treeview-toggle');
 
       var $li = element.parent();
 

@@ -57,7 +57,23 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
     /**
      * Default selected state when validating
      */
-    defaultSelectedState: true
+    defaultSelectedState: true,
+
+    /**
+     * Template for expanded twisties
+     */
+    twistieExpandedTpl: '(-)',
+
+    /**
+     * Template for collapsed twisties
+     */
+    twistieCollapsedTpl: '(+)',
+
+    /**
+     * Template for leaf twisties (i.e. no children)
+     */
+    twistieLeafTpl: 'o'
+
   };
 
   /**

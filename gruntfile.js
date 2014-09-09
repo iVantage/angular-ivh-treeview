@@ -38,7 +38,8 @@ module.exports = function(grunt) {
     less: {
       dist: {
         files: {
-          'dist/ivh-treeview.css': 'src/styles/**/*.less'
+          'dist/ivh-treeview.css': 'src/styles/ivh-treeview.less',
+          'dist/ivh-treeview-theme-basic.css': 'src/styles/ivh-treeview-theme-basic.less'
         }
       }
     },

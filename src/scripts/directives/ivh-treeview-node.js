@@ -7,7 +7,7 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompiler', function(ivhTreeviewCompiler) {
+angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompiler', 'ivhTreeviewOptions', function(ivhTreeviewCompiler, ivhTreeviewOptions) {
   'use strict';
   return {
     restrict: 'A',
@@ -19,12 +19,11 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
     compile: function(tElement) {
       return ivhTreeviewCompiler
         .compile(tElement, function(scope, element, attrs, ctrl) {
-          scope.ctrl = ctrl;
-
-          scope.childDepth = scope.depth + 1;
-
           var node = scope.node
             , children = scope.children = ctrl.children(node);
+
+          scope.ctrl = ctrl;
+          scope.childDepth = scope.depth + 1;
 
           if(!children.length) {
             element.addClass('ivh-treeview-node-leaf');
@@ -41,15 +40,22 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
       '<div>',
         '<div>',
           '<span ivh-treeview-toggle="node">',
-          /**
-           * @todo Add directive `ivh-treeview-twistie`
-           */
-            '(-)',
+            '<span class="ivh-treeview-twistie">',
+              '<span class="ivh-treeview-twistie-expanded">',
+                ivhTreeviewOptions().twistieExpandedTpl,
+              '</span>',
+              '<span class="ivh-treeview-twistie-collapsed">',
+                ivhTreeviewOptions().twistieCollapsedTpl,
+              '</span>',
+              '<span class="ivh-treeview-twistie-leaf">',
+                ivhTreeviewOptions().twistieLeafTpl,
+              '</span>',
+            '</span>',
           '</span>',
           '<span ng-if="ctrl.useCheckboxes()"',
               'ivh-treeview-checkbox="node">',
           '</span>',
-          '<span class="ivh-treeview-node-label" ivh-treeview-toggle="node">',
+          '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',
             '{{ctrl.label(node)}}',
           '</span>',
         '</div>',
