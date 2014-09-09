@@ -87,7 +87,7 @@ app.config(function(ivhTreeviewOptionsProvider) {
 
 ### Expanded by default
 
-If you want to tree to start out expanded to a certain depth use the
+If you want the tree to start out expanded to a certain depth use the
 `ivh-treeview-expand-to-depth` attribute:
 
 ```html
