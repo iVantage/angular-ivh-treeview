@@ -2,56 +2,72 @@
 /**
  * Treeview tree node directive
  *
- * Handles filtering.
- *
  * @private
  * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewNode', ['$compile', function($compile) {
+angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompiler', 'ivhTreeviewOptions', function(ivhTreeviewCompiler, ivhTreeviewOptions) {
   'use strict';
   return {
     restrict: 'A',
-    link: function(scope, element, attrs) {
-      var nodeAttr = attrs.ivhTreeviewNode
-        , filterAttr = attrs.ivhTreeviewFilter
-        , visibleAttr = attrs.ivhTreeviewNodeVisibleAttribute
-        , node = scope.$eval(attrs.ivhTreeviewNode);
+    scope: {
+      node: '=ivhTreeviewNode',
+      depth: '=ivhTreeviewDepth'
+    },
+    require: '^ivhTreeview',
+    compile: function(tElement) {
+      return ivhTreeviewCompiler
+        .compile(tElement, function(scope, element, attrs, ctrl) {
+          var node = scope.node
+            , children = scope.children = ctrl.children(node);
 
-      // Nothing to do if we don't have a filter
-      if(!filterAttr || filterAttr === 'undefined') {
-        node[visibleAttr] = true;
-        return;
-      }
-      
-      var map = Array.prototype.map || function(fn) {
-        var mapped = [];
-        angular.forEach(this, function(item) {
-          mapped.push(fn(item));
+          scope.ctrl = ctrl;
+          scope.childDepth = scope.depth + 1;
+
+          if(!children.length) {
+            element.addClass('ivh-treeview-node-leaf');
+          }
+
+          if(!ctrl.isExpanded(scope.depth)) {
+            element.addClass('ivh-treeview-node-collapsed');
+          }
+
+          element.attr('title', ctrl.label(node));
         });
-        return mapped;
-      };
-      
-      var filters = map.call(filterAttr.split('|'), function(filterStr) {
-        var parts = filterStr.split(':');
-        return parts;
-      });
-      
-      var filterVars = [];
-      angular.forEach(filters, function(f) {
-        Array.prototype.push.apply(filterVars, f.slice(1));
-      });
-      
-      var filterString = '[' + nodeAttr + '] | ' + filterAttr;
-      var applyFilters = function() {
-        var filtered = scope.$eval(filterString);
-        node[visibleAttr] = filtered.length > 0;
-      };
-      
-      angular.forEach(filterVars, function(f) {
-        scope.$watch(f, applyFilters);
-      });
-    }
+    },
+    template: [
+      '<div>',
+        '<div>',
+          '<span ivh-treeview-toggle="node">',
+            '<span class="ivh-treeview-twistie">',
+              '<span class="ivh-treeview-twistie-expanded">',
+                ivhTreeviewOptions().twistieExpandedTpl,
+              '</span>',
+              '<span class="ivh-treeview-twistie-collapsed">',
+                ivhTreeviewOptions().twistieCollapsedTpl,
+              '</span>',
+              '<span class="ivh-treeview-twistie-leaf">',
+                ivhTreeviewOptions().twistieLeafTpl,
+              '</span>',
+            '</span>',
+          '</span>',
+          '<span ng-if="ctrl.useCheckboxes()"',
+              'ivh-treeview-checkbox="node">',
+          '</span>',
+          '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',
+            '{{ctrl.label(node)}}',
+          '</span>',
+        '</div>',
+        '<ul ng-if="children.length" class="ivh-treeview">',
+          '<li ng-repeat="child in children"',
+              'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+              'ivh-treeview-node="child"',
+              'ivh-treeview-depth="childDepth">',
+          '</li>',
+        '</ul>',
+      '</div>'
+    ].join('\n')
   };
 }]);
+

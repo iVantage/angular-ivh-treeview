@@ -1,14 +1,22 @@
 
 /**
- * Configurable settings for `ivh-treeview`
+ * Global options for ivhTreeview
  *
  * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
+angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
   'use strict';
-  var settings = {
+
+  var options = {
+    /**
+     * ID attribute
+     *
+     * For selecting nodes by identifier rather than reference
+     */
+    idAttribute: 'id',
+
     /**
      * Collection item attribute to use for labels
      */
@@ -47,20 +55,44 @@ angular.module('ivh.treeview').provider('ivhTreeviewSettings', function() {
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
 
     /**
-     * (internal) Collection item attribute to track visible states
+     * Default selected state when validating
      */
-    visibleAttribute: '__ivhTreeviewVisible'
+    defaultSelectedState: true,
+
+    /**
+     * Template for expanded twisties
+     */
+    twistieExpandedTpl: '(-)',
+
+    /**
+     * Template for collapsed twisties
+     */
+    twistieCollapsedTpl: '(+)',
+
+    /**
+     * Template for leaf twisties (i.e. no children)
+     */
+    twistieLeafTpl: 'o'
+
   };
 
-  this.set = function(opts) {
-    angular.extend(settings, opts);
+  /**
+   * Update global options
+   *
+   * @param {Object} opts options object to override defaults with
+   */
+  this.update = function(opts) {
+    angular.extend(options, opts);
   };
 
   this.$get = function() {
-    return {
-      get: function() {
-        return angular.copy(settings);
-      }
+    /**
+     * Get a copy of the global options
+     *
+     * @return {Object} The options object
+     */
+    return function() {
+      return angular.copy(options);
     };
   };
 });

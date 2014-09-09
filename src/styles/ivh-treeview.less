@@ -8,47 +8,43 @@
  */
 
 ul.ivh-treeview {
-  list-style-type: none;
-
-  padding-left: 0;
-  ul.ivh-treeview {
-    padding-left: 15px;
-  }
-  
-  li {
-    .ivh-treeview-toggle-right { display: none; }
-    .ivh-treeview-toggle-leaf { display: none; }
-    &.ivh-treeview-node-leaf {
-      .ivh-treeview-toggle-down { display: none; }
-      .ivh-treeview-toggle-leaf { display: inline-block; }
-      .ivh-treeview-node-label { cursor: auto; }
-      .ivh-treeview-toggle { cursor: auto }
+  //-- Hide Collapsed Nodes
+  //-----------------------
+  li.ivh-treeview-node-collapsed {
+    ul.ivh-treeview {
+      display: none;
     }
-    &.ivh-treeview-node-collapsed {
-      .ivh-treeview-toggle-right { display: inline-block; }
-      .ivh-treeview-toggle-down { display: none; }
-      ul.ivh-treeview {
+  }
+
+  //-- Twisties 
+  //-----------
+  .ivh-treeview-twistie {
+    &-leaf, &-collapsed {
+      display: none;
+    }
+  }
+
+  .ivh-treeview-node-collapsed {
+    .ivh-treeview-twistie {
+      &-collapsed {
+        display: inline;
+      }
+      &-expanded {
         display: none;
       }
     }
-    
-    .ivh-treeview-checkbox {
-      position: relative;
-      top: 2px;
-    }
-    
-    .ivh-treeview-node-label {
-      cursor: pointer;
-    }
+  }
 
-    .ivh-treeview-toggle {
-      font-size: 65%;
-      position: relative;
-      top: -1px;
-      margin-right: 3px;
-      cursor: pointer;
-      width: 12px;
-      text-align: center;
+  // Leaves should never have the expanded or collapsed marker, only the leaf
+  // marker
+  li.ivh-treeview-node-leaf {
+    .ivh-treeview-twistie {
+      &-leaf {
+        display: inline;
+      }
+      &-expanded, &-collapsed {
+        display: none;
+      }
     }
   }
 }
