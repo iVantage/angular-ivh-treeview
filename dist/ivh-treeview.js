@@ -183,7 +183,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
  * </div>
  * ```
  *
- * @package <package-name>
+ * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
@@ -756,7 +756,7 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
    *
    * @param {Object} opts options object to override defaults with
    */
-  this.update = function(opts) {
+  this.set = function(opts) {
     angular.extend(options, opts);
   };
 
