@@ -45,7 +45,7 @@ angular.module('ivh.treeview')
         }
       });
 
-      if(0 === numSelected) {
+      if(0 === numSelected && 0 === numIndeterminate) {
         node[selectedAttr] = false;
         node[indeterminateAttr] = false;
       } else if(numSelected === children.length) {

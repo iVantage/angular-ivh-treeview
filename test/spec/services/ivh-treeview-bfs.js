@@ -106,7 +106,8 @@ describe('Service: ivhTreeviewBfs', function() {
       }
     });
     expect(hatsParents).toEqual(['stuff']);
-    expect(backpackParents).toEqual(['bags', 'stuff']);
+    expect(backpackParents[0]).toEqual('bags');
+    expect(backpackParents[1]).toEqual('stuff');
   });
 });
 

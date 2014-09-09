@@ -10,53 +10,41 @@
 angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   'use strict';
   return {
-    link: function(scope, element, attrs) {
-      var node = scope[attrs.ivhTreeviewCheckbox]
-        , parent = scope[attrs.ivhTreeviewParent]
-        , indeterminateAttr = attrs.ivhTreeviewIndeterminateAttribute
-        , selectedAttr = attrs.ivhTreeviewSelectedAttribute;
+    restrict: 'A',
+    scope: {
+      node: '=ivhTreeviewCheckbox'
+    },
+    require: '^ivhTreeview',
+    link: function(scope, element, attrs, ctrl) {
+      var node = scope.node
+        , opts = ctrl.opts()
+        , indeterminateAttr = opts.indeterminateAttribute
+        , selectedAttr = opts.selectedAttribute;
 
-      var makeDeterminate = function() {
-        node[indeterminateAttr] = false;
-      };
+      // Set initial selected state of this checkbox
+      scope.isSelected = node[selectedAttr];
 
-      /**
-       * Checkbox click handler
-       *
-       * Note that this fires *after* the change event
-       */
-      element.bind('click', function(event) {
-        makeDeterminate();
-      });
+      // Local access to the parent controller
+      scope.ctrl = ctrl;
 
-      /**
-       * Internal event registration
-       */
-      scope.$on('event_ivhTreeviewSelectAll', makeDeterminate);
-
-      scope.$watch(function() {
-        return node[indeterminateAttr];
-      }, function(newVal, oldVal) {
-        element.prop('indeterminate', node[indeterminateAttr]);
-      });
-
-      /**
-       * Watch for selected status changes
-       */
+      // Update the checkbox when the node's selected status changes
       scope.$watch(function() {
         return node[selectedAttr];
       }, function(newVal, oldVal) {
-        if(!angular.isUndefined(newVal)) {
-          /**
-           * @todo Only bother with updates if our selected status differs from
-           * the parent node.
-           */
-          if(!node[indeterminateAttr]) {
-            scope.$broadcast('event_ivhTreeviewSelectAll', node[selectedAttr]);
-          }
-          scope.$parent.$emit('event_ivhTreeviewValidate');
-        }
+        scope.isSelected = newVal;
       });
-    }
+
+      // Update the checkbox when the node's indeterminate status changes
+      scope.$watch(function() {
+        return node[indeterminateAttr];
+      }, function(newVal, oldVal) {
+        element.find('input').prop('indeterminate', newVal);
+      });
+    },
+    template: [
+      '<input type="checkbox"',
+        'ng-model="isSelected"',
+        'ng-change="ctrl.select(node, isSelected)" />'
+    ].join('\n')
   };
 }]);

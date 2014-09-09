@@ -26,86 +26,78 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       root: '=ivhTreeview',
 
       // Config options
-      childrenAttr: '=ivhTreeviewChildrenAttribute',
+      childrenAttribute: '=ivhTreeviewChildrenAttribute',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
-      idAttr: '=ivhTreeviewIdAttribute',
-      indeterminateAttr: '=ivhTreeviewIndeterminateAttribute',
-      labelAttr: '=ivhTreeviewLabelAttribute',
-      selectedAttr: '=ivhTreeviewSelectedAttribute',
+      idAttribute: '=ivhTreeviewIdAttribute',
+      indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
+      labelAttribute: '=ivhTreeviewLabelAttribute',
+      selectedAttribute: '=ivhTreeviewSelectedAttribute',
       useCheckboxes: '=ivhTreeviewUseCheckboxes',
-      visibleAttr: '=ivhTreeviewVisibleAttribute',
+      visibleAttribute: '=ivhTreeviewVisibleAttribute',
 
       // The filter
       filter: '=ivhTreeviewFilter'
     },
-    controllerAs: 'tree',
-    controller: function($scope, $element, $attrs, $transclude, ivhTreeviewOptions) {
+    controllerAs: 'ctrl',
+    controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewMgr', 'ivhTreeviewOptions', function($scope, $element, $attrs, $transclude, ivhTreeviewMgr, ivhTreeviewOptions) {
       var ng = angular
         , ctrl = this;
 
-      ctrl.root = $scope.root;
+      var root = ctrl.root = $scope.root;
 
       // Merge any locally set options with those registered with hte
       // ivhTreeviewOptions provider
-      var localOpts = {};
-
-      if(ng.isDefined($scope.childAttr)) {
-        localOpts.childrenAttribute = $scope.childrenAttr;
-      }
-
-      if(ng.isDefined($scope.defaultSelectedState)) {
-        localOpts.defaultSelectedState = $scope.defaultSelectedState;
-      }
-
-      if(ng.isDefined($scope.expandToDepth)) {
-        localOpts.expandToDepth = $scope.expandToDepth;
-      }
-
-      if(ng.isDefined($scope.idAttr)) {
-        localOpts.idAttribute = $scope.idAttr;
-      }
-
-      if(ng.isDefined($scope.indeterminateAttr)) {
-        localOpts.indeterminateAttribute = $scope.indeterminateAttr;
-      }
-
-      if(ng.isDefined($scope.labelAttr)) {
-        localOpts.labelAttribute = $scope.labelAttr;
-      }
-
-      if(ng.isDefined($scope.selectedAttr)) {
-        localOpts.selectedAttribute = $scope.selectedAttr;
-      }
-
-      if(ng.isDefined($scope.useCheckboxes)) {
-        localOpts.useCheckboxes = $scope.useCheckboxes;
-      }
-
-      if(ng.isDefined($scope.visibleAttr)) {
-        localOpts.visibleAttribute = $scope.visibleAttr;
-      }
-
-      var mergedOpts = ng.extend({}, ivhTreeviewOptions(), localOpts);
+      var localOpts = ng.extend({}, ivhTreeviewOptions());
+      ng.forEach([
+        'childrenAttribute',
+        'defaultSelectedState',
+        'expandToDepth',
+        'idAttribute',
+        'indeterminateAttribute',
+        'labelAttribute',
+        'selectedAttribute',
+        'useCheckboxes',
+        'visibleAttribute'
+      ], function(attr) {
+        if(ng.isDefined($scope[attr])) {
+          localOpts[attr] = $scope[attr];
+        }
+      });
 
       // Give child directives an easy way to get at merged options
       ctrl.opts = function() {
-        return mergedOpts;
+        return localOpts;
       };
 
       ctrl.children = function(node) {
-        /*code*/
+        var children = node[localOpts.childrenAttribute];
+        return ng.isArray(children) ? children : [];
       };
 
       ctrl.label = function(node) {
-        /*code*/
+        return node[localOpts.labelAttribute];
+      };
+
+      ctrl.isVisible = function(node) {
+        return true;
       };
 
       ctrl.useCheckboxes = function() {
-        return mergedOpts.useCheckboxes;
+        return localOpts.useCheckboxes;
       };
-    },
-    template: '<div data-ivh-treeview-node="tree.root"></div>'
+
+      ctrl.select = function(node, isSelected) {
+        ivhTreeviewMgr.select(root, node, localOpts, isSelected);
+      };
+    }],
+    template: [
+      '<ul>',
+        '<li ng-repeat="child in root | ivhTreeviewAsArray"',
+            'ivh-treeview-node="child">',
+        '</li>',
+      '</ul>'
+    ].join('\n')
   };
 });
 

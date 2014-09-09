@@ -74,9 +74,11 @@ describe('Service: ivhTreeviewMgr', function() {
     });
 
     it('should make parents indeterminate if there are unselected siblings', function() {
-      ivhTreeviewMgr.select(tree, hats);
+      ivhTreeviewMgr.select(tree, fedora);
       expect(stuff.__ivhTreeviewIndeterminate).toBe(true);
       expect(stuff.selected).toBe(false); // Indeterminte nodes are not selected
+      expect(hats.__ivhTreeviewIndeterminate).toBe(true);
+      expect(hats.selected).toBe(false); // Indeterminte nodes are not selected
     });
 
   });
