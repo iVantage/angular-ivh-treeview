@@ -95,7 +95,7 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should optionally validate the tree on creation', function() {
-      scope.bag1[0].children[1].children[0].selected = true;
+      scope.bag1[0].children[1].children[0].selected = false;
       $el = compile(tplValidate, scope);
       expect($el.find('li[title="top hat"]').find('input').first().prop('indeterminate')).toBe(true);
     });
