@@ -50,6 +50,13 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
     useCheckboxes: true,
 
     /**
+     * Whether or not directive should validate treestore on startup
+     *
+     * Must opt-in.
+     */
+    validate: false,
+
+    /**
      * (internal) Collection item attribute to track intermediate states
      */
     indeterminateAttribute: '__ivhTreeviewIndeterminate',

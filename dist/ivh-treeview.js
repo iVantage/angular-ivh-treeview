@@ -187,7 +187,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeview', function() {
+angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', function(ivhTreeviewMgr) {
   'use strict';
   return {
     restrict: 'A',
@@ -204,13 +204,14 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       labelAttribute: '=ivhTreeviewLabelAttribute',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
       useCheckboxes: '=ivhTreeviewUseCheckboxes',
+      validate: '=ivhTreeviewValidate',
       visibleAttribute: '=ivhTreeviewVisibleAttribute',
 
       // The filter
       filter: '=ivhTreeviewFilter'
     },
     controllerAs: 'ctrl',
-    controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewMgr', 'ivhTreeviewOptions', 'filterFilter', function($scope, $element, $attrs, $transclude, ivhTreeviewMgr, ivhTreeviewOptions, filterFilter) {
+    controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewOptions', 'filterFilter', function($scope, $element, $attrs, $transclude, ivhTreeviewOptions, filterFilter) {
       var ng = angular
         , ctrl = this;
 
@@ -226,6 +227,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
         'labelAttribute',
         'selectedAttribute',
         'useCheckboxes',
+        'validate',
         'visibleAttribute'
       ], function(attr) {
         if(ng.isDefined($scope[attr])) {
@@ -277,6 +279,14 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
         return depth < expandTo;
       };
     }],
+    link: function(scope, element, attrs) {
+      var opts = scope.ctrl.opts();
+
+      // Allow opt-in validate on startup
+      if(opts.validate) {
+        ivhTreeviewMgr.validate(scope.root, opts);
+      }
+    },
     template: [
       '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
@@ -287,7 +297,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', function() {
       '</ul>'
     ].join('\n')
   };
-});
+}]);
 
 
 
@@ -723,6 +733,13 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
      * directive.
      */
     useCheckboxes: true,
+
+    /**
+     * Whether or not directive should validate treestore on startup
+     *
+     * Must opt-in.
+     */
+    validate: false,
 
     /**
      * (internal) Collection item attribute to track intermediate states

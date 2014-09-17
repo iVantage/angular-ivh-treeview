@@ -11,6 +11,7 @@ describe('Directive ivhTreeview', function() {
   beforeEach(module('ivh.treeview'));
 
   var tplBasic = '<div ivh-treeview="bag1"></div>';
+  var tplValidate = '<div ivh-treeview="bag1" ivh-treeview-validate="true"></div>';
   var tplExpand = '<div ivh-treeview="bag1" ivh-treeview-expand-to-depth="1"></div>';
   var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
 
@@ -91,6 +92,12 @@ describe('Directive ivhTreeview', function() {
       expect($el.find('li[title="fedora"] input').first().prop('indeterminate')).toBe(true);
       expect(scope.bag1[0].children[1].__ivhTreeviewIndeterminate).toBe(true);
       expect(scope.bag1[0].children[1].selected).toBe(false);
+    });
+
+    it('should optionally validate the tree on creation', function() {
+      scope.bag1[0].children[1].children[0].selected = false;
+      $el = compile(tplValidate, scope);
+      expect($el.find('li[title="top hat"]').find('input').first().prop('indeterminate')).toBe(true);
     });
   });
 
