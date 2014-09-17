@@ -85,6 +85,11 @@ app.config(function(ivhTreeviewOptionsProvider) {
 });
 ```
 
+### Filtering
+
+We support filtering through the `ivh-treeview-filter` attribute, this value is
+supplied to Angular's `filterFilter` and applied to each node individually.
+
 ### Expanded by default
 
 If you want the tree to start out expanded to a certain depth use the
