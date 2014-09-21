@@ -36,7 +36,7 @@ describe('Directive ivhTreeview', function() {
         ]
       }]
     },{
-      label: 'baseball'
+      label: 'baseball', children: []
     }];
 
     compile = function(tpl, scp) {
@@ -98,6 +98,14 @@ describe('Directive ivhTreeview', function() {
       scope.bag1[0].children[1].children[0].selected = false;
       $el = compile(tplValidate, scope);
       expect($el.find('li[title="top hat"]').find('input').first().prop('indeterminate')).toBe(true);
+    });
+
+    it('should update when child nodes are added', function() {
+      $el = compile(tplBasic, scope);
+      scope.bag1[1].children.push({label: 'five panel baseball'});
+      scope.$apply();
+      expect($el.find('li[title="five panel baseball"]').length).toBe(1);
+      expect($el.find('li[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
   });
 
