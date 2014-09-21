@@ -15,9 +15,15 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
     restrict: 'A',
     require: '^ivhTreeview',
     link: function(scope, element, attrs, ctrl) {
-      if(!ctrl.children(scope.node).length) {
-        return;
-      }
+      var node = scope.node
+        , children = ctrl.children(node);
+
+      /**
+       * @todo Allow opt out of updates if we don't want the extra watchers
+       */
+      // if(!children.length) {
+      //   return;
+      // }
 
       element.addClass('ivh-treeview-toggle');
 
@@ -28,7 +34,11 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       }
 
       element.bind('click', function() {
-        $li.toggleClass('ivh-treeview-node-collapsed');
+        if(ctrl.children(node).length) {
+          $li.toggleClass('ivh-treeview-node-collapsed');
+        } else {
+          $li.removeClass('ivh-treeview-node-collapsed');
+        }
       });
     }
   };

@@ -25,15 +25,22 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           scope.ctrl = ctrl;
           scope.childDepth = scope.depth + 1;
 
-          if(!children.length) {
-            element.addClass('ivh-treeview-node-leaf');
-          }
-
           if(!ctrl.isExpanded(scope.depth)) {
             element.addClass('ivh-treeview-node-collapsed');
           }
 
           element.attr('title', ctrl.label(node));
+
+          var watcher = scope.$watch(function() {
+            return children.length > 0;
+          }, function(newVal) {
+            if(newVal) {
+              element.removeClass('ivh-treeview-node-leaf');
+            } else {
+              element.addClass('ivh-treeview-node-leaf');
+            }
+            // watcher();
+          });
         });
     },
     template: [
