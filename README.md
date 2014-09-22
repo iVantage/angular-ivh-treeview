@@ -192,6 +192,28 @@ selected state defined that differs from `opts.defaultSelectedState` (or
 `bias`). Each of that node's children are updated to match the differing node
 and parent indeterminate states are updated.
 
+## Dynamic Changes
+
+Adding and removing tree nodes on the fly is supported. Just keep in mind that
+added nodes do not automatically inherit selected states (i.e. checkbox states)
+from their parent nodes. Similarly, adding new child nodes does not cause parent
+nodes to automatically validate their own selected states. You will typically
+want to use `ivhTreeviewMgr.validate` or `ivhTreeviewMgr.select` after adding
+new nodes to your tree:
+
+```
+// References to the tree, parent node, and children...
+var tree = getTree()
+  , parent = getParent()
+  , newNodes = [{label: 'Hello'},{label: 'World'});
+
+// Attach new children to parent node
+parent.children = newNodes;
+
+// Force revalidate on tree given parent node's selected status
+ivhTreeviewMgr.select(myTree, parent, parent.selected);
+```
+
 ## Tree Traversal
 
 The internal tree traversal service is exposed as `ivhTreeviewBfs` (bfs -->
