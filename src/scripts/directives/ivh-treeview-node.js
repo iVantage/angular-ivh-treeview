@@ -19,8 +19,11 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
     compile: function(tElement) {
       return ivhTreeviewCompiler
         .compile(tElement, function(scope, element, attrs, ctrl) {
-          var node = scope.node
-            , children = scope.children = ctrl.children(node);
+          var node = scope.node;
+
+          var getChildren = scope.getChildren = function() {
+            return ctrl.children(node);
+          };
 
           scope.ctrl = ctrl;
           scope.childDepth = scope.depth + 1;
@@ -32,7 +35,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           element.attr('title', ctrl.label(node));
 
           var watcher = scope.$watch(function() {
-            return children.length > 0;
+            return getChildren().length > 0;
           }, function(newVal) {
             if(newVal) {
               element.removeClass('ivh-treeview-node-leaf');
@@ -66,8 +69,8 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
             '{{ctrl.label(node)}}',
           '</span>',
         '</div>',
-        '<ul ng-if="children.length" class="ivh-treeview">',
-          '<li ng-repeat="child in children"',
+        '<ul ng-if="getChildren().length" class="ivh-treeview">',
+          '<li ng-repeat="child in getChildren()"',
               'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
               'ivh-treeview-node="child"',
               'ivh-treeview-depth="childDepth">',

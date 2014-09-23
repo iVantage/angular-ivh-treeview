@@ -100,9 +100,17 @@ describe('Directive ivhTreeview', function() {
       expect($el.find('li[title="top hat"]').find('input').first().prop('indeterminate')).toBe(true);
     });
 
-    it('should update when child nodes are added', function() {
+    it('should update when child nodes are added (push)', function() {
       $el = compile(tplBasic, scope);
       scope.bag1[1].children.push({label: 'five panel baseball'});
+      scope.$apply();
+      expect($el.find('li[title="five panel baseball"]').length).toBe(1);
+      expect($el.find('li[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+    });
+
+    it('should update when child nodes are added (re-assignment)', function() {
+      $el = compile(tplBasic, scope);
+      scope.bag1[1].children = [{label: 'five panel baseball'}];
       scope.$apply();
       expect($el.find('li[title="five panel baseball"]').length).toBe(1);
       expect($el.find('li[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
