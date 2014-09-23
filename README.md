@@ -205,7 +205,7 @@ new nodes to your tree:
 // References to the tree, parent node, and children...
 var tree = getTree()
   , parent = getParent()
-  , newNodes = [{label: 'Hello'},{label: 'World'});
+  , newNodes = [{label: 'Hello'},{label: 'World'}];
 
 // Attach new children to parent node
 parent.children = newNodes;
