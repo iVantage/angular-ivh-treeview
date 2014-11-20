@@ -1,4 +1,4 @@
-/*global jQuery, describe, beforeEach, afterEach, it, module, inject, expect */
+/*global jasmine, jQuery, describe, beforeEach, afterEach, it, module, inject, expect */
 
 describe('Directive ivhTreeview', function() {
   'use strict';
@@ -19,6 +19,13 @@ describe('Directive ivhTreeview', function() {
     '<div',
       'ivh-treeview="bag1"',
       'ivh-treeview-filter="myFilter"',
+      '></div>'
+  ].join('\n');
+
+  var tplClickHandler = [
+    '<div',
+      'ivh-treeview="bag1"',
+      'ivh-treeview-click-handler="onNodeClick"',
       '></div>'
   ].join('\n');
 
@@ -133,6 +140,28 @@ describe('Directive ivhTreeview', function() {
        * @todo Why does this fail?
        */
       //expect($el.find('li[title="baseball"]').is(':visible')).toBe(true);
+    });
+  });
+
+  describe('click handlers', function() {
+    var $el, handlerSpy;
+
+    beforeEach(function() {
+      handlerSpy = jasmine.createSpy('handlerSpy');
+      scope.onNodeClick = handlerSpy;
+      $el = compile(tplClickHandler, scope);
+    });
+
+    it('should pass the clicked node to the handler', function() {
+      $el.find('li[title="top hat"]').click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1[0]);
+    });
+
+    it('should pass the tree itself to the click handler', function() {
+      $el.find('li[title="top hat"]').click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1);
     });
   });
 });
