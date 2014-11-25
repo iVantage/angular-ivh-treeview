@@ -34,6 +34,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       }
 
       element.bind('click', function() {
+        ctrl.onNodeClick(node);
         if(ctrl.children(node).length) {
           $li.toggleClass('ivh-treeview-node-collapsed');
         } else {

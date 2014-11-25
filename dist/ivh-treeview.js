@@ -178,6 +178,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       }
 
       element.bind('click', function() {
+        ctrl.onNodeClick(node);
         if(ctrl.children(node).length) {
           $li.toggleClass('ivh-treeview-node-collapsed');
         } else {
@@ -217,6 +218,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       // Config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
+      clickHandler: '=ivhTreeviewClickHandler',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
@@ -297,6 +299,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         var expandTo = localOpts.expandToDepth === -1 ?
           Infinity : localOpts.expandToDepth;
         return depth < expandTo;
+      };
+
+      ctrl.onNodeClick = function(node) {
+        $scope.clickHandler(node, $scope.root);
       };
     }],
     link: function(scope, element, attrs) {

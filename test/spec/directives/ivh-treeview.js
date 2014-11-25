@@ -152,14 +152,20 @@ describe('Directive ivhTreeview', function() {
       $el = compile(tplClickHandler, scope);
     });
 
-    it('should pass the clicked node to the handler', function() {
-      $el.find('li[title="top hat"]').click();
+    it('should call the click handler once per click', function() {
+      $el.find('li[title="top hat"] [ivh-treeview-toggle]').first().click();
       scope.$apply();
-      expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1[0]);
+      expect(handlerSpy.calls.count()).toEqual(1);
+    });
+
+    it('should pass the clicked node to the handler', function() {
+      $el.find('li[title="top hat"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[0]).toBe(scope.bag1[0]);
     });
 
     it('should pass the tree itself to the click handler', function() {
-      $el.find('li[title="top hat"]').click();
+      $el.find('li[title="top hat"] [ivh-treeview-toggle]').click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1);
     });
