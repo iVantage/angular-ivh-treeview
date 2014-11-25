@@ -21,6 +21,10 @@ app.controller('MyCtrl', function() {
         value: 'mustachio'
       }]
   }];
+
+  this.awesomeCallback = function(node, tree) {
+    // Do something with node or tree
+  };
 });
 ```
 
@@ -135,6 +139,20 @@ ivhTreeviewOptionsProvider.set({
   twistieExpandedTpl: '<span class="glyphicon glyphicon-chevron-down"></span>',
   twistieLeafTpl: '&#9679;'
 });
+```
+
+### Custom Click Handlers
+
+Want to register a callback for whenever a tree node gets clicked? Use the
+`ivh-treeview-click-handler` attribute, the passed function will get called
+whenver the user clicks on a twistie or node label:
+
+```html
+<div ng-controller="MyCtrl as fancy">
+  <div
+    ivh-treeview="fancy.bag"
+    ivh-treeview-click-handler="fancy.awesomeCallback">
+</div>
 ```
 
 ## Treeview Manager Service
