@@ -302,7 +302,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       ctrl.onNodeClick = function(node) {
-        $scope.clickHandler(node, $scope.root);
+        ($scope.clickHandler || angular.noop)(node, $scope.root);
       };
     }],
     link: function(scope, element, attrs) {

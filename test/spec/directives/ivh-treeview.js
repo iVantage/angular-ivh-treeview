@@ -6,9 +6,13 @@ describe('Directive ivhTreeview', function() {
   var ng = angular
     , $ = jQuery;
 
-  var scope, compile;
+  var scope, compile, exception;
 
   beforeEach(module('ivh.treeview'));
+
+  beforeEach(function() {
+    exception = undefined;
+  });
 
   var tplBasic = '<div ivh-treeview="bag1"></div>';
   var tplValidate = '<div ivh-treeview="bag1" ivh-treeview-validate="true"></div>';
@@ -168,6 +172,18 @@ describe('Directive ivhTreeview', function() {
       $el.find('li[title="top hat"] [ivh-treeview-toggle]').click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1);
+    });
+
+    it('should not generate an error when there is no handler', function() {
+      delete scope.onNodeClick;
+      var exception;
+      $el = compile(tplClickHandler, scope);
+      try {
+        $el.find('li[title="top hat"] [ivh-treeview-toggle]').click();
+      } catch(_exception) {
+        exception = _exception;
+      }
+      expect(exception).toBeUndefined();
     });
   });
 });
