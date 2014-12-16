@@ -219,6 +219,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // Config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
       clickHandler: '=ivhTreeviewClickHandler',
+      changeHandler: '=ivhTreeviewChangeHandler',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
@@ -293,6 +294,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.select = function(node, isSelected) {
         ivhTreeviewMgr.select($scope.root, node, localOpts, isSelected);
+        ctrl.onNodeChange(node, isSelected);
       };
 
       ctrl.isExpanded = function(depth) {
@@ -303,6 +305,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.onNodeClick = function(node) {
         ($scope.clickHandler || angular.noop)(node, $scope.root);
+      };
+
+      ctrl.onNodeChange = function(node, isSelected) {
+        ($scope.changeHandler || angular.noop)(node, isSelected);
       };
     }],
     link: function(scope, element, attrs) {
