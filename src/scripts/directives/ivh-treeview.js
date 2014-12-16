@@ -118,7 +118,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.onNodeChange = function(node, isSelected) {
         ($scope.changeHandler || angular.noop)(node, isSelected);
-      }
+      };
     }],
     link: function(scope, element, attrs) {
       var opts = scope.ctrl.opts();
