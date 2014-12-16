@@ -33,6 +33,13 @@ describe('Directive ivhTreeview', function() {
       '></div>'
   ].join('\n');
 
+  var tplChangeHandler = [
+    '<div',
+      'ivh-treeview="bag1"',
+      'ivh-treeview-change-handler="onNodeChange"',
+      '></div>'
+  ].join('\n');
+
   beforeEach(inject(function($rootScope, $compile) {
     scope = $rootScope.$new();
     scope.bag1 = [{
@@ -180,6 +187,46 @@ describe('Directive ivhTreeview', function() {
       $el = compile(tplClickHandler, scope);
       try {
         $el.find('li[title="top hat"] [ivh-treeview-toggle]').click();
+      } catch(_exception) {
+        exception = _exception;
+      }
+      expect(exception).toBeUndefined();
+    });
+  });
+
+  describe('change handlers', function() {
+    var $el, handlerSpy;
+
+    beforeEach(function() {
+      handlerSpy = jasmine.createSpy('handlerSpy');
+      scope.onNodeChange = handlerSpy;
+      $el = compile(tplChangeHandler, scope);
+    });
+
+    it('should call the change handler when checkbox state is changed', function() {
+      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.count()).toEqual(1);
+    });
+
+    it('should pass the selected node to the handler', function() {
+      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[0]).toBe(scope.bag1[0]);
+    });
+
+    it('should pass the checkbox state to the change handler', function() {
+      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
+    });
+
+    it('should not generate an error when there is no handler', function() {
+      delete scope.onNodeChange;
+      var exception;
+      $el = compile(tplChangeHandler, scope);
+      try {
+        $el.find('li[title="top hat"] [type=checkbox]').click();
       } catch(_exception) {
         exception = _exception;
       }
