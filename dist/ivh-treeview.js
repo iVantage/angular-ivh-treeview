@@ -308,7 +308,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       ctrl.onNodeChange = function(node, isSelected) {
-        ($scope.changeHandler || angular.noop)(node, isSelected);
+        ($scope.changeHandler || angular.noop)(node, isSelected, $scope.root);
       };
     }],
     link: function(scope, element, attrs) {

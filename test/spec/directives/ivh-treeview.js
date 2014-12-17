@@ -221,6 +221,12 @@ describe('Directive ivhTreeview', function() {
       expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
     });
 
+    it('should pass the tree itself to the change handler', function() {
+      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[2]).toBe(scope.bag1);
+    });
+
     it('should not generate an error when there is no handler', function() {
       delete scope.onNodeChange;
       var exception;
