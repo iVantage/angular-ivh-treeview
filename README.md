@@ -25,6 +25,10 @@ app.controller('MyCtrl', function() {
   this.awesomeCallback = function(node, tree) {
     // Do something with node or tree
   };
+
+  this.otherAwesomeCallback = function(node, isSelected, tree) {
+    // Do soemthing with node or tree based on isSelected
+  }
 });
 ```
 
@@ -141,7 +145,7 @@ ivhTreeviewOptionsProvider.set({
 });
 ```
 
-### Custom Click Handlers
+### Custom onClick Handlers
 
 Want to register a callback for whenever a tree node gets clicked? Use the
 `ivh-treeview-click-handler` attribute, the passed function will get called
@@ -152,6 +156,22 @@ whenver the user clicks on a twistie or node label:
   <div
     ivh-treeview="fancy.bag"
     ivh-treeview-click-handler="fancy.awesomeCallback">
+</div>
+```
+
+### Custom onChange Handlers
+
+Want to be notified anytime a checkbox changes state? Use the
+`ivh-treeview-change-handler` attribute to register a callback for whenever a
+node checkbox changes state. Your callback will be passed a reference to the
+node, the new selected status, and a reference to the entire tree the node
+belongs to.
+
+```html
+<div ng-controller="MyCtrl as fancy">
+  <div
+    ivh-treeview="fancy.bag"
+    ivh-treeview-change-handler="fancy.otherAwesomeCallback">
 </div>
 ```
 
