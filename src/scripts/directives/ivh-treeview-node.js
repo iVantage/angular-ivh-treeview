@@ -28,12 +28,15 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           scope.ctrl = ctrl;
           scope.childDepth = scope.depth + 1;
 
-          if(!ctrl.isExpanded(scope.depth)) {
-            element.addClass('ivh-treeview-node-collapsed');
-          }
+          // Expand/collapse the node as dictated by the expandToDepth property
+          ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
 
+          // Set the title to the full label
           element.attr('title', ctrl.label(node));
 
+          /**
+           * @todo Provide a way to opt out of this
+           */
           var watcher = scope.$watch(function() {
             return getChildren().length > 0;
           }, function(newVal) {
@@ -42,7 +45,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
             } else {
               element.addClass('ivh-treeview-node-leaf');
             }
-            // watcher();
           });
         });
     },
@@ -72,6 +74,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
         '<ul ng-if="getChildren().length" class="ivh-treeview">',
           '<li ng-repeat="child in getChildren()"',
               'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+              'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
               'ivh-treeview-node="child"',
               'ivh-treeview-depth="childDepth">',
           '</li>',

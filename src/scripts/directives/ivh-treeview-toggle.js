@@ -18,28 +18,13 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       var node = scope.node
         , children = ctrl.children(node);
 
-      /**
-       * @todo Allow opt out of updates if we don't want the extra watchers
-       */
-      // if(!children.length) {
-      //   return;
-      // }
-
       element.addClass('ivh-treeview-toggle');
 
-      var $li = element.parent();
-
-      while($li && $li.prop('nodeName') !== 'LI') {
-        $li = $li.parent();
-      }
-
       element.bind('click', function() {
-        ctrl.onNodeClick(node);
-        if(ctrl.children(node).length) {
-          $li.toggleClass('ivh-treeview-node-collapsed');
-        } else {
-          $li.removeClass('ivh-treeview-node-collapsed');
-        }
+        scope.$apply(function() {
+          ctrl.onNodeClick(node);
+          ctrl.toggleExpanded(node);
+        });
       });
     }
   };
