@@ -9,6 +9,8 @@ describe('Service: ivhTreeviewMgr', function() {
 
   var tree
     , nodes
+    , hatNodes
+    , bagNodes
     , stuff
     , hats
     , fedora
@@ -57,10 +59,12 @@ describe('Service: ivhTreeviewMgr', function() {
     backpack = bags.children[1];
 
     nodes = [hats, bags, fedora, flatcap, messenger, backpack];
+    hatNodes = [hats, fedora, flatcap];
+    bagNodes = [bags, messenger, backpack];
   });
 
   describe('#select', function() {
-    
+
     it('should select all child nodes', function() {
       ivhTreeviewMgr.select(tree, hats);
       expect(fedora.selected).toBe(true);
@@ -84,7 +88,7 @@ describe('Service: ivhTreeviewMgr', function() {
   });
 
   describe('#selectAll', function() {
-    
+
     it('should select all nodes in a tree', function() {
       ivhTreeviewMgr.selectAll(tree);
       nodes.forEach(function(n) {
@@ -96,7 +100,7 @@ describe('Service: ivhTreeviewMgr', function() {
   });
 
   describe('#selectEach', function() {
-    
+
     it('should select with an array of node references', function() {
       ivhTreeviewMgr.selectEach(tree, [flatcap, bags]);
       [flatcap, bags, messenger, backpack].forEach(function(n) {
@@ -126,7 +130,7 @@ describe('Service: ivhTreeviewMgr', function() {
         n.selected = true;
       });
     });
-    
+
     it('should deselect all child nodes', function() {
       ivhTreeviewMgr.deselect(tree, hats);
       expect(fedora.selected).toBe(false);
@@ -147,7 +151,7 @@ describe('Service: ivhTreeviewMgr', function() {
         n.selected = true;
       });
     });
-    
+
     it('should deselect all nodes in a tree', function() {
       ivhTreeviewMgr.deselectAll(tree);
       nodes.forEach(function(n) {
@@ -164,7 +168,7 @@ describe('Service: ivhTreeviewMgr', function() {
         n.selected = true;
       });
     });
-    
+
     it('should deselect with an array of node references', function() {
       ivhTreeviewMgr.deselectEach(tree, [flatcap, bags]);
       [stuff, hats, flatcap, bags, messenger, backpack].forEach(function(n) {
@@ -188,7 +192,7 @@ describe('Service: ivhTreeviewMgr', function() {
   });
 
   describe('#validate', function() {
-    
+
     it('should assume selected state by default', function() {
       angular.forEach(nodes, function(n) {
         n.selected = true;
@@ -216,6 +220,218 @@ describe('Service: ivhTreeviewMgr', function() {
 
       expect(backpack.selected).toBe(true);
       expect(backpack.__ivhTreeviewIndeterminate).toBe(false);
+    });
+
+  });
+
+  describe('#expand', function() {
+
+    it('should be able to expand a single node', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expand(tree, bags);
+      
+      angular.forEach(nodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(n === bags);
+      });
+    });
+
+    it('should be able to expand a single node by id', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expand(tree, 'bags');
+      
+      angular.forEach(nodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(n === bags);
+      });
+    });
+
+    it('should return ivhTreeviewMgr for chaining', function() {
+      expect(ivhTreeviewMgr.expand(tree, bags)).toBe(ivhTreeviewMgr);
+    });
+
+  });
+
+  describe('#expandRecursive', function() {
+
+    it('should be able to expand a node and all its children', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expandRecursive(tree, bags);
+
+      angular.forEach(bagNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(true);
+      });
+      angular.forEach(hatNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(false);
+      });
+    });
+
+    it('should be able to expand a node and all its children by id', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expandRecursive(tree, 'bags');
+
+      angular.forEach(bagNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(true);
+      });
+      angular.forEach(hatNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(false);
+      });
+    });
+
+    it('should return ivhTreeviewMgr for chaining', function() {
+      expect(ivhTreeviewMgr.expandRecursive(tree, hats)).toBe(ivhTreeviewMgr);
+    });
+
+  });
+
+  describe('#collapse', function() {
+
+    it('should be able to callapse a single node', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapse(tree, bags);
+
+      angular.forEach(nodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(n !== bags);
+      });
+    });
+
+    it('should be able to callapse a single node by id', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapse(tree, 'bags');
+
+      angular.forEach(nodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(n !== bags);
+      });
+    });
+
+    it('should return ivhTreeviewMgr for chaining', function() {
+      expect(ivhTreeviewMgr.collapse(tree, bags)).toBe(ivhTreeviewMgr);
+    });
+
+  });
+
+  describe('#collapseRecursive', function() {
+
+    it('should be able to collapse a node and all its children', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapseRecursive(tree, bags);
+
+      angular.forEach(bagNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(false);
+      });
+      angular.forEach(hatNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(true);
+      });
+    });
+
+    it('should be able to collapse a node and all its children by id', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapseRecursive(tree, 'bags');
+
+      angular.forEach(bagNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(false);
+      });
+      angular.forEach(hatNodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(true);
+      });
+    });
+
+    it('should return ivhTreeviewMgr for chaining', function() {
+      expect(ivhTreeviewMgr.collapseRecursive(tree, hats)).toBe(ivhTreeviewMgr);
+    });
+
+  });
+
+  describe('#expandTo', function() {
+    
+    it('should be able to expand all *parents* of a given node', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expandTo(tree, fedora);
+
+      var parents = [stuff, hats];
+
+      angular.forEach(nodes.concat([stuff]), function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(parents.indexOf(n) > -1);
+      });
+    });
+
+    it('should be able to expand all *parents* of a given node by id', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expandTo(tree, 'fedora');
+
+      var parents = [stuff, hats];
+
+      angular.forEach(nodes.concat([stuff]), function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(parents.indexOf(n) > -1);
+      });
+    });
+
+    it('should return ivhTreeviewMgr for chaining', function() {
+      expect(ivhTreeviewMgr.expandTo(fedora)).toBe(ivhTreeviewMgr);
+    });
+
+  });
+
+  describe('#collapseParents', function() {
+    
+    it('should be able to collapse all *parents* of a given node', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapseParents(tree, fedora);
+
+      var parents = [stuff, hats];
+
+      angular.forEach(nodes.concat([stuff]), function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(parents.indexOf(n) === -1);
+      });
+    });
+
+    it('should be able to collapse all *parents* of a given node by id', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapseParents(tree, 'fedora');
+
+      var parents = [stuff, hats];
+
+      angular.forEach(nodes.concat([stuff]), function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(parents.indexOf(n) === -1);
+      });
+    });
+
+    it('should return ivhTreeviewMgr for chaining', function() {
+      expect(ivhTreeviewMgr.collapseParents(fedora)).toBe(ivhTreeviewMgr);
     });
 
   });

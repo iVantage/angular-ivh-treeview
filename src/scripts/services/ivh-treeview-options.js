@@ -62,6 +62,11 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
 
     /**
+     * (internal) Collection item attribute to track expanded status
+     */
+    expandedAttribute: '__ivhTreeviewExpanded',
+
+    /**
      * Default selected state when validating
      */
     defaultSelectedState: true,

@@ -57,6 +57,33 @@ angular.module('ivh.treeview')
       }
     };
 
+    var findNode = function(tree, node, opts, cb) {
+      var useId = ng.isString(node)
+        , proceed = true
+        , idAttr = opts.idAttribute;
+
+      // Our return values
+      var foundNode = null
+        , foundParents = [];
+
+      ivhTreeviewBfs(tree, opts, function(n, p) {
+        var isNode = proceed && (useId ?
+          node === n[idAttr] :
+          node === n);
+
+        if(isNode) {
+          // I've been looking for you all my life
+          proceed = false;
+          foundNode = n;
+          foundParents = p;
+        }
+
+        return proceed;
+      });
+
+      return cb(foundNode, foundParents);
+    };
+
     /**
      * Select (or deselect) a tree node
      *
@@ -81,7 +108,7 @@ angular.module('ivh.treeview')
       opts = ng.extend({}, options, opts);
       isSelected = ng.isDefined(isSelected) ? isSelected : true;
 
-      var useId = angular.isString(node)
+      var useId = ng.isString(node)
         , proceed = true
         , idAttr = opts.idAttribute;
 
@@ -244,6 +271,164 @@ angular.module('ivh.treeview')
       });
 
       return exports;
+    };
+
+    /**
+     * Expand/collapse a given tree node
+     *
+     * `node` may be either an actual tree node object or a node id. 
+     *
+     * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand/collapse
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isExpanded [optional] Whether or not to expand `node`, defaults to `true`
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.expand = function(tree, node, opts, isExpanded) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isExpanded = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
+
+      var useId = ng.isString(node)
+        , expandedAttr = opts.expandedAttribute;
+
+      if(!useId) {
+        // No need to do any searching if we already have the node in hand
+        node[expandedAttr] = isExpanded;
+        return exports;
+      }
+
+      return findNode(tree, node, opts, function(n, p) {
+        n[expandedAttr] = isExpanded;
+        return exports;
+      });
+    };
+
+    /**
+     * Expand/collapse a given tree node and its children
+     *
+     * `node` may be either an actual tree node object or a node id. 
+     *
+     * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand/collapse recursively
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isExpanded [optional] Whether or not to expand `node`, defaults to `true`
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.expandRecursive = function(tree, node, opts, isExpanded) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isExpanded = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
+
+      var useId = ng.isString(node)
+        , expandedAttr = opts.expandedAttribute
+        , branch;
+
+      // If we have an ID first resolve it to an actual node in the tree
+      if(useId) {
+        findNode(tree, node, opts, function(n, p) {
+          branch = n;
+        });
+      } else {
+        branch = node;
+      }
+
+      if(branch) {
+        ivhTreeviewBfs(branch, opts, function(n, p) {
+          n[expandedAttr] = isExpanded;
+        });
+      }
+
+      return exports;
+    };
+
+    /**
+     * Collapse a given tree node
+     *
+     * Delegates to `exports.expand` with `isExpanded` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to collapse
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.collapse = function(tree, node, opts) {
+      return exports.expand(tree, node, opts, false);
+    };
+
+    /**
+     * Collapse a given tree node and its children
+     *
+     * Delegates to `exports.expandRecursive` with `isExpanded` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand/collapse recursively
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.collapseRecursive = function(tree, node, opts, isExpanded) {
+      return exports.expandRecursive(tree, node, opts, false);
+    };
+
+    /**
+     * Expand[/collapse] all parents of a given node, i.e. "reveal" the node
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand to
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isExpanded [optional] Whether or not to expand parent nodes
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.expandTo = function(tree, node, opts, isExpanded) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isExpanded = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
+
+      var expandedAttr = opts.expandedAttribute;
+
+      var expandCollapseNode = function(n) {
+        n[expandedAttr] = isExpanded;
+      };
+
+      // Even if wer were given the actual node and not its ID we must still
+      // traverse the tree to find that node's parents.
+      return findNode(tree, node, opts, function(n, p) {
+        ng.forEach(p, expandCollapseNode);
+        return exports;
+      });
+    };
+
+    /**
+     * Collapse all parents of a give node
+     *
+     * Delegates to `exports.expandTo` with `isExpanded` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand to
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.collapseParents = function(tree, node, opts) {
+      return exports.expandTo(tree, node, opts, false);
     };
 
     return exports;
