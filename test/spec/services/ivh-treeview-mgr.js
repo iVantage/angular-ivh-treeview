@@ -288,6 +288,18 @@ describe('Service: ivhTreeviewMgr', function() {
       });
     });
 
+    it('should be able to expand the entire tree', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = false;
+      });
+
+      ivhTreeviewMgr.expandRecursive(tree);
+
+      angular.forEach(nodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(true);
+      });
+    });
+
     it('should return ivhTreeviewMgr for chaining', function() {
       expect(ivhTreeviewMgr.expandRecursive(tree, hats)).toBe(ivhTreeviewMgr);
     });
@@ -355,6 +367,18 @@ describe('Service: ivhTreeviewMgr', function() {
       });
       angular.forEach(hatNodes, function(n) {
         expect(n.__ivhTreeviewExpanded).toBe(true);
+      });
+    });
+
+    it('should be able to collapse the entire tree', function() {
+      angular.forEach(nodes, function(n) {
+        n.__ivhTreeviewExpanded = true;
+      });
+
+      ivhTreeviewMgr.collapseRecursive(tree);
+
+      angular.forEach(nodes, function(n) {
+        expect(n.__ivhTreeviewExpanded).toBe(false);
       });
     });
 

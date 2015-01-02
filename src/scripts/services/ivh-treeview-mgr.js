@@ -314,12 +314,15 @@ angular.module('ivh.treeview')
     /**
      * Expand/collapse a given tree node and its children
      *
-     * `node` may be either an actual tree node object or a node id. 
+     * `node` may be either an actual tree node object or a node id. You may
+     * leave off `node` entirely to expand/collapse the entire tree, however, if
+     * you specify a value for `opts` or `isExpanded` you must provide a value
+     * for `node`.
      *
      * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
      *
      * @param {Object|Array} tree The tree data
-     * @param {Object|String} node The node (or id) to expand/collapse recursively
+     * @param {Object|String} node [optional*] The node (or id) to expand/collapse recursively
      * @param {Object} opts [optional] Options to override default options with
      * @param {Boolean} isExpanded [optional] Whether or not to expand `node`, defaults to `true`
      * @return {Object} Returns the ivhTreeviewMgr instance for chaining
@@ -331,6 +334,7 @@ angular.module('ivh.treeview')
           opts = {};
         }
       }
+      node = ng.isDefined(node) ? node : tree;
       opts = ng.extend({}, options, opts);
       isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
 
