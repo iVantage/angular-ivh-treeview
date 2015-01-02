@@ -12,7 +12,7 @@
 angular.module('ivh.treeview')
   .factory('ivhTreeviewMgr', ['ivhTreeviewOptions', 'ivhTreeviewBfs', function(ivhTreeviewOptions, ivhTreeviewBfs) {
     'use strict';
-    
+
     var ng = angular
       , options = ivhTreeviewOptions()
       , exports = {};
@@ -89,7 +89,7 @@ angular.module('ivh.treeview')
         var isNode = proceed && (useId ?
           node === n[idAttr] :
           node === n);
-        
+
         if(isNode) {
           // I've been looking for you all my life
           proceed = false;
@@ -232,7 +232,7 @@ angular.module('ivh.treeview')
 
       var selectedAttr = opts.selectedAttribute
         , indeterminateAttr = opts.indeterminateAttribute;
-      
+
       ivhTreeviewBfs(tree, opts, function(node, parents) {
         if(ng.isDefined(node[selectedAttr]) && node[selectedAttr] !== bias) {
           exports.select(tree, node, opts, !bias);
