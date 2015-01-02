@@ -33,6 +33,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
       indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
+      expandedAttribute: '=ivhTreeviewExpandedAttribute',
       labelAttribute: '=ivhTreeviewLabelAttribute',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
       useCheckboxes: '=ivhTreeviewUseCheckboxes',
@@ -56,6 +57,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'expandToDepth',
         'idAttribute',
         'indeterminateAttribute',
+        'expandedAttribute',
         'labelAttribute',
         'selectedAttribute',
         'useCheckboxes',
@@ -106,10 +108,26 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         ctrl.onNodeChange(node, isSelected);
       };
 
-      ctrl.isExpanded = function(depth) {
+      ctrl.expand = function(node, isExpanded) {
+        ivhTreeviewMgr.expand($scope.root, node, localOpts, isExpanded);
+      };
+
+      ctrl.isExpanded = function(node) {
+        return node[localOpts.expandedAttribute];
+      };
+
+      ctrl.toggleExpanded = function(node) {
+        ctrl.expand(node, !ctrl.isExpanded(node));
+      };
+
+      ctrl.isInitiallyExpanded = function(depth) {
         var expandTo = localOpts.expandToDepth === -1 ?
           Infinity : localOpts.expandToDepth;
         return depth < expandTo;
+      };
+
+      ctrl.isLeaf = function(node) {
+        return ctrl.children(node).length === 0;
       };
 
       ctrl.onNodeClick = function(node) {
@@ -132,6 +150,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
             'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+            'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="0">',
         '</li>',

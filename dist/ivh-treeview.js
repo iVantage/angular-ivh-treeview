@@ -88,12 +88,15 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           scope.ctrl = ctrl;
           scope.childDepth = scope.depth + 1;
 
-          if(!ctrl.isExpanded(scope.depth)) {
-            element.addClass('ivh-treeview-node-collapsed');
-          }
+          // Expand/collapse the node as dictated by the expandToDepth property
+          ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
 
+          // Set the title to the full label
           element.attr('title', ctrl.label(node));
 
+          /**
+           * @todo Provide a way to opt out of this
+           */
           var watcher = scope.$watch(function() {
             return getChildren().length > 0;
           }, function(newVal) {
@@ -102,7 +105,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
             } else {
               element.addClass('ivh-treeview-node-leaf');
             }
-            // watcher();
           });
         });
     },
@@ -132,6 +134,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
         '<ul ng-if="getChildren().length" class="ivh-treeview">',
           '<li ng-repeat="child in getChildren()"',
               'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+              'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
               'ivh-treeview-node="child"',
               'ivh-treeview-depth="childDepth">',
           '</li>',
@@ -162,28 +165,13 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       var node = scope.node
         , children = ctrl.children(node);
 
-      /**
-       * @todo Allow opt out of updates if we don't want the extra watchers
-       */
-      // if(!children.length) {
-      //   return;
-      // }
-
       element.addClass('ivh-treeview-toggle');
 
-      var $li = element.parent();
-
-      while($li && $li.prop('nodeName') !== 'LI') {
-        $li = $li.parent();
-      }
-
       element.bind('click', function() {
-        ctrl.onNodeClick(node);
-        if(ctrl.children(node).length) {
-          $li.toggleClass('ivh-treeview-node-collapsed');
-        } else {
-          $li.removeClass('ivh-treeview-node-collapsed');
-        }
+        scope.$apply(function() {
+          ctrl.onNodeClick(node);
+          ctrl.toggleExpanded(node);
+        });
       });
     }
   };
@@ -224,6 +212,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
       indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
+      expandedAttribute: '=ivhTreeviewExpandedAttribute',
       labelAttribute: '=ivhTreeviewLabelAttribute',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
       useCheckboxes: '=ivhTreeviewUseCheckboxes',
@@ -247,6 +236,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'expandToDepth',
         'idAttribute',
         'indeterminateAttribute',
+        'expandedAttribute',
         'labelAttribute',
         'selectedAttribute',
         'useCheckboxes',
@@ -297,10 +287,26 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         ctrl.onNodeChange(node, isSelected);
       };
 
-      ctrl.isExpanded = function(depth) {
+      ctrl.expand = function(node, isExpanded) {
+        ivhTreeviewMgr.expand($scope.root, node, localOpts, isExpanded);
+      };
+
+      ctrl.isExpanded = function(node) {
+        return node[localOpts.expandedAttribute];
+      };
+
+      ctrl.toggleExpanded = function(node) {
+        ctrl.expand(node, !ctrl.isExpanded(node));
+      };
+
+      ctrl.isInitiallyExpanded = function(depth) {
         var expandTo = localOpts.expandToDepth === -1 ?
           Infinity : localOpts.expandToDepth;
         return depth < expandTo;
+      };
+
+      ctrl.isLeaf = function(node) {
+        return ctrl.children(node).length === 0;
       };
 
       ctrl.onNodeClick = function(node) {
@@ -323,6 +329,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
             'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+            'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="0">',
         '</li>',
@@ -477,7 +484,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
 angular.module('ivh.treeview')
   .factory('ivhTreeviewMgr', ['ivhTreeviewOptions', 'ivhTreeviewBfs', function(ivhTreeviewOptions, ivhTreeviewBfs) {
     'use strict';
-    
+
     var ng = angular
       , options = ivhTreeviewOptions()
       , exports = {};
@@ -522,6 +529,33 @@ angular.module('ivh.treeview')
       }
     };
 
+    var findNode = function(tree, node, opts, cb) {
+      var useId = ng.isString(node)
+        , proceed = true
+        , idAttr = opts.idAttribute;
+
+      // Our return values
+      var foundNode = null
+        , foundParents = [];
+
+      ivhTreeviewBfs(tree, opts, function(n, p) {
+        var isNode = proceed && (useId ?
+          node === n[idAttr] :
+          node === n);
+
+        if(isNode) {
+          // I've been looking for you all my life
+          proceed = false;
+          foundNode = n;
+          foundParents = p;
+        }
+
+        return proceed;
+      });
+
+      return cb(foundNode, foundParents);
+    };
+
     /**
      * Select (or deselect) a tree node
      *
@@ -546,7 +580,7 @@ angular.module('ivh.treeview')
       opts = ng.extend({}, options, opts);
       isSelected = ng.isDefined(isSelected) ? isSelected : true;
 
-      var useId = angular.isString(node)
+      var useId = ng.isString(node)
         , proceed = true
         , idAttr = opts.idAttribute;
 
@@ -554,7 +588,7 @@ angular.module('ivh.treeview')
         var isNode = proceed && (useId ?
           node === n[idAttr] :
           node === n);
-        
+
         if(isNode) {
           // I've been looking for you all my life
           proceed = false;
@@ -697,7 +731,7 @@ angular.module('ivh.treeview')
 
       var selectedAttr = opts.selectedAttribute
         , indeterminateAttr = opts.indeterminateAttribute;
-      
+
       ivhTreeviewBfs(tree, opts, function(node, parents) {
         if(ng.isDefined(node[selectedAttr]) && node[selectedAttr] !== bias) {
           exports.select(tree, node, opts, !bias);
@@ -709,6 +743,164 @@ angular.module('ivh.treeview')
       });
 
       return exports;
+    };
+
+    /**
+     * Expand/collapse a given tree node
+     *
+     * `node` may be either an actual tree node object or a node id. 
+     *
+     * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand/collapse
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isExpanded [optional] Whether or not to expand `node`, defaults to `true`
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.expand = function(tree, node, opts, isExpanded) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isExpanded = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
+
+      var useId = ng.isString(node)
+        , expandedAttr = opts.expandedAttribute;
+
+      if(!useId) {
+        // No need to do any searching if we already have the node in hand
+        node[expandedAttr] = isExpanded;
+        return exports;
+      }
+
+      return findNode(tree, node, opts, function(n, p) {
+        n[expandedAttr] = isExpanded;
+        return exports;
+      });
+    };
+
+    /**
+     * Expand/collapse a given tree node and its children
+     *
+     * `node` may be either an actual tree node object or a node id. 
+     *
+     * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand/collapse recursively
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isExpanded [optional] Whether or not to expand `node`, defaults to `true`
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.expandRecursive = function(tree, node, opts, isExpanded) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isExpanded = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
+
+      var useId = ng.isString(node)
+        , expandedAttr = opts.expandedAttribute
+        , branch;
+
+      // If we have an ID first resolve it to an actual node in the tree
+      if(useId) {
+        findNode(tree, node, opts, function(n, p) {
+          branch = n;
+        });
+      } else {
+        branch = node;
+      }
+
+      if(branch) {
+        ivhTreeviewBfs(branch, opts, function(n, p) {
+          n[expandedAttr] = isExpanded;
+        });
+      }
+
+      return exports;
+    };
+
+    /**
+     * Collapse a given tree node
+     *
+     * Delegates to `exports.expand` with `isExpanded` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to collapse
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.collapse = function(tree, node, opts) {
+      return exports.expand(tree, node, opts, false);
+    };
+
+    /**
+     * Collapse a given tree node and its children
+     *
+     * Delegates to `exports.expandRecursive` with `isExpanded` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand/collapse recursively
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.collapseRecursive = function(tree, node, opts, isExpanded) {
+      return exports.expandRecursive(tree, node, opts, false);
+    };
+
+    /**
+     * Expand[/collapse] all parents of a given node, i.e. "reveal" the node
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand to
+     * @param {Object} opts [optional] Options to override default options with
+     * @param {Boolean} isExpanded [optional] Whether or not to expand parent nodes
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.expandTo = function(tree, node, opts, isExpanded) {
+      if(arguments.length > 2) {
+        if(typeof opts === 'boolean') {
+          isExpanded = opts;
+          opts = {};
+        }
+      }
+      opts = ng.extend({}, options, opts);
+      isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
+
+      var expandedAttr = opts.expandedAttribute;
+
+      var expandCollapseNode = function(n) {
+        n[expandedAttr] = isExpanded;
+      };
+
+      // Even if wer were given the actual node and not its ID we must still
+      // traverse the tree to find that node's parents.
+      return findNode(tree, node, opts, function(n, p) {
+        ng.forEach(p, expandCollapseNode);
+        return exports;
+      });
+    };
+
+    /**
+     * Collapse all parents of a give node
+     *
+     * Delegates to `exports.expandTo` with `isExpanded` set to `false`.
+     *
+     * @param {Object|Array} tree The tree data
+     * @param {Object|String} node The node (or id) to expand to
+     * @param {Object} opts [optional] Options to override default options with
+     * @return {Object} Returns the ivhTreeviewMgr instance for chaining
+     */
+    exports.collapseParents = function(tree, node, opts) {
+      return exports.expandTo(tree, node, opts, false);
     };
 
     return exports;
@@ -777,6 +969,11 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
      * (internal) Collection item attribute to track intermediate states
      */
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
+
+    /**
+     * (internal) Collection item attribute to track expanded status
+     */
+    expandedAttribute: '__ivhTreeviewExpanded',
 
     /**
      * Default selected state when validating
