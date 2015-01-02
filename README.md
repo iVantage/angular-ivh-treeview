@@ -305,6 +305,7 @@ an array of parents nodes ordered nearest to farthest. If the `cb` returns
 
 ## Release history
 
+- 2015-01-02 v0.8.0 Add ability to expand/collapse nodes programmatically
 - 2014-09-21 v0.6.0 Tree accepts nodes added on the fly
 - 2014-09-09 v0.3.0 Complete refactor. Directive no longer propagates changes
   automatically on programmatic changes, use ivhTreeviewMgr.
