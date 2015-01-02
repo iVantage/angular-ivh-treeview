@@ -48,7 +48,7 @@ In your view...
 
 IVH Treeview is pretty configurable. By default it expects your elements to have
 `label` and `children` properties for node display text and child nodes
-respectively. It'll also make use of a `selected` attribute to manage selected
+ respectively. It'll also make use of a `selected` attribute to manage selected
 states. If you would like to pick out nodes by ID rather than reference it'll
 also use an `id` attribute. Those attributes can all be changed, for example:
 
@@ -219,6 +219,44 @@ set to `false`.
 #### `ivhTreeviewMgr.deselectEach(tree, nodes[, opts])`
 
 A convenience method, delegates to `ivhTreeviewMgr.selectEach` with `isSelected`
+set to `false`.
+
+#### `ivhTreeviewMgr.expand(tree, node[, opts][, isExpanded])`
+
+Expand (or collapse) a given `node` in `tree`, again `node` may be an actual
+object reference or an ID.
+
+We'll use settings registered with `ivhTreeviewOptions` by default, but you can
+override any of them with the optional `opts` parameter.
+
+By default this method will expand the node in question, you may pass `false` as
+the last parameter though to collapse the node. Or, just use
+`ivhTreeviewMgr.collapse`.
+
+#### `ivhTreeviewMgr.expandRecursive(tree[, node[, opts][, isExpanded]])`
+
+Expand (or collapse) `node` and all its child nodes. Note that you may omit the
+`node` parameter (i.e. expand/collapse the entire tree) but only when all other
+option parameters are also omitted.
+
+#### `ivhTreeviewMgr.expandTo(tree, node[, opts][, isExpanded])`
+
+Expand (or collapse) all parents of `node`. This may be used to "reveal" a
+nested node or to recursively collapse all parents of a node.
+
+#### `ivhTreeviewMgr.collapse(tree, node[, opts])`
+
+A convenience method, delegates to  `ivhTreeviewMgr.expand` with `isExpanded`
+set to `false`.
+
+#### `ivhTreeviewMgr.collapseRecursive(tree[, node[, opts]])`
+
+A convenience method, delegates to `ivhTreeviewMgr.expandRecursive` with
+`isExpanded` set to `false`,
+
+#### `ivhTreeviewMgr.collapseParents(tree, node[, opts])`
+
+A convenience method, delegates to `ivhTreeviewMgr.expandTo` with `isExpanded`
 set to `false`.
 
 #### `ivhTreeviewMgr.validate(tree[, opts][, bias])`
