@@ -303,6 +303,15 @@ each node as it is reached. `cb` is passed two parameters, the node itself and
 an array of parents nodes ordered nearest to farthest. If the `cb` returns
 `false` traversal of that branch is stopped.
 
+
+## Reporting Issues
+
+When reporting an issue please take a moment to reproduce your setup by
+modifying our [starter template](http://jsbin.com/wecafa/2/edit). Only make as
+many changes as necessary to demonstrate your issue but do comment your added
+code.
+
+
 ## Release history
 
 - 2015-01-02 v0.8.0 Add ability to expand/collapse nodes programmatically
