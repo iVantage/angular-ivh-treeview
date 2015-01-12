@@ -124,12 +124,20 @@ When using checkboxes you can have a default selected state of `true` or
 `ivhTreeviewMgr.validate` which will assume this state by default. Use the
 `ivh-treeview-default-selected-state` attribute or `defaultSelectedState`.
 
+[Here](http://jsbin.com/pajeze/2/edit) are some examples of how the default
+selected state can affect your view and model when validate on startup is
+enabled.
+
 ### Validate on Startup
 
 `ivh.treeview` tries not to assume control of your model any more than
 necessary. It does provide the ability (opt-in) to validate your tree data on
 startup. Use `ivh-treeview-validate="true"` at the attribute level or set the
 `validate` property in `ivhTreeviewOptionsProvider` to get this behavior.
+
+[Here](http://jsbin.com/pajeze/2/edit) are some examples of how the default
+selected state can affect your view and model when validate on startup is
+enabled.
 
 ### Twisties
 
