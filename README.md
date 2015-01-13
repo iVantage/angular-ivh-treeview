@@ -241,6 +241,8 @@ By default this method will expand the node in question, you may pass `false` as
 the last parameter though to collapse the node. Or, just use
 `ivhTreeviewMgr.collapse`.
 
+***Demo***: [Programmatic expand/collapse](http://jsbin.com/degofo/edit?html,js,output)
+
 #### `ivhTreeviewMgr.expandRecursive(tree[, node[, opts][, isExpanded]])`
 
 Expand (or collapse) `node` and all its child nodes. Note that you may omit the
