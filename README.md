@@ -153,6 +153,8 @@ ivhTreeviewOptionsProvider.set({
 });
 ```
 
+***Demo***: [Custom twisties](http://jsbin.com/gizofu/edit?html,js,output)
+
 ### Custom onClick Handlers
 
 Want to register a callback for whenever a tree node gets clicked? Use the
