@@ -303,6 +303,14 @@ each node as it is reached. `cb` is passed two parameters, the node itself and
 an array of parents nodes ordered nearest to farthest. If the `cb` returns
 `false` traversal of that branch is stopped.
 
+Note that even if `false` is returned each of `nodes` siblings will still be
+traversed. Essentially none of `nodes` children will be added to traversal
+queue. All other branches in `tree` will be traversed as normal.
+
+In other words returning `false` tells `ivhTreeviewBfs` to go no deeper in the
+current branch only.
+
+
 ## Release history
 
 - 2015-01-02 v0.8.0 Add ability to expand/collapse nodes programmatically
