@@ -310,13 +310,20 @@ breadth first search).
 
 #### `ivhTreeviewBfs(tree[, opts][, cb])`
 
-We preform a breadth first traversal of `tree` applying the function `cb` to
+We perform a breadth first traversal of `tree` applying the function `cb` to
 each node as it is reached. `cb` is passed two parameters, the node itself and
 an array of parents nodes ordered nearest to farthest. If the `cb` returns
 `false` traversal of that branch is stopped.
 
+Note that even if `false` is returned each of `nodes` siblings will still be
+traversed. Essentially none of `nodes` children will be added to traversal
+queue. All other branches in `tree` will be traversed as normal.
+
+In other words returning `false` tells `ivhTreeviewBfs` to go no deeper in the
+current branch only.
+
 [Here](http://jsbin.com/wofunu/1/edit?html,js,output) is an example of the
-`ivhTreeviewBfs` service in action. `ivhTreeview` also uses this service
+`ivhTreeviewBfs` service in action. `ivhTreeview` uses this service
 internally to search for nodes.
 
 
