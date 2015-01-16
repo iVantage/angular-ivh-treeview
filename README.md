@@ -315,6 +315,10 @@ each node as it is reached. `cb` is passed two parameters, the node itself and
 an array of parents nodes ordered nearest to farthest. If the `cb` returns
 `false` traversal of that branch is stopped.
 
+[Here](http://jsbin.com/wofunu/1/edit?html,js,output) is an example of the
+`ivhTreeviewBfs` service in action. `ivhTreeview` also uses this service
+internally to search for nodes.
+
 
 ## Reporting Issues
 
