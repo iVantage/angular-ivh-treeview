@@ -124,9 +124,8 @@ When using checkboxes you can have a default selected state of `true` or
 `ivhTreeviewMgr.validate` which will assume this state by default. Use the
 `ivh-treeview-default-selected-state` attribute or `defaultSelectedState`.
 
-[Here](http://jsbin.com/pajeze/2/edit) are some examples of how the default
-selected state can affect your view and model when validate on startup is
-enabled.
+***Demo***: [Default selected state and validate on
+startup](http://jsbin.com/pajeze/2/edit)
 
 ### Validate on Startup
 
@@ -135,9 +134,8 @@ necessary. It does provide the ability (opt-in) to validate your tree data on
 startup. Use `ivh-treeview-validate="true"` at the attribute level or set the
 `validate` property in `ivhTreeviewOptionsProvider` to get this behavior.
 
-[Here](http://jsbin.com/pajeze/2/edit) are some examples of how the default
-selected state can affect your view and model when validate on startup is
-enabled.
+***Demo***: [Default selected state and validate on
+startup](http://jsbin.com/pajeze/2/edit)
 
 ### Twisties
 
@@ -322,9 +320,8 @@ queue. All other branches in `tree` will be traversed as normal.
 In other words returning `false` tells `ivhTreeviewBfs` to go no deeper in the
 current branch only.
 
-[Here](http://jsbin.com/wofunu/1/edit?html,js,output) is an example of the
-`ivhTreeviewBfs` service in action. `ivhTreeview` uses this service
-internally to search for nodes.
+***Demo***: [`ivhTreeviewBfs` in
+action](http://jsbin.com/wofunu/1/edit?html,js,output)
 
 
 ## Reporting Issues
@@ -349,7 +346,7 @@ code.
 
 [MIT license][license], copyright iVantage Health Analytics, Inc.
 
-[license]: https://raw.github.com/iVantage/angular-ivh-treeview/master/LICENSE-MIT 
+[license]: https://raw.github.com/iVantage/angular-ivh-treeview/master/LICENSE-MIT
 [bootstrap]: http://getbootstrap.com/
 [travis-img]: https://travis-ci.org/iVantage/angular-ivh-treeview.svg?branch=master
 [travis-link]: https://travis-ci.org/iVantage/angular-ivh-treeview
