@@ -119,6 +119,9 @@ You can also sue the `ivhTreeviewOptionsProvider` to set a global default.
 
 If you want the tree *entirely* expanded use a depth of `-1`.
 
+***Demo***: [Expand to depth on
+load](http://jsbin.com/ruxedo/edit?html,js,output)
+
 ### Default selected state
 
 When using checkboxes you can have a default selected state of `true` or
