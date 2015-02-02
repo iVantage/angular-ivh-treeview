@@ -82,7 +82,7 @@ app.config(function(ivhTreeviewOptionsProvider) {
     labelAttribute: 'label',
     childrenAttribute: 'children',
     selectedAttribute: 'selected',
-    useCheckboses: true,
+    useCheckboxes: true,
     expandToDepth: 0,
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
     defaultSelectedState: true,
@@ -188,6 +188,31 @@ belongs to.
     ivh-treeview-change-handler="fancy.otherAwesomeCallback">
 </div>
 ```
+
+## All the Options
+
+If passing a configuration object is more your style than inlining everything in
+the view, that's OK too.
+
+In your fancy controller...
+
+```javascript
+this.customOpts = {
+  useCheckboxes: false,
+  clickHandler: this.awesomeCallback
+};
+```
+
+In your view...
+
+```html
+<div
+    ivh-treeview="fancy.bag"
+    ivh-treeview-options="fancy.customOpts">
+</div>
+```
+
+Note that you can't set twistie templates this way (yet).
 
 ## Treeview Manager Service
 

@@ -18,6 +18,7 @@ describe('Directive ivhTreeview', function() {
   var tplValidate = '<div ivh-treeview="bag1" ivh-treeview-validate="true"></div>';
   var tplExpand = '<div ivh-treeview="bag1" ivh-treeview-expand-to-depth="1"></div>';
   var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
+  var tplOptions = '<div ivh-treeview="bag1" ivh-treeview-options="customOpts"></div>';
 
   var tplFilter = [
     '<div',
@@ -132,6 +133,18 @@ describe('Directive ivhTreeview', function() {
       scope.$apply();
       expect($el.find('li[title="five panel baseball"]').length).toBe(1);
       expect($el.find('li[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+    });
+
+    it('should allow an options object for overrides', function() {
+      scope.customOpts = {
+        useCheckboxes: false,
+        twistieCollapsedTpl: '[BOOM]'
+      };
+      $el = compile(tplOptions, scope);
+      expect($el.find('input[type="checkbox"]').length).toBe(0);
+
+      // On deck...
+      //expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
     });
   });
 

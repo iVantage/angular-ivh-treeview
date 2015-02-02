@@ -25,7 +25,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // The tree data store
       root: '=ivhTreeview',
 
-      // Config options
+      // Specific config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
       clickHandler: '=ivhTreeviewClickHandler',
       changeHandler: '=ivhTreeviewChangeHandler',
@@ -40,6 +40,9 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       validate: '=ivhTreeviewValidate',
       visibleAttribute: '=ivhTreeviewVisibleAttribute',
 
+      // Generic options object
+      userOptions: '=ivhTreeviewOptions',
+
       // The filter
       filter: '=ivhTreeviewFilter'
     },
@@ -50,7 +53,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       // Merge any locally set options with those registered with hte
       // ivhTreeviewOptions provider
-      var localOpts = ng.extend({}, ivhTreeviewOptions());
+      var localOpts = ng.extend({}, ivhTreeviewOptions(), $scope.userOptions);
+
       ng.forEach([
         'childrenAttribute',
         'defaultSelectedState',
