@@ -189,6 +189,9 @@ belongs to.
 </div>
 ```
 
+***Demo***: [Custom Change Handler](http://jsbin.com/hubico/edit?html,js,output)
+
+
 ## All the Options
 
 If passing a configuration object is more your style than inlining everything in
