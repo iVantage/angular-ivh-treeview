@@ -19,6 +19,7 @@ describe('Directive ivhTreeview', function() {
   var tplExpand = '<div ivh-treeview="bag1" ivh-treeview-expand-to-depth="1"></div>';
   var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
   var tplOptions = '<div ivh-treeview="bag1" ivh-treeview-options="customOpts"></div>';
+  var tplInlineTpls = '<div ivh-treeview="bag1" ivh-treeview-twistie-collapsed-tpl="\'[BOOM]\'"></div>';
 
   var tplFilter = [
     '<div',
@@ -142,6 +143,11 @@ describe('Directive ivhTreeview', function() {
       };
       $el = compile(tplOptions, scope);
       expect($el.find('input[type="checkbox"]').length).toBe(0);
+      expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
+    });
+
+    it('should allow attribute level twistie templates', function() {
+      $el = compile(tplInlineTpls, scope);
       expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
     });
   });
