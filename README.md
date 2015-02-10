@@ -379,6 +379,7 @@ code.
 
 ## Release history
 
+- 2015-02-10 v0.9.0 All options are set-able via attributes or config object
 - 2015-01-02 v0.8.0 Add ability to expand/collapse nodes programmatically
 - 2014-09-21 v0.6.0 Tree accepts nodes added on the fly
 - 2014-09-09 v0.3.0 Complete refactor. Directive no longer propagates changes
