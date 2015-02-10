@@ -156,6 +156,19 @@ ivhTreeviewOptionsProvider.set({
 });
 ```
 
+If you need different twistie templates for different treeview elements you can
+assign these templates at the attribute level:
+
+```html
+<div
+  ivh-treeview="fancy.bag"
+  ivh-treeview-twistie-leaf-tpl="'-->'"></div>
+```
+
+Alternatively, you can pass them as part of a [full configuration
+object](https://github.com/iVantage/angular-ivh-treeview#all-the-options).
+
+
 ***Demo***: [Custom twisties](http://jsbin.com/gizofu/edit?html,js,output)
 
 ### Custom onClick Handlers
@@ -215,7 +228,6 @@ In your view...
 </div>
 ```
 
-Note that you can't set twistie templates this way (yet).
 
 ## Treeview Manager Service
 
