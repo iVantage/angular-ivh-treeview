@@ -142,9 +142,7 @@ describe('Directive ivhTreeview', function() {
       };
       $el = compile(tplOptions, scope);
       expect($el.find('input[type="checkbox"]').length).toBe(0);
-
-      // On deck...
-      //expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
+      expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
     });
   });
 

@@ -64,6 +64,9 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'expandedAttribute',
         'labelAttribute',
         'selectedAttribute',
+        'twistieCollapsedTpl',
+        'twistieExpandedTpl',
+        'twistieLeafTpl',
         'useCheckboxes',
         'validate',
         'visibleAttribute'
