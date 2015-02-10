@@ -1,6 +1,6 @@
 {
   "name": "angular-ivh-treeview",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Treeview for angular with filtering and checkboxes",
   "main": "gruntfile.js",
   "directories": {
