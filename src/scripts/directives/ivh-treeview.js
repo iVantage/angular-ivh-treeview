@@ -84,6 +84,18 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         return localOpts;
       };
 
+      // If we didn't provide twistie templates we'll be doing a fair bit of
+      // extra checks for no reason. Let's just inform down stream directives
+      // whether or not they need to worry about twistie non-global templates.
+      var userOpts = $scope.userOptions || {};
+      ctrl.hasLocalTwistieTpls = !!(
+        userOpts.twistieCollapsedTpl ||
+        userOpts.twistieExpandedTpl ||
+        userOpts.twistieLeafTpl ||
+        $scope.twistieCollapsedTpl ||
+        $scope.twistieExpandedTpl ||
+        $scope.twistieLeafTpl);
+
       ctrl.children = function(node) {
         var children = node[localOpts.childrenAttribute];
         return ng.isArray(children) ? children : [];

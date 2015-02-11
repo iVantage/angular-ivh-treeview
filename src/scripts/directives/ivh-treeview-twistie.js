@@ -30,8 +30,9 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
     ].join('\n'),
     link: function(scope, element, attrs, ctrl) {
 
-      // Should this be opt-in only? Seems like a ton of extra cycles for a
-      // feature that won't be used super often.
+      if(!ctrl.hasLocalTwistieTpls) {
+        return;
+      }
 
       var opts = ctrl.opts()
         , $twistieContainers = element
