@@ -199,8 +199,9 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
     ].join('\n'),
     link: function(scope, element, attrs, ctrl) {
 
-      // Should this be opt-in only? Seems like a ton of extra cycles for a
-      // feature that won't be used super often.
+      if(!ctrl.hasLocalTwistieTpls) {
+        return;
+      }
 
       var opts = ctrl.opts()
         , $twistieContainers = element
@@ -324,6 +325,18 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       ctrl.opts = function() {
         return localOpts;
       };
+
+      // If we didn't provide twistie templates we'll be doing a fair bit of
+      // extra checks for no reason. Let's just inform down stream directives
+      // whether or not they need to worry about twistie non-global templates.
+      var userOpts = $scope.userOptions || {};
+      ctrl.hasLocalTwistieTpls = !!(
+        userOpts.twistieCollapsedTpl ||
+        userOpts.twistieExpandedTpl ||
+        userOpts.twistieLeafTpl ||
+        $scope.twistieCollapsedTpl ||
+        $scope.twistieExpandedTpl ||
+        $scope.twistieLeafTpl);
 
       ctrl.children = function(node) {
         var children = node[localOpts.childrenAttribute];
