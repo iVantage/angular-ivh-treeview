@@ -188,11 +188,15 @@ a reference to the node and the three that node belongs to.
 
 ### Custom onChange Handlers
 
-Want to be notified anytime a checkbox changes state? Use the
-`ivh-treeview-change-handler` attribute to register a callback for whenever a
-node checkbox changes state. Your callback will be passed a reference to the
-node, the new selected status, and a reference to the entire tree the node
-belongs to.
+Want to be notified anytime a checkbox changes state as the result of a click?
+Use the `ivh-treeview-change-handler` attribute to register a callback for
+whenever a node checkbox changes state. Your callback will be passed a reference
+to the node, the new selected status, and a reference to the entire tree the
+node belongs to.
+
+Note that programmatic changes to a node's selected state (including selection
+change propagation) will not trigger this callback. It is only run for the
+actual node clicked on by a user.
 
 ```html
 <div ng-controller="MyCtrl as fancy">
