@@ -16,12 +16,12 @@ angular.module('ivh.treeview', []);
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
+angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function() {
   'use strict';
   return {
     restrict: 'A',
     scope: {
-      node: '=ivhTreeviewCheckbox'
+      node: '=ivhTreeviewCheckboxHelper'
     },
     require: '^ivhTreeview',
     link: function(scope, element, attrs, ctrl) {
@@ -57,6 +57,54 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
     ].join('\n')
   };
 }]);
+
+
+
+/**
+ * Wrapper for a checkbox directive
+ *
+ * Basically exists so folks creeting custom node templates don't need to attach
+ * their node to this directive explicitly - i.e. keeps consistent interface
+ * with the twistie and toggle directives.
+ *
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
+  'use strict';
+  return {
+    restrict: 'AE',
+    require: '^ivhTreeviewNode',
+    template: '<span ivh-treeview-checkbox-helper="node"></span>',
+    controller: angular.noop
+  };
+}]);
+
+
+/**
+ * The recursive step, output child nodes for the scope node
+ * 
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+
+angular.module('ivh.treeview').directive('ivhTreeviewChildren', function() {
+  'use strict';
+  return {
+    restrict: 'AE',
+    template: [
+      '<ul ng-if="getChildren().length" class="ivh-treeview">',
+        '<li ng-repeat="child in getChildren()"',
+            'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
+            'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
+            'ivh-treeview-node="child"',
+            'ivh-treeview-depth="childDepth">',
+        '</li>',
+      '</ul>'
+    ].join('\n')
+  };
+});
 
 
 /**
@@ -110,25 +158,16 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
     },
     template: [
       '<div>',
-        '<div>',
-          '<span ivh-treeview-toggle="node">',
-            '<span ivh-treeview-twistie></span>',
-          '</span>',
-          '<span ng-if="ctrl.useCheckboxes()"',
-              'ivh-treeview-checkbox="node">',
-          '</span>',
-          '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',
-            '{{ctrl.label(node)}}',
-          '</span>',
-        '</div>',
-        '<ul ng-if="getChildren().length" class="ivh-treeview">',
-          '<li ng-repeat="child in getChildren()"',
-              'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
-              'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
-              'ivh-treeview-node="child"',
-              'ivh-treeview-depth="childDepth">',
-          '</li>',
-        '</ul>',
+        '<span ivh-treeview-toggle>',
+          '<span ivh-treeview-twistie></span>',
+        '</span>',
+        '<span ng-if="ctrl.useCheckboxes()"',
+            'ivh-treeview-checkbox>',
+        '</span>',
+        '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',
+          '{{ctrl.label(node)}}',
+        '</span>',
+        '<div ivh-treeview-children></div>',
       '</div>'
     ].join('\n')
   };
