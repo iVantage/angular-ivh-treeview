@@ -15,7 +15,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   return {
     restrict: 'AE',
     require: '^ivhTreeviewNode',
-    template: '<span ivh-treeview-checkbox-helper="node"></span>',
-    controller: angular.noop
+    template: '<span ivh-treeview-checkbox-helper="node"></span>'
   };
 }]);
