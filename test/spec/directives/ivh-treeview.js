@@ -80,7 +80,7 @@ describe('Directive ivhTreeview', function() {
 
     it('should add label titles to tree nodes', function() {
       $el = compile(tplBasic, scope);
-      expect($el.find('li[title="fedora"]').length).toBe(1);
+      expect($el.find('[title="fedora"]').length).toBe(1);
     });
 
     /**
@@ -89,8 +89,8 @@ describe('Directive ivhTreeview', function() {
 
     it('should allow expansion by default to a given depth', function() {
       $el = compile(tplExpand, scope);
-      expect($el.find('li[title="top hat"]').hasClass('ivh-treeview-node-collapsed')).toBe(false);
-      expect($el.find('li[title="fedora"]').hasClass('ivh-treeview-node-collapsed')).toBe(true);
+      expect($el.find('[title="top hat"]').parent('li').hasClass('ivh-treeview-node-collapsed')).toBe(false);
+      expect($el.find('[title="fedora"]').parent('li').hasClass('ivh-treeview-node-collapsed')).toBe(true);
     });
      
     it('should allow roots objects', function() {
@@ -100,16 +100,16 @@ describe('Directive ivhTreeview', function() {
 
     it('should update indeterminate statuses', function() {
       $el = compile(tplBasic, scope);
-      $el.find('li[title="fedora"] input').first().click();
+      $el.find('[title="fedora"] input').first().click();
       scope.$apply();
       expect(scope.bag1[0].__ivhTreeviewIndeterminate).toBe(true);
       expect($el.find('input').first().prop('indeterminate')).toBe(true);
 
       // I've noticed that deselecting a child can leave ancestors up to root
       // unchecked and not-indeterminate when they should be.
-      $el.find('li[title="gatsby"] input').first().click();
+      $el.find('[title="gatsby"] input').first().click();
       scope.$apply();
-      expect($el.find('li[title="fedora"] input').first().prop('indeterminate')).toBe(true);
+      expect($el.find('[title="fedora"] input').first().prop('indeterminate')).toBe(true);
       expect(scope.bag1[0].children[1].__ivhTreeviewIndeterminate).toBe(true);
       expect(scope.bag1[0].children[1].selected).toBe(false);
     });
@@ -117,23 +117,23 @@ describe('Directive ivhTreeview', function() {
     it('should optionally validate the tree on creation', function() {
       scope.bag1[0].children[1].children[0].selected = false;
       $el = compile(tplValidate, scope);
-      expect($el.find('li[title="top hat"]').find('input').first().prop('indeterminate')).toBe(true);
+      expect($el.find('[title="top hat"]').find('input').first().prop('indeterminate')).toBe(true);
     });
 
     it('should update when child nodes are added (push)', function() {
       $el = compile(tplBasic, scope);
       scope.bag1[1].children.push({label: 'five panel baseball'});
       scope.$apply();
-      expect($el.find('li[title="five panel baseball"]').length).toBe(1);
-      expect($el.find('li[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+      expect($el.find('[title="five panel baseball"]').length).toBe(1);
+      expect($el.find('[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
 
     it('should update when child nodes are added (re-assignment)', function() {
       $el = compile(tplBasic, scope);
       scope.bag1[1].children = [{label: 'five panel baseball'}];
       scope.$apply();
-      expect($el.find('li[title="five panel baseball"]').length).toBe(1);
-      expect($el.find('li[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+      expect($el.find('[title="five panel baseball"]').length).toBe(1);
+      expect($el.find('[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
 
     it('should allow an options object for overrides', function() {
@@ -162,12 +162,12 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should hide filtered out nodes', function() {
-      expect($el.find('li[title="top hat"]').is(':visible')).toBe(false);
+      expect($el.find('[title="top hat"]').is(':visible')).toBe(false);
 
       /**
        * @todo Why does this fail?
        */
-      //expect($el.find('li[title="baseball"]').is(':visible')).toBe(true);
+      //expect($el.find('[title="baseball"]').is(':visible')).toBe(true);
     });
   });
 
@@ -181,19 +181,19 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should call the click handler once per click', function() {
-      $el.find('li[title="top hat"] [ivh-treeview-toggle]').first().click();
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.count()).toEqual(1);
     });
 
     it('should pass the clicked node to the handler', function() {
-      $el.find('li[title="top hat"] [ivh-treeview-toggle]').first().click();
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[0]).toBe(scope.bag1[0]);
     });
 
     it('should pass the tree itself to the click handler', function() {
-      $el.find('li[title="top hat"] [ivh-treeview-toggle]').click();
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1);
     });
@@ -203,7 +203,7 @@ describe('Directive ivhTreeview', function() {
       var exception;
       $el = compile(tplClickHandler, scope);
       try {
-        $el.find('li[title="top hat"] [ivh-treeview-toggle]').click();
+        $el.find('[title="top hat"] [ivh-treeview-toggle]').click();
       } catch(_exception) {
         exception = _exception;
       }
@@ -221,25 +221,25 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should call the change handler when checkbox state is changed', function() {
-      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      $el.find('[title="top hat"] [type=checkbox]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.count()).toEqual(1);
     });
 
     it('should pass the selected node to the handler', function() {
-      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      $el.find('[title="top hat"] [type=checkbox]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[0]).toBe(scope.bag1[0]);
     });
 
     it('should pass the checkbox state to the change handler', function() {
-      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      $el.find('[title="top hat"] [type=checkbox]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
     });
 
     it('should pass the tree itself to the change handler', function() {
-      $el.find('li[title="top hat"] [type=checkbox]').first().click();
+      $el.find('[title="top hat"] [type=checkbox]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.mostRecent().args[2]).toBe(scope.bag1);
     });
@@ -249,7 +249,7 @@ describe('Directive ivhTreeview', function() {
       var exception;
       $el = compile(tplChangeHandler, scope);
       try {
-        $el.find('li[title="top hat"] [type=checkbox]').click();
+        $el.find('[title="top hat"] [type=checkbox]').click();
       } catch(_exception) {
         exception = _exception;
       }

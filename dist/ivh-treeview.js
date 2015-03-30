@@ -76,8 +76,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   return {
     restrict: 'AE',
     require: '^ivhTreeviewNode',
-    template: '<span ivh-treeview-checkbox-helper="node"></span>',
-    controller: angular.noop
+    template: '<span ivh-treeview-checkbox-helper="node"></span>'
   };
 }]);
 
@@ -93,6 +92,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewChildren', function() {
   'use strict';
   return {
     restrict: 'AE',
+    require: '^ivhTreeviewNode',
     template: [
       '<ul ng-if="getChildren().length" class="ivh-treeview">',
         '<li ng-repeat="child in getChildren()"',
@@ -139,9 +139,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           // Expand/collapse the node as dictated by the expandToDepth property
           ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
 
-          // Set the title to the full label
-          element.attr('title', ctrl.label(node));
-
           /**
            * @todo Provide a way to opt out of this
            */
@@ -157,7 +154,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
         });
     },
     template: [
-      '<div>',
+      '<div title="{{ctrl.label(node)}}">',
         '<span ivh-treeview-toggle>',
           '<span ivh-treeview-twistie></span>',
         '</span>',

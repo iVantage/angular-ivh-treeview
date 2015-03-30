@@ -31,9 +31,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           // Expand/collapse the node as dictated by the expandToDepth property
           ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
 
-          // Set the title to the full label
-          element.attr('title', ctrl.label(node));
-
           /**
            * @todo Provide a way to opt out of this
            */
@@ -49,7 +46,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
         });
     },
     template: [
-      '<div>',
+      '<div title="{{ctrl.label(node)}}">',
         '<span ivh-treeview-toggle>',
           '<span ivh-treeview-twistie></span>',
         '</span>',
