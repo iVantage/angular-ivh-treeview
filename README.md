@@ -89,7 +89,8 @@ app.config(function(ivhTreeviewOptionsProvider) {
     validate: true,
     twistieExpandedTpl: '(-)',
     twistieCollapsedTpl: '(+)',
-    twistieLeafTpl: 'o'
+    twistieLeafTpl: 'o',
+    nodeTpl: '...'
   });
 });
 ```
@@ -170,6 +171,10 @@ object](https://github.com/iVantage/angular-ivh-treeview#all-the-options).
 
 
 ***Demo***: [Custom twisties](http://jsbin.com/gizofu/edit?html,js,output)
+
+### Tree Node Templates
+
+@todo
 
 ### Custom onClick Handlers
 

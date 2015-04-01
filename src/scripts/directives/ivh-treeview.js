@@ -21,6 +21,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
   'use strict';
   return {
     restrict: 'A',
+    transclude: true,
     scope: {
       // The tree data store
       root: '=ivhTreeview',

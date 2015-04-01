@@ -45,20 +45,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           });
         });
     },
-    template: [
-      '<div title="{{ctrl.label(node)}}">',
-        '<span ivh-treeview-toggle>',
-          '<span ivh-treeview-twistie></span>',
-        '</span>',
-        '<span ng-if="ctrl.useCheckboxes()"',
-            'ivh-treeview-checkbox>',
-        '</span>',
-        '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',
-          '{{ctrl.label(node)}}',
-        '</span>',
-        '<div ivh-treeview-children></div>',
-      '</div>'
-    ].join('\n')
+    template: ivhTreeviewOptions().nodeTpl
   };
 }]);
 
