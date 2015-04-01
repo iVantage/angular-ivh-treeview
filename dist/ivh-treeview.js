@@ -1112,7 +1112,6 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
      * Template for tree nodes
      */
     nodeTpl: [
-      //'<div title="{{ctrl.label(node)}}">',
       '<div title="{{ctrl.label(node)}}">',
         '<span ivh-treeview-toggle>',
           '<span ivh-treeview-twistie></span>',
