@@ -180,8 +180,8 @@ object](https://github.com/iVantage/angular-ivh-treeview#all-the-options).
 
 Want to register a callback for whenever a tree node gets clicked? Use the
 `ivh-treeview-click-handler` attribute, the passed function will get called
-whenever the user clicks on a twistie or node label. Your callback will be passed
-a reference to the node and the three that node belongs to.
+whenever the user clicks on a twistie or node label. Your callback will be
+passed a reference to the node and the three that node belongs to.
 
 ```html
 <div ng-controller="MyCtrl as fancy">
