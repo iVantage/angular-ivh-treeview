@@ -256,4 +256,5 @@ describe('Directive ivhTreeview', function() {
       expect(exception).toBeUndefined();
     });
   });
+
 });
