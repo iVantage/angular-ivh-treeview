@@ -174,7 +174,30 @@ object](https://github.com/iVantage/angular-ivh-treeview#all-the-options).
 
 ### Tree Node Templates
 
-@todo
+Tree node templates can be set globally using the `nodeTpl`  options:
+
+```
+app.config(function(ivhTreeviewOptionsProvider) {
+  ivhTreeviewOptionsProvider.set({
+    nodeTpl: '<custom-template></customtemplate>'
+  });
+});
+```
+
+You have access to a number of helper directives when building your node
+templates. These are mostly optional but should make your life a bit easier, not
+that all support both element and attribute level usage:
+
+- `ivh-treeview-toggle` Clicking this element will expand or collapse the tree
+  node if it is not a leaf.
+- `ivh-treeview-twistie` Display as either an "expanded" or "collapsed" twistie
+  as appropriate.
+- `ivh-treeview-checkbox` A checkbox that is "plugged in" to the treeview.  It
+  will reflect your node's selected state and update parents and children
+  appropriately out of the box.
+- `ivh-treeview-children` The recursive step. If you want your tree to display
+  more than one level of nodes you will need to place this some where, or have
+  your own way of getting child nodes into the view.
 
 ### Custom onClick Handlers
 
