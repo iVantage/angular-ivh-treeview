@@ -1,6 +1,6 @@
 /*global jQuery, describe, beforeEach, afterEach, it, module, inject, expect */
 
-describe('Directive: ivhTreeview + with custom node templates', function() {
+describe('Directive: ivhTreeview + custom node templates', function() {
   'use strict';
 
   var nodeTpl, bag;
