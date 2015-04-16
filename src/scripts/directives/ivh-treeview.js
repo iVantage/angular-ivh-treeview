@@ -36,6 +36,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
       expandedAttribute: '=ivhTreeviewExpandedAttribute',
       labelAttribute: '=ivhTreeviewLabelAttribute',
+      nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
@@ -151,6 +152,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.isLeaf = function(node) {
         return ctrl.children(node).length === 0;
+      };
+
+      ctrl.getNodeTpl = function() {
+        return localOpts.nodeTpl;
       };
 
       ctrl.onNodeClick = function(node) {
