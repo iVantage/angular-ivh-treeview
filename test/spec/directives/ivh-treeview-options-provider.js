@@ -3,11 +3,18 @@
 describe('Directive: ivhTreeview + with custom node templates', function() {
   'use strict';
 
-  var nodeTpl, bag;
+  var nodeTpl, nodeTpl2, bag;
 
   beforeEach(function() {
     nodeTpl = [
       '<div class="spicy custom template">',
+        'It is a {{ctrl.label(node)}}',
+        '<div ivh-treeview-children></div>',
+      '</div>'
+    ].join('\n');
+
+    nodeTpl2 = [
+      '<div class="spicier custom template">',
         'It is a {{ctrl.label(node)}}',
         '<div ivh-treeview-children></div>',
       '</div>'
@@ -55,22 +62,22 @@ describe('Directive: ivhTreeview + with custom node templates', function() {
     }));
 
     it('should allow inline template definitions', function() {
-      $s.nodeTpl = nodeTpl;
-      var $el = c('<div ivh-treeview="bag" ivh-treeview-node-tpl="nodeTpl"></div>');
-      expect($el.find('.spicy.custom.template').length).toBe(2);
+      $s.nodeTpl2 = nodeTpl2;
+      var $el = c('<div ivh-treeview="bag" ivh-treeview-node-tpl="nodeTpl2"></div>');
+      expect($el.find('.spicier.custom.template').length).toBe(2);
     });
 
     it('should allow templates in the options object', function() {
       $s.opts = {
-        nodeTpl: nodeTpl
+        nodeTpl: nodeTpl2
       };
       var $el = c('<div ivh-treeview="bag" ivh-treeview-options="opts"></div>');
-      expect($el.find('.spicy.custom.template').length).toBe(2);
+      expect($el.find('.spicier.custom.template').length).toBe(2);
     });
 
     it('should use transcluded content as a node template', function() {
-      var $el = c('<div ivh-treeview="bag">' + nodeTpl + '</div>');
-      expect($el.find('.spicy.custom.template').length).toBe(2);
+      var $el = c('<div ivh-treeview="bag">' + nodeTpl2 + '</div>');
+      expect($el.find('.spicier.custom.template').length).toBe(2);
     });
 
   });

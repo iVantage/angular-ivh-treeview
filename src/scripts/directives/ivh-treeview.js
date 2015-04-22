@@ -36,6 +36,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
       expandedAttribute: '=ivhTreeviewExpandedAttribute',
       labelAttribute: '=ivhTreeviewLabelAttribute',
+      nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
@@ -67,6 +68,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'indeterminateAttribute',
         'expandedAttribute',
         'labelAttribute',
+        'nodeTpl',
         'selectedAttribute',
         'twistieCollapsedTpl',
         'twistieExpandedTpl',
@@ -112,6 +114,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.getFilter = function() {
         return $scope.filter || '';
+      };
+
+      /**
+       * Get the tree node template
+       *
+       * @return {String} The node template
+       */
+      ctrl.getNodeTpl = function() {
+        return localOpts.nodeTpl;
       };
 
       ctrl.isVisible = function(node) {

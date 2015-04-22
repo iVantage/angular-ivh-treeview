@@ -1,6 +1,9 @@
 
 /**
- * Treeview tree node directive
+ * Compile helper for treeview nodes
+ *
+ * Defers compilation until after linking parents. Otherwise our treeview
+ * compilation process would recurse indefinitely.
  *
  * Thanks to http://stackoverflow.com/questions/14430655/recursion-in-angular-directives
  *
@@ -25,19 +28,19 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
       }
 
       // Break the recursion loop by removing the contents
-      var contents = element.contents().remove();
+      element.contents().remove();
       var compiledContents;
       return {
         pre: (link && link.pre) ? link.pre : null,
         /**
          * Compiles and re-adds the contents
          */
-        post: function(scope, element){
-          // Compile the contents
+        post: function(scope, element, attrs, ctrl){
+          // Compile our template
           if(!compiledContents){
-            compiledContents = $compile(contents);
+            compiledContents = $compile(ctrl.getNodeTpl());
           }
-          // Re-add the compiled contents to the element
+          // Add the compiled template
           compiledContents(scope, function(clone){
             element.append(clone);
           });
