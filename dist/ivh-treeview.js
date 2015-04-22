@@ -117,6 +117,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewChildren', function() {
 
 angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompiler', 'ivhTreeviewOptions', function(ivhTreeviewCompiler, ivhTreeviewOptions) {
   'use strict';
+  var _ctrl;
   return {
     restrict: 'A',
     scope: {
@@ -126,31 +127,38 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
     require: '^ivhTreeview',
     compile: function(tElement) {
       return ivhTreeviewCompiler
-        .compile(tElement, function(scope, element, attrs, ctrl) {
-          var node = scope.node;
+        .compile(tElement, {
+          pre: function(scope, element, attrs, ctrl) {
+            _ctrl = ctrl;
+          },
+          post: function(scope, element, attrs, ctrl) {
+            var node = scope.node;
 
-          var getChildren = scope.getChildren = function() {
-            return ctrl.children(node);
-          };
+            var getChildren = scope.getChildren = function() {
+              return ctrl.children(node);
+            };
 
-          scope.ctrl = ctrl;
-          scope.childDepth = scope.depth + 1;
+            scope.ctrl = ctrl;
+            scope.childDepth = scope.depth + 1;
 
-          // Expand/collapse the node as dictated by the expandToDepth property
-          ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
+            // Expand/collapse the node as dictated by the expandToDepth property
+            ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
 
-          /**
-           * @todo Provide a way to opt out of this
-           */
-          var watcher = scope.$watch(function() {
-            return getChildren().length > 0;
-          }, function(newVal) {
-            if(newVal) {
-              element.removeClass('ivh-treeview-node-leaf');
-            } else {
-              element.addClass('ivh-treeview-node-leaf');
-            }
-          });
+            /**
+             * @todo Provide a way to opt out of this
+             */
+            var watcher = scope.$watch(function() {
+              return getChildren().length > 0;
+            }, function(newVal) {
+              if(newVal) {
+                element.removeClass('ivh-treeview-node-leaf');
+              } else {
+                element.addClass('ivh-treeview-node-leaf');
+              }
+            });
+          }
+        }, function() {
+          return _ctrl;
         });
     },
     template: ivhTreeviewOptions().nodeTpl
@@ -301,6 +309,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
       expandedAttribute: '=ivhTreeviewExpandedAttribute',
       labelAttribute: '=ivhTreeviewLabelAttribute',
+      nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
@@ -332,6 +341,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'indeterminateAttribute',
         'expandedAttribute',
         'labelAttribute',
+        'nodeTpl',
         'selectedAttribute',
         'twistieCollapsedTpl',
         'twistieExpandedTpl',
@@ -377,6 +387,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.getFilter = function() {
         return $scope.filter || '';
+      };
+
+      ctrl.getNodeTpl = function() {
+        return localOpts.nodeTpl;
       };
 
       ctrl.isVisible = function(node) {
@@ -527,7 +541,10 @@ angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewOptions', 
 
 
 /**
- * Treeview tree node directive
+ * Compile helper for treeview nodes
+ *
+ * Defers compilation until after linking parents. Otherwise our treeview
+ * compilation process would recurse indefinitely.
  *
  * Thanks to http://stackoverflow.com/questions/14430655/recursion-in-angular-directives
  *
@@ -545,7 +562,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
      * @param {Function} link [optional] A post-link function, or an object with function(s) registered via pre and post properties.
      * @returns An object containing the linking functions.
      */
-    compile: function(element, link){
+    compile: function(element, link, getCtrl){
       // Normalize the link parameter
       if(angular.isFunction(link)){
         link = { post: link };
@@ -562,7 +579,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
         post: function(scope, element){
           // Compile the contents
           if(!compiledContents){
-            compiledContents = $compile(contents);
+            compiledContents = $compile(getCtrl().getNodeTpl());
           }
           // Re-add the compiled contents to the element
           compiledContents(scope, function(clone){
