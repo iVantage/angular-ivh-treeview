@@ -87,7 +87,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       $transclude(function(clone, scope) {
         var transcludedNodeTpl = '';
         angular.forEach(clone, function(c) {
-          transcludedNodeTpl += (c.outerHTML || '').trim();
+          transcludedNodeTpl += (c.innerHTML || '').trim();
         });
         if(transcludedNodeTpl.length) {
           transcludedScope = scope;

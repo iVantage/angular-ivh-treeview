@@ -175,8 +175,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
     restrict: 'A',
     require: '^ivhTreeview',
     link: function(scope, element, attrs, ctrl) {
-      var node = scope.node
-        , children = ctrl.children(node);
+      var node = scope.node;
 
       element.addClass('ivh-treeview-toggle');
 
@@ -352,7 +351,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       $transclude(function(clone, scope) {
         var transcludedNodeTpl = '';
         angular.forEach(clone, function(c) {
-          transcludedNodeTpl += (c.outerHTML || '').trim();
+          transcludedNodeTpl += (c.innerHTML || '').trim();
         });
         if(transcludedNodeTpl.length) {
           transcludedScope = scope;

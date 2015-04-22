@@ -76,7 +76,13 @@ describe('Directive: ivhTreeview + custom node templates', function() {
     });
 
     it('should use transcluded content as a node template', function() {
-      var $el = c('<div ivh-treeview="bag">' + nodeTpl2 + '</div>');
+      var $el = c([
+        '<div ivh-treeview="bag">',
+          '<script type="text/ng-template">',
+            nodeTpl2,
+          '</script>',
+        '</div>'
+      ].join('\n'));
       expect($el.find('.spicier.custom.template').length).toBe(2);
     });
 
