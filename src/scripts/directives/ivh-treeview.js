@@ -82,6 +82,19 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         }
       });
 
+      // Treat the transcluded content (if there is any) as our node template
+      var transcludedScope;
+      $transclude(function(clone, scope) {
+        var transcludedNodeTpl = '';
+        angular.forEach(clone, function(c) {
+          transcludedNodeTpl += (c.outerHTML || '').trim();
+        });
+        if(transcludedNodeTpl.length) {
+          transcludedScope = scope;
+          localOpts.nodeTpl = transcludedNodeTpl;
+        }
+      });
+
       // Give child directives an easy way to get at merged options
       ctrl.opts = function() {
         return localOpts;

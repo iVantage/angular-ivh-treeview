@@ -117,7 +117,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewChildren', function() {
 
 angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompiler', 'ivhTreeviewOptions', function(ivhTreeviewCompiler, ivhTreeviewOptions) {
   'use strict';
-  var _ctrl;
   return {
     restrict: 'A',
     scope: {
@@ -127,38 +126,31 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
     require: '^ivhTreeview',
     compile: function(tElement) {
       return ivhTreeviewCompiler
-        .compile(tElement, {
-          pre: function(scope, element, attrs, ctrl) {
-            _ctrl = ctrl;
-          },
-          post: function(scope, element, attrs, ctrl) {
-            var node = scope.node;
+        .compile(tElement, function(scope, element, attrs, ctrl) {
+          var node = scope.node;
 
-            var getChildren = scope.getChildren = function() {
-              return ctrl.children(node);
-            };
+          var getChildren = scope.getChildren = function() {
+            return ctrl.children(node);
+          };
 
-            scope.ctrl = ctrl;
-            scope.childDepth = scope.depth + 1;
+          scope.ctrl = ctrl;
+          scope.childDepth = scope.depth + 1;
 
-            // Expand/collapse the node as dictated by the expandToDepth property
-            ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
+          // Expand/collapse the node as dictated by the expandToDepth property
+          ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
 
-            /**
-             * @todo Provide a way to opt out of this
-             */
-            var watcher = scope.$watch(function() {
-              return getChildren().length > 0;
-            }, function(newVal) {
-              if(newVal) {
-                element.removeClass('ivh-treeview-node-leaf');
-              } else {
-                element.addClass('ivh-treeview-node-leaf');
-              }
-            });
-          }
-        }, function() {
-          return _ctrl;
+          /**
+           * @todo Provide a way to opt out of this
+           */
+          var watcher = scope.$watch(function() {
+            return getChildren().length > 0;
+          }, function(newVal) {
+            if(newVal) {
+              element.removeClass('ivh-treeview-node-leaf');
+            } else {
+              element.addClass('ivh-treeview-node-leaf');
+            }
+          });
         });
     },
     template: ivhTreeviewOptions().nodeTpl
@@ -355,6 +347,19 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         }
       });
 
+      // Treat the transcluded content (if there is any) as our node template
+      var transcludedScope;
+      $transclude(function(clone, scope) {
+        var transcludedNodeTpl = '';
+        angular.forEach(clone, function(c) {
+          transcludedNodeTpl += (c.outerHTML || '').trim();
+        });
+        if(transcludedNodeTpl.length) {
+          transcludedScope = scope;
+          localOpts.nodeTpl = transcludedNodeTpl;
+        }
+      });
+
       // Give child directives an easy way to get at merged options
       ctrl.opts = function() {
         return localOpts;
@@ -389,6 +394,11 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         return $scope.filter || '';
       };
 
+      /**
+       * Get the tree node template
+       *
+       * @return {String} The node template
+       */
       ctrl.getNodeTpl = function() {
         return localOpts.nodeTpl;
       };
@@ -430,6 +440,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ctrl.isLeaf = function(node) {
         return ctrl.children(node).length === 0;
+      };
+
+      ctrl.getNodeTpl = function() {
+        return localOpts.nodeTpl;
       };
 
       ctrl.onNodeClick = function(node) {
@@ -562,26 +576,26 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
      * @param {Function} link [optional] A post-link function, or an object with function(s) registered via pre and post properties.
      * @returns An object containing the linking functions.
      */
-    compile: function(element, link, getCtrl){
+    compile: function(element, link){
       // Normalize the link parameter
       if(angular.isFunction(link)){
         link = { post: link };
       }
 
       // Break the recursion loop by removing the contents
-      var contents = element.contents().remove();
+      element.contents().remove();
       var compiledContents;
       return {
         pre: (link && link.pre) ? link.pre : null,
         /**
          * Compiles and re-adds the contents
          */
-        post: function(scope, element){
-          // Compile the contents
+        post: function(scope, element, attrs, ctrl){
+          // Compile our template
           if(!compiledContents){
-            compiledContents = $compile(getCtrl().getNodeTpl());
+            compiledContents = $compile(ctrl.getNodeTpl());
           }
-          // Re-add the compiled contents to the element
+          // Add the compiled template
           compiledContents(scope, function(clone){
             element.append(clone);
           });
