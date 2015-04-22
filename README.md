@@ -174,6 +174,8 @@ object](https://github.com/iVantage/angular-ivh-treeview#all-the-options).
 
 ### Tree Node Templates
 
+##### Global Templates
+
 Tree node templates can be set globally using the `nodeTpl`  options:
 
 ```
@@ -183,6 +185,51 @@ app.config(function(ivhTreeviewOptionsProvider) {
   });
 });
 ```
+
+##### Inline Templates
+
+Want different node templates for different trees? This can be accomplished
+using inline templates. These can be specified in one of three ways:
+
+With the `ivh-treeview-node-tpl` attribute:
+
+```
+<div ivh-treeview="fancy.bag"
+     ivh-treeview-node-tpl="variableWithTplAsString"></div>
+```
+
+As a property in the object passed to `ivh-treeview-options`:
+
+```
+<div ivh-treeview="fancy.bag"
+     ivh-treeview-options="{nodeTpl: variableWithTplAsString}"></div>
+```
+
+Or as transcluded content in the treeview directive itself:
+
+```
+<div ivh-treeview="fancy.bag">
+  <scsript type="text/ng-template">
+    <div title="{{ctrl.label(node)}}">
+      <span ivh-treeview-toggle>
+        <span ivh-treeview-twistie></span>
+      </span>
+      <span ng-if="ctrl.useCheckboxes()" ivh-treeview-checkbox>
+      </span>
+     <span class="ivh-treeview-node-label" ivh-treeview-toggle>
+       {{ctrl.label(node)}}
+     </span>
+     <div ivh-treeview-children></div>
+   </div>
+  </scsript>
+</div>
+```
+
+
+##### Template Helper Directives
+
+Note the use of the ng-template script tag wrapping the rest of the transcluded
+content.
 
 You have access to a number of helper directives when building your node
 templates. These are mostly optional but should make your life a bit easier, not
