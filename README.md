@@ -210,14 +210,14 @@ Or as transcluded content in the treeview directive itself:
 ```
 <div ivh-treeview="fancy.bag">
   <scsript type="text/ng-template">
-    <div title="{{ctrl.label(node)}}">
+    <div title="{{trvw.label(node)}}">
       <span ivh-treeview-toggle>
         <span ivh-treeview-twistie></span>
       </span>
-      <span ng-if="ctrl.useCheckboxes()" ivh-treeview-checkbox>
+      <span ng-if="trvw.useCheckboxes()" ivh-treeview-checkbox>
       </span>
      <span class="ivh-treeview-node-label" ivh-treeview-toggle>
-       {{ctrl.label(node)}}
+       {{trvw.label(node)}}
      </span>
      <div ivh-treeview-children></div>
    </div>
@@ -235,16 +235,63 @@ You have access to a number of helper directives when building your node
 templates. These are mostly optional but should make your life a bit easier, not
 that all support both element and attribute level usage:
 
-- `ivh-treeview-toggle` Clicking this element will expand or collapse the tree
-  node if it is not a leaf.
-- `ivh-treeview-twistie` Display as either an "expanded" or "collapsed" twistie
-  as appropriate.
-- `ivh-treeview-checkbox` A checkbox that is "plugged in" to the treeview.  It
-  will reflect your node's selected state and update parents and children
-  appropriately out of the box.
-- `ivh-treeview-children` The recursive step. If you want your tree to display
-  more than one level of nodes you will need to place this some where, or have
-  your own way of getting child nodes into the view.
+- `ivh-treeview-toggle` (*attribute*) Clicking this element will expand or
+  collapse the tree node if it is not a leaf.
+- `ivh-treeview-twistie` (*attribute*) Display as either an "expanded" or
+  "collapsed" twistie as appropriate.
+- `ivh-treeview-checkbox` (*attribute*|*element*) A checkbox that is "plugged
+  in" to the treeview.  It will reflect your node's selected state and update
+  parents and children appropriately out of the box.
+- `ivh-treeview-children` (*attribute*|*element*) The recursive step. If you
+  want your tree to display more than one level of nodes you will need to place
+  this some where, or have your own way of getting child nodes into the view.
+
+#### Supported Template Scope Variables
+
+**`node`**
+
+A reference to the tree node itself. Note that in general you should use
+controller helper methods to access node properties when possible.
+
+**`trvw`**
+
+A reference to the treeview controller with a number of useful properties and
+helper functions:
+
+- `trvw.select(Object node[, Boolean isSelected])` <br>
+  Set the seleted state of `node` to `isSelected`. The will update parent and
+  child node selected states appropriately. `isSelected` defaults to `true`.
+- `trvw.isSelected(Object node) -> Boolean` <br>
+  Returns `true` if `node` is selected and `false` otherwise.
+- `trvw.toggleSelected(Object node)` <br>
+  Toggles the selected state of `node`. This will update parent and child note
+  selected states appropriately.
+- `trvw.expand(Object node[, Boolean isExpanded])` <br>
+  Set the expanded state of `node` to `isExpanded`, i.e. expand or collapse
+  `node`. `isExpanded` defaults to `true`.
+- `trvw.isExpanded(Object node) --> Boolean` <br>
+  Returns `true` if `node` is expanded and `false` otherwise.
+- `trvw.toggleExpanded(Object node)` <br>
+  Toggle the expanded state of `node`.
+- `trvw.isLeaf(Object node) --> Boolean` <br>
+  Returns `true` if `node` is a leaf node in the tree and `false` otherwise.
+- `trvw.label(Object node) --> String` <br>
+  Returns the label attribute of `node` as determined by the `labelAttribute`
+  treeview option.
+- `trvw.children(Object node) --> Array` <br>
+  Returns the array of children for `node`. Returns an empty array if `node` has
+  no children or the `childrenAttribute` property value is not defined.
+- `trvw.opts() --> Object` <br>
+  Returns a merged version of the global and local options.
+- `trvw.isVisible(Object node) --> Boolean` <br>
+  Returns `true` if `node` should be considered visible under the current
+  **filter** and `false` otherwise. Note that this only relates to treeview
+  filters and does not take into account whether or not `node` can actually be
+  seen as a result of expanded/collapsed parents.
+- `trvw.useCheckboxes() --> Boolean` <br>
+  Returns `true` if checkboxes should be used in the treeview and `false`
+  otherwise.
+
 
 ### Custom onClick Handlers
 
