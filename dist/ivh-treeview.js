@@ -419,6 +419,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         trvw.onNodeChange(node, isSelected);
       };
 
+      trvw.isSelected = function(node) {
+        return node[localOpts.selectedAttribute];
+      };
+
+      trvw.toggleSelected = function(node) {
+        var isSelected = !node[localOpts.selectedAttribute];
+        trvw.select(node, isSelected);
+      };
+
       trvw.expand = function(node, isExpanded) {
         ivhTreeviewMgr.expand($scope.root, node, localOpts, isExpanded);
       };
