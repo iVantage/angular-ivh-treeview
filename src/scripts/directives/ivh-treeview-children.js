@@ -14,8 +14,8 @@ angular.module('ivh.treeview').directive('ivhTreeviewChildren', function() {
     template: [
       '<ul ng-if="getChildren().length" class="ivh-treeview">',
         '<li ng-repeat="child in getChildren()"',
-            'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
-            'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
+            'ng-hide="trvw.hasFilter() && !trvw.isVisible(child)"',
+            'ng-class="{\'ivh-treeview-node-collapsed\': !trvw.isExpanded(child) && !trvw.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="childDepth">',
         '</li>',

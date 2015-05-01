@@ -35,10 +35,10 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
         /**
          * Compiles and re-adds the contents
          */
-        post: function(scope, element, attrs, ctrl){
+        post: function(scope, element, attrs, trvw){
           // Compile our template
           if(!compiledContents){
-            compiledContents = $compile(ctrl.getNodeTpl());
+            compiledContents = $compile(trvw.getNodeTpl());
           }
           // Add the compiled template
           compiledContents(scope, function(clone){

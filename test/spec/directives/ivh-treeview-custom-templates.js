@@ -8,14 +8,14 @@ describe('Directive: ivhTreeview + custom node templates', function() {
   beforeEach(function() {
     nodeTpl = [
       '<div class="spicy custom template">',
-        'It is a {{ctrl.label(node)}}',
+        'It is a {{trvw.label(node)}}',
         '<div ivh-treeview-children></div>',
       '</div>'
     ].join('\n');
 
     nodeTpl2 = [
       '<div class="spicier custom template">',
-        'It is a {{ctrl.label(node)}}',
+        'It is a {{trvw.label(node)}}',
         '<div ivh-treeview-children></div>',
       '</div>'
     ].join('\n');

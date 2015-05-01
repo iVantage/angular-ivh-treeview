@@ -51,10 +51,10 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // The filter
       filter: '=ivhTreeviewFilter'
     },
-    controllerAs: 'ctrl',
+    controllerAs: 'trvw',
     controller: ['$scope', '$element', '$attrs', '$transclude', 'ivhTreeviewOptions', 'filterFilter', function($scope, $element, $attrs, $transclude, ivhTreeviewOptions, filterFilter) {
       var ng = angular
-        , ctrl = this;
+        , trvw = this;
 
       // Merge any locally set options with those registered with hte
       // ivhTreeviewOptions provider
@@ -96,7 +96,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       });
 
       // Give child directives an easy way to get at merged options
-      ctrl.opts = function() {
+      trvw.opts = function() {
         return localOpts;
       };
 
@@ -104,7 +104,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // extra checks for no reason. Let's just inform down stream directives
       // whether or not they need to worry about twistie non-global templates.
       var userOpts = $scope.userOptions || {};
-      ctrl.hasLocalTwistieTpls = !!(
+      trvw.hasLocalTwistieTpls = !!(
         userOpts.twistieCollapsedTpl ||
         userOpts.twistieExpandedTpl ||
         userOpts.twistieLeafTpl ||
@@ -112,20 +112,20 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         $scope.twistieExpandedTpl ||
         $scope.twistieLeafTpl);
 
-      ctrl.children = function(node) {
+      trvw.children = function(node) {
         var children = node[localOpts.childrenAttribute];
         return ng.isArray(children) ? children : [];
       };
 
-      ctrl.label = function(node) {
+      trvw.label = function(node) {
         return node[localOpts.labelAttribute];
       };
 
-      ctrl.hasFilter = function() {
+      trvw.hasFilter = function() {
         return ng.isDefined($scope.filter);
       };
 
-      ctrl.getFilter = function() {
+      trvw.getFilter = function() {
         return $scope.filter || '';
       };
 
@@ -134,63 +134,63 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        *
        * @return {String} The node template
        */
-      ctrl.getNodeTpl = function() {
+      trvw.getNodeTpl = function() {
         return localOpts.nodeTpl;
       };
 
-      ctrl.isVisible = function(node) {
-        var filter = ctrl.getFilter();
+      trvw.isVisible = function(node) {
+        var filter = trvw.getFilter();
         if(!filter) {
           return true;
         }
         return !!filterFilter([node], filter).length;
       };
 
-      ctrl.useCheckboxes = function() {
+      trvw.useCheckboxes = function() {
         return localOpts.useCheckboxes;
       };
 
-      ctrl.select = function(node, isSelected) {
+      trvw.select = function(node, isSelected) {
         ivhTreeviewMgr.select($scope.root, node, localOpts, isSelected);
-        ctrl.onNodeChange(node, isSelected);
+        trvw.onNodeChange(node, isSelected);
       };
 
-      ctrl.expand = function(node, isExpanded) {
+      trvw.expand = function(node, isExpanded) {
         ivhTreeviewMgr.expand($scope.root, node, localOpts, isExpanded);
       };
 
-      ctrl.isExpanded = function(node) {
+      trvw.isExpanded = function(node) {
         return node[localOpts.expandedAttribute];
       };
 
-      ctrl.toggleExpanded = function(node) {
-        ctrl.expand(node, !ctrl.isExpanded(node));
+      trvw.toggleExpanded = function(node) {
+        trvw.expand(node, !trvw.isExpanded(node));
       };
 
-      ctrl.isInitiallyExpanded = function(depth) {
+      trvw.isInitiallyExpanded = function(depth) {
         var expandTo = localOpts.expandToDepth === -1 ?
           Infinity : localOpts.expandToDepth;
         return depth < expandTo;
       };
 
-      ctrl.isLeaf = function(node) {
-        return ctrl.children(node).length === 0;
+      trvw.isLeaf = function(node) {
+        return trvw.children(node).length === 0;
       };
 
-      ctrl.getNodeTpl = function() {
+      trvw.getNodeTpl = function() {
         return localOpts.nodeTpl;
       };
 
-      ctrl.onNodeClick = function(node) {
+      trvw.onNodeClick = function(node) {
         ($scope.clickHandler || angular.noop)(node, $scope.root);
       };
 
-      ctrl.onNodeChange = function(node, isSelected) {
+      trvw.onNodeChange = function(node, isSelected) {
         ($scope.changeHandler || angular.noop)(node, isSelected, $scope.root);
       };
     }],
     link: function(scope, element, attrs) {
-      var opts = scope.ctrl.opts();
+      var opts = scope.trvw.opts();
 
       // Allow opt-in validate on startup
       if(opts.validate) {
@@ -200,8 +200,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
     template: [
       '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
-            'ng-hide="ctrl.hasFilter() && !ctrl.isVisible(child)"',
-            'ng-class="{\'ivh-treeview-node-collapsed\': !ctrl.isExpanded(child) && !ctrl.isLeaf(child)}"',
+            'ng-hide="trvw.hasFilter() && !trvw.isVisible(child)"',
+            'ng-class="{\'ivh-treeview-node-collapsed\': !trvw.isExpanded(child) && !trvw.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="0">',
         '</li>',

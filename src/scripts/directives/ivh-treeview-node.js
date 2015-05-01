@@ -18,18 +18,18 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
     require: '^ivhTreeview',
     compile: function(tElement) {
       return ivhTreeviewCompiler
-        .compile(tElement, function(scope, element, attrs, ctrl) {
+        .compile(tElement, function(scope, element, attrs, trvw) {
           var node = scope.node;
 
           var getChildren = scope.getChildren = function() {
-            return ctrl.children(node);
+            return trvw.children(node);
           };
 
-          scope.ctrl = ctrl;
+          scope.trvw = trvw;
           scope.childDepth = scope.depth + 1;
 
           // Expand/collapse the node as dictated by the expandToDepth property
-          ctrl.expand(node, ctrl.isInitiallyExpanded(scope.depth));
+          trvw.expand(node, trvw.isInitiallyExpanded(scope.depth));
 
           /**
            * @todo Provide a way to opt out of this

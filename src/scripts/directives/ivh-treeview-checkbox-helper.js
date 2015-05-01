@@ -15,9 +15,9 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
       node: '=ivhTreeviewCheckboxHelper'
     },
     require: '^ivhTreeview',
-    link: function(scope, element, attrs, ctrl) {
+    link: function(scope, element, attrs, trvw) {
       var node = scope.node
-        , opts = ctrl.opts()
+        , opts = trvw.opts()
         , indeterminateAttr = opts.indeterminateAttribute
         , selectedAttr = opts.selectedAttribute;
 
@@ -25,7 +25,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
       scope.isSelected = node[selectedAttr];
 
       // Local access to the parent controller
-      scope.ctrl = ctrl;
+      scope.trvw = trvw;
 
       // Update the checkbox when the node's selected status changes
       scope.$watch(function() {
@@ -44,7 +44,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
     template: [
       '<input type="checkbox"',
         'ng-model="isSelected"',
-        'ng-change="ctrl.select(node, isSelected)" />'
+        'ng-change="trvw.select(node, isSelected)" />'
     ].join('\n')
   };
 }]);

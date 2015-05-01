@@ -28,13 +28,13 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
         '</span>',
       '</span>'
     ].join('\n'),
-    link: function(scope, element, attrs, ctrl) {
+    link: function(scope, element, attrs, trvw) {
 
-      if(!ctrl.hasLocalTwistieTpls) {
+      if(!trvw.hasLocalTwistieTpls) {
         return;
       }
 
-      var opts = ctrl.opts()
+      var opts = trvw.opts()
         , $twistieContainers = element
           .children().eq(0) // Template root
           .children(); // The twistie spans
