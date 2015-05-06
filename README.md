@@ -181,7 +181,7 @@ Tree node templates can be set globally using the `nodeTpl`  options:
 ```
 app.config(function(ivhTreeviewOptionsProvider) {
   ivhTreeviewOptionsProvider.set({
-    nodeTpl: '<custom-template></customtemplate>'
+    nodeTpl: '<custom-template></custom-template>'
   });
 });
 ```
@@ -189,7 +189,7 @@ app.config(function(ivhTreeviewOptionsProvider) {
 ##### Inline Templates
 
 Want different node templates for different trees? This can be accomplished
-using inline templates. These can be specified in one of three ways:
+using inline templates. Inline templates can be specified in any of three ways:
 
 With the `ivh-treeview-node-tpl` attribute:
 
@@ -198,7 +198,7 @@ With the `ivh-treeview-node-tpl` attribute:
      ivh-treeview-node-tpl="variableWithTplAsString"></div>
 ```
 
-As a property in the object passed to `ivh-treeview-options`:
+As a property in the `ivh-treeview-options` object:
 
 ```
 <div ivh-treeview="fancy.bag"
@@ -225,11 +225,14 @@ Or as transcluded content in the treeview directive itself:
 </div>
 ```
 
+Note the use of the ng-template script tag wrapping the rest of the transcluded
+content, this wrapper is a mandatory. Also note that this form is intended to
+serve as a convenient and declarative way to essentially provide a template
+string to your treeview. The template itself does not (currently) have access a
+transcluded scope.
+
 
 ##### Template Helper Directives
-
-Note the use of the ng-template script tag wrapping the rest of the transcluded
-content.
 
 You have access to a number of helper directives when building your node
 templates. These are mostly optional but should make your life a bit easier, not
@@ -289,7 +292,7 @@ helper functions:
   filters and does not take into account whether or not `node` can actually be
   seen as a result of expanded/collapsed parents.
 - `trvw.useCheckboxes() --> Boolean` <br>
-  Returns `true` if checkboxes should be used in the treeview and `false`
+  Returns `true` if checkboxes should be used in the template and `false`
   otherwise.
 
 
