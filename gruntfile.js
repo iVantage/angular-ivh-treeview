@@ -16,6 +16,33 @@ module.exports = function(grunt) {
       test: 'test/**/*.js'
     },
 
+    jscs: {
+      options: {
+        config: '.jscsrc'
+      },
+      gruntfile: {
+        files: {
+          src: [
+            'gruntfile.js'
+          ]
+        }
+      },
+      spec: {
+        files: {
+          src: [
+            'test/spec/**/*.js'
+          ]
+        }
+      },
+      scripts: {
+        files: {
+          src: [
+            'src/scripts/**/*.js'
+          ]
+        }
+      }
+    },
+
     clean: {
       dist: 'dist'
     },
