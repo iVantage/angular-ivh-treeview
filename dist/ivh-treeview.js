@@ -83,7 +83,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
 
 /**
  * The recursive step, output child nodes for the scope node
- * 
+ *
  * @package ivh.treeview
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
@@ -229,10 +229,10 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
         , $twistieContainers = element
           .children().eq(0) // Template root
           .children(); // The twistie spans
-      
+
       angular.forEach([
         // Should be in the same order as elements in template
-        'twistieCollapsedTpl', 
+        'twistieCollapsedTpl',
         'twistieExpandedTpl',
         'twistieLeafTpl'
       ], function(tplKey, ix) {
@@ -247,7 +247,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
         // Super gross, the template must actually be an html string, we won't
         // try too hard to enforce this, just don't shoot yourself in the foot
         // too badly and everything will be alright.
-        if(tpl.substr(0,1) !== '<' || tpl.substr(-1,1) !== '>') {
+        if(tpl.substr(0, 1) !== '<' || tpl.substr(-1, 1) !== '>') {
           tpl = '<span>' + tpl + '</span>';
         }
 
@@ -627,6 +627,7 @@ angular.module('ivh.treeview').filter('ivhTreeviewAsArray', function() {
   };
 });
 
+
 /**
  * Breadth first searching for treeview data stores
  *
@@ -707,7 +708,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewBfs', ['ivhTreeviewOptions', 
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', function($compile){
+angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', function($compile) {
   'use strict';
   return {
     /**
@@ -716,9 +717,9 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
      * @param {Function} link [optional] A post-link function, or an object with function(s) registered via pre and post properties.
      * @returns An object containing the linking functions.
      */
-    compile: function(element, link){
+    compile: function(element, link) {
       // Normalize the link parameter
-      if(angular.isFunction(link)){
+      if(angular.isFunction(link)) {
         link = { post: link };
       }
 
@@ -730,18 +731,18 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
         /**
          * Compiles and re-adds the contents
          */
-        post: function(scope, element, attrs, trvw){
+        post: function(scope, element, attrs, trvw) {
           // Compile our template
-          if(!compiledContents){
+          if(!compiledContents) {
             compiledContents = $compile(trvw.getNodeTpl());
           }
           // Add the compiled template
-          compiledContents(scope, function(clone){
+          compiledContents(scope, function(clone) {
             element.append(clone);
           });
 
           // Call the post-linking function, if any
-          if(link && link.post){
+          if(link && link.post) {
             link.post.apply(null, arguments);
           }
         }
@@ -1028,7 +1029,7 @@ angular.module('ivh.treeview')
     /**
      * Expand/collapse a given tree node
      *
-     * `node` may be either an actual tree node object or a node id. 
+     * `node` may be either an actual tree node object or a node id.
      *
      * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
      *

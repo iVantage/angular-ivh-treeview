@@ -38,10 +38,10 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
         , $twistieContainers = element
           .children().eq(0) // Template root
           .children(); // The twistie spans
-      
+
       angular.forEach([
         // Should be in the same order as elements in template
-        'twistieCollapsedTpl', 
+        'twistieCollapsedTpl',
         'twistieExpandedTpl',
         'twistieLeafTpl'
       ], function(tplKey, ix) {
@@ -56,7 +56,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewTwistie', ['$compile', 'ivh
         // Super gross, the template must actually be an html string, we won't
         // try too hard to enforce this, just don't shoot yourself in the foot
         // too badly and everything will be alright.
-        if(tpl.substr(0,1) !== '<' || tpl.substr(-1,1) !== '>') {
+        if(tpl.substr(0, 1) !== '<' || tpl.substr(-1, 1) !== '>') {
           tpl = '<span>' + tpl + '</span>';
         }
 

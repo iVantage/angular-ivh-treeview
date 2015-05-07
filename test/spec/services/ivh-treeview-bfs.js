@@ -31,17 +31,17 @@ describe('Service: ivhTreeviewBfs', function() {
         children: [{
           label: 'Fedora',
           id: 'fedora'
-        },{
+        }, {
           label: 'Flatcap',
           id: 'flatcap'
         }]
-      },{
+      }, {
         label: 'Bags',
         id: 'bags',
         children: [{
           label: 'Messenger',
           id: 'messenger'
-        },{
+        }, {
           label: 'Backpack',
           id: 'backpack'
         }]

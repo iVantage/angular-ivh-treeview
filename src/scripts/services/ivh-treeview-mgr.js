@@ -276,7 +276,7 @@ angular.module('ivh.treeview')
     /**
      * Expand/collapse a given tree node
      *
-     * `node` may be either an actual tree node object or a node id. 
+     * `node` may be either an actual tree node object or a node id.
      *
      * `opts` may override any of the defaults set by `ivhTreeviewOptions`.
      *

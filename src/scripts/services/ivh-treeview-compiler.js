@@ -12,7 +12,7 @@
  * @copyright 2014 iVantage Health Analytics, Inc.
  */
 
-angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', function($compile){
+angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', function($compile) {
   'use strict';
   return {
     /**
@@ -21,9 +21,9 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
      * @param {Function} link [optional] A post-link function, or an object with function(s) registered via pre and post properties.
      * @returns An object containing the linking functions.
      */
-    compile: function(element, link){
+    compile: function(element, link) {
       // Normalize the link parameter
-      if(angular.isFunction(link)){
+      if(angular.isFunction(link)) {
         link = { post: link };
       }
 
@@ -35,18 +35,18 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
         /**
          * Compiles and re-adds the contents
          */
-        post: function(scope, element, attrs, trvw){
+        post: function(scope, element, attrs, trvw) {
           // Compile our template
-          if(!compiledContents){
+          if(!compiledContents) {
             compiledContents = $compile(trvw.getNodeTpl());
           }
           // Add the compiled template
-          compiledContents(scope, function(clone){
+          compiledContents(scope, function(clone) {
             element.append(clone);
           });
 
           // Call the post-linking function, if any
-          if(link && link.post){
+          if(link && link.post) {
             link.post.apply(null, arguments);
           }
         }

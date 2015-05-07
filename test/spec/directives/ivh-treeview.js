@@ -48,14 +48,14 @@ describe('Directive ivhTreeview', function() {
       label: 'top hat',
       children: [{
         label: 'flat cap'
-      },{
+      }, {
         label: 'fedora',
         children: [
           {label: 'gatsby'},
           {label: 'gatsby 2'}
         ]
       }]
-    },{
+    }, {
       label: 'baseball', children: []
     }];
 
@@ -92,7 +92,7 @@ describe('Directive ivhTreeview', function() {
       expect($el.find('[title="top hat"]').parent('li').hasClass('ivh-treeview-node-collapsed')).toBe(false);
       expect($el.find('[title="fedora"]').parent('li').hasClass('ivh-treeview-node-collapsed')).toBe(true);
     });
-     
+
     it('should allow roots objects', function() {
       $el = compile(tplObjRoot, scope);
       expect($el.find('ul').first().find('ul').length).toBe(2);
