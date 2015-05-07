@@ -506,6 +506,12 @@ many changes as necessary to demonstrate your issue but do comment your added
 code.
 
 
+## Contributing
+
+Please see our consolidated [contribution
+guidelines](https://github.com/iVantage/Contribution-Guidelines).
+
+
 ## Release history
 
 - 2015-05-06 v0.10.0 Make node templates customizable
