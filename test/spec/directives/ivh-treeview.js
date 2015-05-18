@@ -17,6 +17,7 @@ describe('Directive ivhTreeview', function() {
   var tplBasic = '<div ivh-treeview="bag1"></div>';
   var tplValidate = '<div ivh-treeview="bag1" ivh-treeview-validate="true"></div>';
   var tplExpand = '<div ivh-treeview="bag1" ivh-treeview-expand-to-depth="1"></div>';
+  var tplExpandedAttr = '<div ivh-treeview="bag1" ivh-treeview-expanded-attribute="\'expanded\'"></div>';
   var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
   var tplOptions = '<div ivh-treeview="bag1" ivh-treeview-options="customOpts"></div>';
   var tplInlineTpls = '<div ivh-treeview="bag1" ivh-treeview-twistie-collapsed-tpl="\'[BOOM]\'"></div>';
@@ -91,6 +92,16 @@ describe('Directive ivhTreeview', function() {
       $el = compile(tplExpand, scope);
       expect($el.find('[title="top hat"]').parent('li').hasClass('ivh-treeview-node-collapsed')).toBe(false);
       expect($el.find('[title="fedora"]').parent('li').hasClass('ivh-treeview-node-collapsed')).toBe(true);
+    });
+
+    it('should honor inline expanded attribute declarations', function() {
+      $el = compile(tplExpandedAttr, scope);
+      var fedora = scope.bag1[0].children[1]
+        , $fedora = $el.find('[title="fedora"]');
+      $fedora.find('[ivh-treeview-twistie]').click();
+      expect($fedora.parent().hasClass('ivh-treeview-node-collapsed')).toBe(false);
+      expect(fedora.__ivhTreeviewExpanded).toBeUndefined();
+      expect(fedora.expanded).toBe(true);
     });
 
     it('should allow roots objects', function() {

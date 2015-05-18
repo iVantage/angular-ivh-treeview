@@ -254,6 +254,12 @@ describe('Service: ivhTreeviewMgr', function() {
       expect(ivhTreeviewMgr.expand(tree, bags)).toBe(ivhTreeviewMgr);
     });
 
+    it('should honor local options for the is-expanded attribute', function() {
+      ivhTreeviewMgr.expand(tree, bags, {expandedAttribute: 'expanded'}, true);
+      expect(bags.expanded).toBe(true);
+      expect(bags.__ivhTreeviewExpanded).toBeUndefined();
+    });
+
   });
 
   describe('#expandRecursive', function() {
