@@ -116,7 +116,7 @@ If you want the tree to start out expanded to a certain depth use the
 </div>
 ```
 
-You can also sue the `ivhTreeviewOptionsProvider` to set a global default.
+You can also use the `ivhTreeviewOptionsProvider` to set a global default.
 
 If you want the tree *entirely* expanded use a depth of `-1`.
 
