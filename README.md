@@ -209,7 +209,7 @@ Or as transcluded content in the treeview directive itself:
 
 ```
 <div ivh-treeview="fancy.bag">
-  <scsript type="text/ng-template">
+  <script type="text/ng-template">
     <div title="{{trvw.label(node)}}">
       <span ivh-treeview-toggle>
         <span ivh-treeview-twistie></span>
@@ -221,7 +221,7 @@ Or as transcluded content in the treeview directive itself:
      </span>
      <div ivh-treeview-children></div>
    </div>
-  </scsript>
+  </script>
 </div>
 ```
 
