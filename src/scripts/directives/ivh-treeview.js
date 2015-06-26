@@ -28,7 +28,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       // Specific config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
-      clickHandler: '=ivhTreeviewClickHandler',
       changeHandler: '=ivhTreeviewChangeHandler',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
@@ -38,6 +37,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       labelAttribute: '=ivhTreeviewLabelAttribute',
       nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
+      toggleHandler: '=ivhTreeviewToggleHandler',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
       twistieLeafTpl: '=ivhTreeviewTwistieLeafTpl',
@@ -313,7 +313,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        * @private
        */
       trvw.onNodeClick = function(node) {
-        ($scope.clickHandler || angular.noop)(node, $scope.root);
+        ($scope.toggleHandler || angular.noop)(node, $scope.root);
       };
 
       /**

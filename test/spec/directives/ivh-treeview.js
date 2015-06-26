@@ -29,10 +29,10 @@ describe('Directive ivhTreeview', function() {
       '></div>'
   ].join('\n');
 
-  var tplClickHandler = [
+  var tplToggleHandler = [
     '<div',
       'ivh-treeview="bag1"',
-      'ivh-treeview-click-handler="onNodeClick"',
+      'ivh-treeview-toggle-handler="onNodeToggle"',
       '></div>'
   ].join('\n');
 
@@ -187,8 +187,8 @@ describe('Directive ivhTreeview', function() {
 
     beforeEach(function() {
       handlerSpy = jasmine.createSpy('handlerSpy');
-      scope.onNodeClick = handlerSpy;
-      $el = compile(tplClickHandler, scope);
+      scope.onNodeToggle = handlerSpy;
+      $el = compile(tplToggleHandler, scope);
     });
 
     it('should call the click handler once per click', function() {
@@ -210,9 +210,9 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should not generate an error when there is no handler', function() {
-      delete scope.onNodeClick;
+      delete scope.onNodeToggle;
       var exception;
-      $el = compile(tplClickHandler, scope);
+      $el = compile(tplToggleHandler, scope);
       try {
         $el.find('[title="top hat"] [ivh-treeview-toggle]').click();
       } catch(_exception) {
