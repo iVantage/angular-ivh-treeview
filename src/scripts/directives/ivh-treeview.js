@@ -305,14 +305,14 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Call the registered node click handler
+       * Call the registered toggle handler
        *
        * Handler will get a reference to `node` and the root of the tree.
        *
        * @param {Object} node Tree node to pass to the handler
        * @private
        */
-      trvw.onNodeClick = function(node) {
+      trvw.onNodeToggle = function(node) {
         ($scope.toggleHandler || angular.noop)(node, $scope.root);
       };
 

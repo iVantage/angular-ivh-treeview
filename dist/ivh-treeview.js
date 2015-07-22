@@ -181,7 +181,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
 
       element.bind('click', function() {
         scope.$apply(function() {
-          trvw.onNodeClick(node);
+          trvw.onNodeToggle(node);
           trvw.toggleExpanded(node);
         });
       });
@@ -292,7 +292,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       // Specific config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
-      clickHandler: '=ivhTreeviewClickHandler',
       changeHandler: '=ivhTreeviewChangeHandler',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
@@ -302,6 +301,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       labelAttribute: '=ivhTreeviewLabelAttribute',
       nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
+      toggleHandler: '=ivhTreeviewToggleHandler',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
       twistieLeafTpl: '=ivhTreeviewTwistieLeafTpl',
@@ -569,15 +569,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Call the registered node click handler
+       * Call the registered toggle handler
        *
        * Handler will get a reference to `node` and the root of the tree.
        *
        * @param {Object} node Tree node to pass to the handler
        * @private
        */
-      trvw.onNodeClick = function(node) {
-        ($scope.clickHandler || angular.noop)(node, $scope.root);
+      trvw.onNodeToggle = function(node) {
+        ($scope.toggleHandler || angular.noop)(node, $scope.root);
       };
 
       /**
