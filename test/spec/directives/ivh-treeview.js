@@ -32,14 +32,14 @@ describe('Directive ivhTreeview', function() {
   var tplToggleHandler = [
     '<div',
       'ivh-treeview="bag1"',
-      'ivh-treeview-toggle-handler="onNodeToggle"',
+      'ivh-treeview-on-toggle="onNodeToggle(ivhNode, ivhTree)"',
       '></div>'
   ].join('\n');
 
-  var tplChangeHandler = [
+  var tplCbClickHandler = [
     '<div',
       'ivh-treeview="bag1"',
-      'ivh-treeview-change-handler="onNodeChange"',
+      'ivh-treeview-on-cb-change="onCbChange(ivhNode, ivhIsSelected, ivhTree)"',
       '></div>'
   ].join('\n');
 
@@ -220,15 +220,31 @@ describe('Directive ivhTreeview', function() {
       }
       expect(exception).toBeUndefined();
     });
+
+    it('should pass the clicked node and tree to the callback via an object when registered through an options hash', function() {
+      scope.opts = {
+        onToggle: handlerSpy
+      };
+      var tpl = '<div ivh-treeview="bag1" ivh-treeview-options="opts" ></div>';
+
+      $el = compile(tpl, scope);
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+
+      expect(handlerSpy.calls.mostRecent().args[0]).toEqual({
+        ivhNode: scope.bag1[0],
+        ivhTree: scope.bag1
+      });
+    });
   });
 
-  describe('change handlers', function() {
+  describe('checkbox click handlers', function() {
     var $el, handlerSpy;
 
     beforeEach(function() {
       handlerSpy = jasmine.createSpy('handlerSpy');
-      scope.onNodeChange = handlerSpy;
-      $el = compile(tplChangeHandler, scope);
+      scope.onCbChange = handlerSpy;
+      $el = compile(tplCbClickHandler, scope);
     });
 
     it('should call the change handler when checkbox state is changed', function() {
@@ -256,15 +272,32 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should not generate an error when there is no handler', function() {
-      delete scope.onNodeChange;
+      delete scope.onCbChange;
       var exception;
-      $el = compile(tplChangeHandler, scope);
+      $el = compile(tplCbClickHandler, scope);
       try {
         $el.find('[title="top hat"] [type=checkbox]').click();
       } catch(_exception) {
         exception = _exception;
       }
       expect(exception).toBeUndefined();
+    });
+
+    it('should pass the clicked node, selected state, and tree to the callback via an object when registered through an options hash', function() {
+      scope.opts = {
+        onCbChange: handlerSpy
+      };
+      var tpl = '<div ivh-treeview="bag1" ivh-treeview-options="opts" ></div>';
+
+      $el = compile(tpl, scope);
+      $el.find('[title="top hat"] [type=checkbox]').first().click();
+      scope.$apply();
+
+      expect(handlerSpy.calls.mostRecent().args[0]).toEqual({
+        ivhNode: scope.bag1[0],
+        ivhIsSelected: jasmine.any(Boolean),
+        ivhTree: scope.bag1
+      });
     });
   });
 

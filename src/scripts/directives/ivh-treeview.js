@@ -28,7 +28,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       // Specific config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
-      changeHandler: '=ivhTreeviewChangeHandler',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
@@ -37,7 +36,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       labelAttribute: '=ivhTreeviewLabelAttribute',
       nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
-      toggleHandler: '=ivhTreeviewToggleHandler',
+      onCbChange: '&ivhTreeviewOnCbChange',
+      onToggle: '&ivhTreeviewOnToggle',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
       twistieLeafTpl: '=ivhTreeviewTwistieLeafTpl',
@@ -60,6 +60,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // ivhTreeviewOptions provider
       var localOpts = ng.extend({}, ivhTreeviewOptions(), $scope.userOptions);
 
+      // Two-way bound attributes (=) can be copied over directly if they're
+      // non-empty
       ng.forEach([
         'childrenAttribute',
         'defaultSelectedState',
@@ -78,6 +80,24 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'visibleAttribute'
       ], function(attr) {
         if(ng.isDefined($scope[attr])) {
+          localOpts[attr] = $scope[attr];
+        }
+      });
+
+      // Attrs with the `&` prefix will yield a defined scope entity even if
+      // no value is specified. We must check to make sure the attribute string
+      // is non-empty before copying over the scope value.
+      var normedAttr = function(attrKey) {
+        return 'ivhTreeview' +
+          attrKey.charAt(0).toUpperCase() +
+          attrKey.slice(1);
+      };
+
+      ng.forEach([
+        'onCbChange',
+        'onToggle',
+      ], function(attr) {
+        if($attrs[normedAttr(attr)]) {
           localOpts[attr] = $scope[attr];
         }
       });
@@ -213,7 +233,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        */
       trvw.select = function(node, isSelected) {
         ivhTreeviewMgr.select($scope.root, node, localOpts, isSelected);
-        trvw.onNodeChange(node, isSelected);
+        trvw.onCbChange(node, isSelected);
       };
 
       /**
@@ -312,8 +332,14 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        * @param {Object} node Tree node to pass to the handler
        * @private
        */
-      trvw.onNodeToggle = function(node) {
-        ($scope.toggleHandler || angular.noop)(node, $scope.root);
+      trvw.onToggle = function(node) {
+        if(localOpts.onToggle) {
+          var locals = {
+            ivhNode: node,
+            ivhTree: $scope.root
+          };
+          localOpts.onToggle(locals);
+        }
       };
 
       /**
@@ -326,8 +352,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        * @param {Boolean} isSelected Selected state for `node`
        * @private
        */
-      trvw.onNodeChange = function(node, isSelected) {
-        ($scope.changeHandler || angular.noop)(node, isSelected, $scope.root);
+      trvw.onCbChange = function(node, isSelected) {
+        if(localOpts.onCbChange) {
+          var locals = {
+            ivhNode: node,
+            ivhIsSelected: isSelected,
+            ivhTree: $scope.root
+          };
+          localOpts.onCbChange(locals);
+        }
       };
     }],
     link: function(scope, element, attrs) {

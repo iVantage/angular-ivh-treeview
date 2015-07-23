@@ -296,27 +296,38 @@ helper functions:
   otherwise.
 
 
-### Custom onToggle Handlers
+### Toggle Handlers
 
 Want to register a callback for whenever a user expands or collapses a node? Use
-the `ivh-treeview-toggle-handler` attribute. Your callback will be passed a
-reference to the node and the tree that node belongs to.
+the `ivh-treeview-on-toggle` attribute. Your expression will be evaluated with
+the following local variables: `ivhNode`, the node that was toggled; and
+`ivhTree`, the tree it belongs to.
 
 ```html
 <div ng-controller="MyCtrl as fancy">
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-toggle-handler="fancy.awesomeCallback">
+    ivh-treeview-on-toggle="fancy.awesomeCallback(ivhNode, ivhTree)">
 </div>
 ```
 
-### Custom onChange Handlers
+You may also supply a toggle hanlder as a function (rather than an angular
+expression) using `ivh-treeview-options` or by setting a global `onToggle`
+option. In this case the function will be passed a single object with `ivhNode`
+and `ivhTree` properties.
 
-Want to be notified anytime a checkbox changes state as the result of a click?
-Use the `ivh-treeview-change-handler` attribute to register a callback for
-whenever a node checkbox changes state. Your callback will be passed a reference
-to the node, the new selected status, and a reference to the entire tree the
-node belongs to.
+### Select/Deselect Handlers
+
+Want to be notified any time a checkbox changes state as the result of a click?
+Use the `ivh-treeview-on-cb-change` attribute. Your expression will be evaluated
+whenever a node checkbox changes state with the following local variables:
+`ivhNode`, the node whose selected state changed; `ivhIsSelected`, the new
+selected state of the node; and `ivhTree`, the tree `ivhNode` belongs to.
+
+You may also supply a selected hanlder as a function (rather than an angular
+expression) using `ivh-treeview-options` or by setting a global `onCbChange`
+option. In this case the function will be passed a single object with `ivhNode`,
+`ivhIsSelected`, and `ivhTree` properties.
 
 Note that programmatic changes to a node's selected state (including selection
 change propagation) will not trigger this callback. It is only run for the
@@ -326,7 +337,7 @@ actual node clicked on by a user.
 <div ng-controller="MyCtrl as fancy">
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-change-handler="fancy.otherAwesomeCallback">
+    ivh-treeview-on-cb-change="fancy.otherAwesomeCallback(ivhNode, ivhIsSelected, ivhTree)">
 </div>
 ```
 
@@ -343,7 +354,7 @@ In your fancy controller...
 ```javascript
 this.customOpts = {
   useCheckboxes: false,
-  toggleHandler: this.awesomeCallback
+  onToggle: this.awesomeCallback
 };
 ```
 
