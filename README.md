@@ -387,6 +387,8 @@ selected).
 When an item is selected each of its children are also selected and the
 indeterminate state of each of the node's parents is validated.
 
+***Demo***: [Programmatic select/deselect](http://jsbin.com/bexedi/edit)
+
 #### `ivhTreeviewMgr.selectAll(tree[, opts][, isSelected])`
 
 Like `ivhTreeviewMgr.select` except every node in `tree` is either selected or
@@ -402,6 +404,8 @@ or deselected.
 
 A convenience method, delegates to `ivhTreeviewMgr.select` with `isSelected` set
 to `false`.
+
+***Demo***: [Programmatic select/deselect](http://jsbin.com/bexedi/edit)
 
 #### `ivhTreeviewMgr.deselectAll(tree[, opts])`
 
