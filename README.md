@@ -394,6 +394,8 @@ indeterminate state of each of the node's parents is validated.
 Like `ivhTreeviewMgr.select` except every node in `tree` is either selected or
 deselected.
 
+***Demo***: [Programmatic selectAll/deselectAll](http://jsbin.com/buhife/edit)
+
 #### `ivhTreeviewMgr.selectEach(tree, nodes[, opts][, isSelected])`
 
 Like `ivhTreeviewMgr.select` except an array of nodes (or node IDs) is used.
@@ -411,6 +413,8 @@ to `false`.
 
 A convenience method, delegates to `ivhTreeviewMgr.selectAll` with `isSelected`
 set to `false`.
+
+***Demo***: [Programmatic selectAll/deselectAll](http://jsbin.com/buhife/edit)
 
 #### `ivhTreeviewMgr.deselectEach(tree, nodes[, opts])`
 
