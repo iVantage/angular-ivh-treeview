@@ -445,6 +445,8 @@ Expand (or collapse) `node` and all its child nodes. Note that you may omit the
 `node` parameter (i.e. expand/collapse the entire tree) but only when all other
 option parameters are also omitted.
 
+***Demo***: [Programmatic recursive expand/collapse](http://jsbin.com/wugege/edit)
+
 #### `ivhTreeviewMgr.expandTo(tree, node[, opts][, isExpanded])`
 
 Expand (or collapse) all parents of `node`. This may be used to "reveal" a
@@ -459,6 +461,8 @@ set to `false`.
 
 A convenience method, delegates to `ivhTreeviewMgr.expandRecursive` with
 `isExpanded` set to `false`,
+
+***Demo***: [Programmatic recursive expand/collapse](http://jsbin.com/wugege/edit)
 
 #### `ivhTreeviewMgr.collapseParents(tree, node[, opts])`
 
