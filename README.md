@@ -402,6 +402,8 @@ Like `ivhTreeviewMgr.select` except an array of nodes (or node IDs) is used.
 Each node in `tree` corresponding to one of the passed `nodes` will be selected
 or deselected.
 
+***Demo***: [Programmatic selectEach/deselectEach](http://jsbin.com/burigo/edit)
+
 #### `ivhTreeviewMgr.deselect(tree, node[, opts])`
 
 A convenience method, delegates to `ivhTreeviewMgr.select` with `isSelected` set
@@ -420,6 +422,8 @@ set to `false`.
 
 A convenience method, delegates to `ivhTreeviewMgr.selectEach` with `isSelected`
 set to `false`.
+
+***Demo***: [Programmatic selectEach/deselectEach](http://jsbin.com/burigo/edit)
 
 #### `ivhTreeviewMgr.expand(tree, node[, opts][, isExpanded])`
 
