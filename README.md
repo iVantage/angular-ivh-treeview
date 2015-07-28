@@ -452,6 +452,8 @@ option parameters are also omitted.
 Expand (or collapse) all parents of `node`. This may be used to "reveal" a
 nested node or to recursively collapse all parents of a node.
 
+***Demo***: [Programmatic reveal/hide](http://jsbin.com/musodi/edit)
+
 #### `ivhTreeviewMgr.collapse(tree, node[, opts])`
 
 A convenience method, delegates to  `ivhTreeviewMgr.expand` with `isExpanded`
@@ -468,6 +470,8 @@ A convenience method, delegates to `ivhTreeviewMgr.expandRecursive` with
 
 A convenience method, delegates to `ivhTreeviewMgr.expandTo` with `isExpanded`
 set to `false`.
+
+***Demo***: [Programmatic reveal/hide](http://jsbin.com/musodi/edit)
 
 #### `ivhTreeviewMgr.validate(tree[, opts][, bias])`
 
