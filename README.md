@@ -387,7 +387,7 @@ selected).
 When an item is selected each of its children are also selected and the
 indeterminate state of each of the node's parents is validated.
 
-***Demo***: [Programmatic select/deselect](http://jsbin.com/bexedi/edit)
+***Demo***: [Programmatic select/deselect](http://jsbin.com/kotohu/edit)
 
 #### `ivhTreeviewMgr.selectAll(tree[, opts][, isSelected])`
 
@@ -409,7 +409,7 @@ or deselected.
 A convenience method, delegates to `ivhTreeviewMgr.select` with `isSelected` set
 to `false`.
 
-***Demo***: [Programmatic select/deselect](http://jsbin.com/bexedi/edit)
+***Demo***: [Programmatic select/deselect](http://jsbin.com/kotohu/edit)
 
 #### `ivhTreeviewMgr.deselectAll(tree[, opts])`
 
@@ -482,6 +482,8 @@ When validating tree data we look for the first node in each branch which has a
 selected state defined that differs from `opts.defaultSelectedState` (or
 `bias`). Each of that node's children are updated to match the differing node
 and parent indeterminate states are updated.
+
+***Demo***: [Programmatic select/deselect](http://jsbin.com/bexedi/edit)
 
 ## Dynamic Changes
 
