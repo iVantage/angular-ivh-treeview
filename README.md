@@ -198,6 +198,8 @@ With the `ivh-treeview-node-tpl` attribute:
      ivh-treeview-node-tpl="variableWithTplAsString"></div>
 ```
 
+***Demo***: [Custom templates: inline](http://jsbin.com/fokunu/edit)
+
 As a property in the `ivh-treeview-options` object:
 
 ```
