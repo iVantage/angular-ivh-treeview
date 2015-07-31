@@ -227,6 +227,8 @@ Or as transcluded content in the treeview directive itself:
 </div>
 ```
 
+***Demo***: [Custom templates: transcluded](http://jsbin.com/jaqosi/edit)
+
 Note the use of the ng-template script tag wrapping the rest of the transcluded
 content, this wrapper is a mandatory. Also note that this form is intended to
 serve as a convenient and declarative way to essentially provide a template
