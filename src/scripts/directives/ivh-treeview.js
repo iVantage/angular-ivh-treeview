@@ -95,7 +95,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       ng.forEach([
         'onCbChange',
-        'onToggle',
+        'onToggle'
       ], function(attr) {
         if($attrs[normedAttr(attr)]) {
           localOpts[attr] = $scope[attr];
