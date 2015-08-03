@@ -345,7 +345,7 @@ actual node clicked on by a user.
 </div>
 ```
 
-***Demo***: [Custom Change Handler](http://jsbin.com/hubico/edit?html,js,output)
+***Demo***: [Custom Change Handler](http://jsbin.com/febexe/edit)
 
 
 ## All the Options
