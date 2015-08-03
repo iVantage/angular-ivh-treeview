@@ -320,6 +320,8 @@ expression) using `ivh-treeview-options` or by setting a global `onToggle`
 option. In this case the function will be passed a single object with `ivhNode`
 and `ivhTree` properties.
 
+***Demo***: [Toggle Handler](http://jsbin.com/xegari/edit)
+
 ### Select/Deselect Handlers
 
 Want to be notified any time a checkbox changes state as the result of a click?
@@ -345,7 +347,7 @@ actual node clicked on by a user.
 </div>
 ```
 
-***Demo***: [Custom Change Handler](http://jsbin.com/febexe/edit)
+***Demo***: [Select/Deselect Handler](http://jsbin.com/febexe/edit)
 
 
 ## All the Options
