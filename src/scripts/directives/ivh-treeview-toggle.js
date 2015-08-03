@@ -20,10 +20,12 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       element.addClass('ivh-treeview-toggle');
 
       element.bind('click', function() {
-        scope.$apply(function() {
-          trvw.onToggle(node);
-          trvw.toggleExpanded(node);
-        });
+        if(!trvw.isLeaf(node)) {
+          scope.$apply(function() {
+            trvw.onToggle(node);
+            trvw.toggleExpanded(node);
+          });
+        }
       });
     }
   };

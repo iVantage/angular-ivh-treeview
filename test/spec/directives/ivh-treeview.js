@@ -197,6 +197,12 @@ describe('Directive ivhTreeview', function() {
       expect(handlerSpy.calls.count()).toEqual(1);
     });
 
+    it('should not call the toggle handler when a leaf is clicked', function() {
+      $el.find('[title="gatsby"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.count()).toEqual(0);
+    });
+
     it('should pass the clicked node to the handler', function() {
       $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
       scope.$apply();
