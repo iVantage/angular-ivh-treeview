@@ -2,7 +2,8 @@
 
 [ ![Build Status][travis-img] ][travis-link]
 
-> A treeview for AngularJS with filtering and checkbox support.
+> A treeview for AngularJS with filtering, checkbox support, custom templates,
+> and more.
 
 ## Example usage
 
