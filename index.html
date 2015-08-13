@@ -11,12 +11,10 @@
 
     <title>Angular IVH Treeview - iVantage</title>
 
-    <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="//rawgit.com/iVantage/angular-ivh-treeview/v0.10.0/dist/ivh-treeview.css" rel="stylesheet">
     <link href="//rawgit.com/iVantage/angular-ivh-treeview/v0.10.0/dist/ivh-treeview-theme-basic.css" rel="stylesheet">
-
-    <!-- Custom styles -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css" rel="stylesheet">
     <link href="main.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -69,7 +67,15 @@
             <h2>What is it?</h2>
             <p>IVH Treeview aims to provide a robust and flexibe tree control
             for angular applications. We're obsessed with making things
-            customizable while providing sensible default behavior.</p>
+            customizable while providing sensible defaults.</p>
+            <p>Features include:</p>
+            <ul>
+              <li>Checkbox support</li>
+              <li>Fully customizable tree nodes, skin with CSS or provide your own templates</li>
+              <li>Built in callbacks for expand/collapse and checkbox changes</li>
+              <li>Services for traversing and interacting with your trees programmatically</li>
+              <li><a href="https://github.com/iVantage/angular-ivh-treeview">And more...</a></li>
+            </ul>
           </div>
           <div class="col-sm-4" ng-controller="SillyCtrl as silly">
             <div ivh-treeview="silly.stuff"
@@ -83,13 +89,6 @@
           </div>
 
           <div class="col-sm-12">
-
-            <h2>Usage</h2>
-            <p>IVH Treeview can work with any </p>
-            <p>See <a
-            href="https://github.com/iVantage/angular-ivh-treeview/blob/master/README.md">the
-            project README</a> for more detailed usage information.</p>
-
             <h2>Get it</h2>
             <p>IVH Treeview can be installed with Bower and npm:</p>
             <pre><code>bower install angular-ivh-treeview</code></pre>
@@ -106,6 +105,37 @@
               <li><code>dist/ivh-treeview.css</code></li>
               <li><code>dist/ivh-treeview-theme-basic.css</code> (optional minimalist theme)</li>
             </ul>
+
+            <h2>Usage</h2>
+            <p>IVH Treeview can work with any tree data. It can even be
+            configured to work with your property names (i.e.
+            <code>children</code>, <code>items</code>, etc.) so there is no
+            data massaging necessary.</p>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <pre class="javascript">var app = angular.module('myApp', [
+  'ivh.treeview'
+]);
+
+app.controller('DemoCtrl', function() {
+  this.stuff = [{
+    label: 'Suitcase',
+    children: [ /* ... */ ]
+  }];
+});</pre>
+              </div>
+              <div class="col-sm-6">
+                <pre class="html">&lt;div ng-controller="DemoCtrl as demo"&gt;
+  &lt;div ivh-treeview="demo.stuff"&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+              </div>
+            </div>
+
+            <p>See <a
+            href="https://github.com/iVantage/angular-ivh-treeview/blob/master/README.md">the
+            project README</a> for more detailed usage information.</p>
           </div>
         </div>
 
@@ -205,6 +235,19 @@ world
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.min.js"></script>
     <script src="//rawgit.com/iVantage/angular-ivh-treeview/v0.10.0/dist/ivh-treeview.min.js"></script>
     <script src="main.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/languages/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="main.js" type="text/javascript" charset="utf-8"></script>
+    <script src="main.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        $('pre').each(function(ix, block) {
+          hljs.highlightBlock(block);
+        });
+      });
+    </script>
   </body>
 </html>
 
