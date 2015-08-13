@@ -55,7 +55,7 @@
         <!-- Main component for a primary marketing message or call to action -->
         <div class="jumbotron">
           <h1>Angular IVH Treeview</h1>
-          <p>A treeview for AngularJS with filtering, checkboxes support, custom
+          <p>A treeview for AngularJS with filtering, checkbox support, custom
           templates, and more.</p>
           <p>
             <a class="btn btn-lg btn-primary" href="https://github.com/iVantage/angular-ivh-treeview" role="button">Hosted on GitHub &raquo;</a>
@@ -63,8 +63,9 @@
         </div>
 
         <div class="row">
+          <!-- Pulling in own .col-*-12 to push demo under the title -->
+          <h2 class="col-sm-12">What is it?</h2>
           <div class="col-sm-8">
-            <h2>What is it?</h2>
             <p>IVH Treeview aims to provide a robust and flexibe tree control
             for angular applications. We're obsessed with making things
             customizable while providing sensible defaults.</p>
@@ -87,7 +88,9 @@
                 ivh-treeview-twistie-leaf-tpl="silly.tplLeaf">
             </div>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-sm-12">
             <h2>Get it</h2>
             <p>IVH Treeview can be installed with Bower and npm:</p>
@@ -114,6 +117,7 @@
 
             <div class="row">
               <div class="col-sm-6">
+                <h5>JavaScript</h5>
                 <pre class="javascript">var app = angular.module('myApp', [
   'ivh.treeview'
 ]);
@@ -126,6 +130,7 @@ app.controller('DemoCtrl', function() {
 });</pre>
               </div>
               <div class="col-sm-6">
+                <h5>View</h5>
                 <pre class="html">&lt;div ng-controller="DemoCtrl as demo"&gt;
   &lt;div ivh-treeview="demo.stuff"&gt;
   &lt;/div&gt;
