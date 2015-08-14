@@ -1,4 +1,4 @@
-/*global jQuery, angular */
+/*global jQuery, angular, hljs */
 
 /**
  * Main site scripts for Angular IVH Treeview
@@ -6,45 +6,47 @@
  * @copyright 2015 iVantage
  */
 
-(function(ng) {
+(function($, ng) {
 'use strict';
 
-ng.module('demo', ['ivh.treeview'])
-  .controller('SillyCtrl', function(ivhTreeviewMgr) {
-    this.stuff = [{
-      label: 'Suitcase',
-      children: [
-        { label: 'Jacket' },
-        { label: 'Shoes' },
-        {
-          label: 'Hat box',
-          selected: true,
-          children: [
-            { label: 'Fedora' },
-            { label: 'Flat cap' },
-            { label: 'Top hat' },
-            { label: 'Five panel' },
-          ]
-        }
-      ]
-    }];
+var demo = ng.module('demo', ['ivh.treeview']);
 
-    this.tplFolderOpen = '<span class="twistie glyphicon glyphicon-folder-open"></span>';
-    this.tplFolderClose = '<span class="twistie glyphicon glyphicon-folder-close"></span>';
-    this.tplLeaf = '<span class="twistie glyphicon glyphicon-map-marker"></span>';
-  });
+demo.controller('SillyCtrl', function(ivhTreeviewMgr) {
+  var self = this;
 
-}(angular));
+  self.stuff = [{
+    label: 'Suitcase',
+    children: [
+      { label: 'Jacket' },
+      { label: 'Shoes' },
+      {
+        label: 'Hat box',
+        selected: true,
+        children: [
+          { label: 'Fedora' },
+          { label: 'Flat cap' },
+          { label: 'Top hat' },
+          { label: 'Five panel' }
+        ]
+      }
+    ]
+  }];
 
+  self.setLastToggle = function(node, tree) {
+    // `tree` is not used here, just demonstrating its availability for your
+    // callback expressions.
+    self.lastToggle = node.label;
+  };
 
-(function($) {
-'use strict';
-
-// Initialize tabs
-$('.nav-tabs a').click(function (e) {
-  e.preventDefault();
-  $(this).tab('show');
+  self.tplFolderOpen = '<span class="twistie glyphicon glyphicon-folder-open"></span>';
+  self.tplFolderClose = '<span class="twistie glyphicon glyphicon-folder-close"></span>';
+  self.tplLeaf = '<span class="twistie glyphicon glyphicon-map-marker"></span>';
 });
 
-}(jQuery));
+$(document).ready(function() {
+  $('pre').each(function(ix, block) {
+    hljs.highlightBlock(block);
+  });
+});
 
+}(jQuery, angular, hljs));

@@ -88,7 +88,7 @@
                 ivh-treeview-twistie-leaf-tpl="silly.tplLeaf">
             </div>
           </div>
-        </div>
+        </div><!-- .row -->
 
         <div class="row">
           <div class="col-sm-12">
@@ -132,7 +132,8 @@ app.controller('DemoCtrl', function() {
               <div class="col-sm-6">
                 <h5>View</h5>
                 <pre class="html">&lt;div ng-controller="DemoCtrl as demo"&gt;
-  &lt;div ivh-treeview="demo.stuff"&gt;
+  &lt;div ivh-treeview="demo.stuff"
+       ivh-treeview-validate="true"&gt;
   &lt;/div&gt;
 &lt;/div&gt;</pre>
               </div>
@@ -142,81 +143,48 @@ app.controller('DemoCtrl', function() {
             href="https://github.com/iVantage/angular-ivh-treeview/blob/master/README.md">the
             project README</a> for more detailed usage information.</p>
           </div>
-        </div>
+        </div><!-- .row -->
 
-        <div class="row">
-          <div class="col-sm-6">
-            <h3>A Demo</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In mauris
-              dolor, ornare ut posuere quis, suscipit sit amet eros. Nulla
-              hendrerit luctus metus, et tristique tellus lobortis at. Cras a
-              aliquam erat.
-            </p>
-            <p>
-              Nunc tellus orci, semper at porttitor nec, fringilla
-              nec felis. Nullam nec turpis mauris. Donec ullamcorper augue a
-              ligula elementum congue. Nullam viverra laoreet eleifend.
-            </p>
-          </div>
-          <div class="col-sm-6">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#ex1_demo">Demo</a></li>
-              <li><a href="#ex1_code">Code</a></li>
+        <div class="row" ng-controller="SillyCtrl as silly">
+          <h3 class="col-sm-12">Demo: Toggle and Change Handlers</h3>
+
+          <div class="col-sm-8">
+            <p>This demo showcases the use of callback expressions for
+            user-initiated toggle and select actions. Note that in either case
+            you have access to scope variables corresponding to the affected
+            node and the tree that contains it.</p>
+            <ul>
+              <li>Last toggled node: <code>{{silly.lastToggle || 'none yet...'}}</code></li>
+              <li>Last selected/deselected node: <code>{{silly.lastSelect || 'none yet...'}}</code></li>
             </ul>
 
-            <div class="tab-content">
-              <div class="tab-pane active" id="ex1_demo" ng-controller="SillyCtrl as silly">
+            <h5>View</h5>
+            <pre class="html">&lt;div ivh-treeview="silly.stuff"
+  ivh-treeview-validate="true"
+  ivh-treeview-default-selected-state="false"
+  ivh-treeview-expand-to-depth="-1"
+  <strong>ivh-treeview-on-toggle="silly.setLastToggle(ivhNode, ivhTree)"</strong>
+  <strong>ivh-treeview-on-cb-change="silly.lastSelect = ivhNode.label"&gt;</strong>
+&lt;/div&gt;</pre>
+          </div>
 
-                <div ivh-treeview="silly.stuff"
-                    ivh-treeview-default-selected-state="false"
-                    ivh-treeview-validate="true"
-                    ivh-treeview-expand-to-depth="-1">
-                </div>
-
-              </div>
-              <div class="tab-pane" id="ex1_code">
-<pre><code>Hello
-world
-</code></pre>
-              </div>
+          <div class="col-sm-4">
+            <div ivh-treeview="silly.stuff"
+                ivh-treeview-validate="true"
+                ivh-treeview-default-selected-state="false"
+                ivh-treeview-expand-to-depth="-1"
+                ivh-treeview-on-toggle="silly.setLastToggle(ivhNode, ivhTree)"
+                ivh-treeview-on-cb-change="silly.lastSelect = ivhNode.label">
             </div>
           </div>
-        </div>
+        </div><!-- .row -->
 
         <div class="row">
-          <div class="col-sm-6">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#ex2_demo">Demo</a></li>
-              <li><a href="#ex2_code">Code</a></li>
-            </ul>
-
-            <div class="tab-content">
-              <div class="tab-pane active" id="ex2_demo">
-                Demo!
-              </div>
-              <div class="tab-pane" id="ex2_code">
-<pre><code>Hello
-world
-</code></pre>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <h3>A Second Demo</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In mauris
-              dolor, ornare ut posuere quis, suscipit sit amet eros. Nulla
-              hendrerit luctus metus, et tristique tellus lobortis at. Cras a
-              aliquam erat.
-            </p>
-            <p>
-              Nunc tellus orci, semper at porttitor nec, fringilla
-              nec felis. Nullam nec turpis mauris. Donec ullamcorper augue a
-              ligula elementum congue. Nullam viverra laoreet eleifend.
-            </p>
-          </div>
-        </div>
+          <h3 class="col-sm-12">A Demo: Custom Templates</h3> <p
+          class="col-sm-12">@todo Use templates to create a pie chart for some
+          property of the "current" node's children. Click a "node" to drill
+          down.</p>
+        </div><!-- .row -->
 
         <footer class="text-muted" style="font-size:smaller">
           <hr />
@@ -229,8 +197,8 @@ world
             <p><a href="#" style="text-decoration:none">&uarr;</a></p>
           </div>
         </footer>
-      </div>
-    </div> <!-- /container -->
+      </div><!-- .col-md-8.col-md-offset-2 -->
+    </div> <!-- .container -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -238,21 +206,11 @@ world
     <script src="//ivantagecdn.com/vendors/jquery/jquery-1.10.2/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.min.js"></script>
-    <script src="//rawgit.com/iVantage/angular-ivh-treeview/v0.10.0/dist/ivh-treeview.min.js"></script>
-    <script src="main.js" type="text/javascript" charset="utf-8"></script>
+    <script src="//rawgit.com/iVantage/angular-ivh-treeview/v1/dist/ivh-treeview.min.js"></script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/languages/javascript.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="main.js" type="text/javascript" charset="utf-8"></script>
-    <script src="main.js" type="text/javascript" charset="utf-8"></script>
-
-    <script type="text/javascript" charset="utf-8">
-      $(document).ready(function() {
-        $('pre').each(function(ix, block) {
-          hljs.highlightBlock(block);
-        });
-      });
-    </script>
   </body>
 </html>
 
