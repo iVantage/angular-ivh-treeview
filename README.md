@@ -1,7 +1,7 @@
 
 # Angular IVH Treeview
 
-> GitHub pages for <$= projectName %>.
+> GitHub pages for angular-ivh-treeview.
 
 
 ## License
