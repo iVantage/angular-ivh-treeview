@@ -186,9 +186,32 @@ app.controller('DemoCtrl', function() {
           drill down.</p>
         </div><!-- .row -->
 
-        <div class="row">
+        <div class="row" ng-controller="SillyCtrl as silly">
           <h3 class="col-sm-12">Demo: Filtering</h3>
-          <p class="col-sm-12">@todo Show off filtering!</p>
+
+          <div class="col-sm-8">
+            <p>Try it out.</p>
+            <div class="form-group">
+              <label>Filter the tree</label>
+              <input type="text" class="form-control" placeholder="e.g. 'Top hat'" ng-model="silly.search">
+            </div>
+            <p>Keep in mind that selections (i.e. checkboxes) are filter
+            independent. In other words, filtered away nodes will still be
+            affected by parent selection changes.</p>
+            <p>Filtering trees is julst like applying filters in any other
+            angular expression. In fact we leverage the same mechanism so your
+            favorite built in angular filters should work just as well as your
+            custom ones.</p>
+          </div>
+
+          <div class="col-sm-4">
+            <div ivh-treeview="silly.stuff"
+                ivh-treeview-validate="true"
+                ivh-treeview-default-selected-state="false"
+                ivh-treeview-expand-to-depth="-1"
+                ivh-treeview-filter="silly.search">
+            </div>
+          </div>
         </div><!-- .row -->
 
         <footer class="text-muted" style="font-size:smaller">
