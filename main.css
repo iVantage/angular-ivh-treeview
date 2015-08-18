@@ -12,3 +12,7 @@
 .twistie.glyphicon {
   margin-right: 3px;
 }
+
+pre {
+  font-size: smaller;
+}
