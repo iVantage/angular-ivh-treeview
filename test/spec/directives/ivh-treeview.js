@@ -177,8 +177,55 @@ describe('Directive ivhTreeview', function() {
 
       /**
        * @todo Why does this fail?
+       * Elements are not in DOM
        */
       //expect($el.find('[title="baseball"]').is(':visible')).toBe(true);
+    });
+
+    describe('object filtering', function() {
+      beforeEach(function() {
+        $el = compile(tplFilter, scope);
+        scope.myFilter = {label: 'fedora'};
+        scope.$apply();
+      });
+
+      it('should hide filtered out nodes', function() {
+        expect($el.find('[title="baseball"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+      it('should show parent nodes', function() {
+        expect($el.find('[title="top hat"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+      it('should show filtered nodes', function() {
+        expect($el.find('[title="fedora"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+      it('should hide filtered out child nodes', function() {
+        expect($el.find('[title="gatsby"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+
+    });
+
+    describe('function filtering', function() {
+      beforeEach(function() {
+        $el = compile(tplFilter, scope);
+        scope.myFilter = function (item) {
+          return item.label === 'fedora';
+        };
+        scope.$apply();
+      });
+
+      it('should hide filtered out nodes', function() {
+        expect($el.find('[title="baseball"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+      it('should show parent nodes', function() {
+        expect($el.find('[title="top hat"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+      it('should show filtered nodes', function() {
+        expect($el.find('[title="fedora"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+      it('should hide filtered out child nodes', function() {
+        expect($el.find('[title="gatsby"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+
     });
   });
 
