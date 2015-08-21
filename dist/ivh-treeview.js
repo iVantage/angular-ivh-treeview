@@ -476,7 +476,33 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         if(!filter) {
           return true;
         }
-        return !!filterFilter([node], filter).length;
+
+        // Quick shortcut
+        var test = !!filterFilter([node], filter).length;
+
+        if(test === true) {
+          return test;
+        }
+
+        // if we have object || function filter
+        // we have to check children separatedly
+        if(typeof filter === 'object' || typeof filter === 'function') {
+          // Collect children
+          var children = trvw.children(node);
+
+          if(children.length > 0) {
+            // if any child is visible
+            // then so is this node
+            for(var i = 0; i < children.length; i++) {
+              // quick escape if match is found
+              if(trvw.isVisible(children[i]) === true) {
+                return true;
+              }
+            }
+          }
+        }
+
+        return false;
       };
 
       /**
@@ -650,7 +676,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
     ].join('\n')
   };
 }]);
-
 
 
 angular.module('ivh.treeview').filter('ivhTreeviewAsArray', function() {
