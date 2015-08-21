@@ -336,6 +336,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         if(localOpts.onToggle) {
           var locals = {
             ivhNode: node,
+            ivhIsExpanded: trvw.isExpanded(node),
             ivhTree: $scope.root
           };
           localOpts.onToggle(locals);

@@ -306,13 +306,14 @@ helper functions:
 Want to register a callback for whenever a user expands or collapses a node? Use
 the `ivh-treeview-on-toggle` attribute. Your expression will be evaluated with
 the following local variables: `ivhNode`, the node that was toggled; and
-`ivhTree`, the tree it belongs to.
+`ivhTree`, the tree it belongs to; `ivhIsExpanded`, whether or not the node is
+now expanded.
 
 ```html
 <div ng-controller="MyCtrl as fancy">
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-on-toggle="fancy.awesomeCallback(ivhNode, ivhTree)">
+    ivh-treeview-on-toggle="fancy.awesomeCallback(ivhNode, ivhIsExpanded, ivhTree)">
 </div>
 ```
 

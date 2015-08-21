@@ -32,7 +32,7 @@ describe('Directive ivhTreeview', function() {
   var tplToggleHandler = [
     '<div',
       'ivh-treeview="bag1"',
-      'ivh-treeview-on-toggle="onNodeToggle(ivhNode, ivhTree)"',
+      'ivh-treeview-on-toggle="onNodeToggle(ivhNode, ivhIsExpanded, ivhTree)"',
       '></div>'
   ].join('\n');
 
@@ -209,10 +209,16 @@ describe('Directive ivhTreeview', function() {
       expect(handlerSpy.calls.mostRecent().args[0]).toBe(scope.bag1[0]);
     });
 
+    it('should pass the expanded state to the change handler', function() {
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
+    });
+
     it('should pass the tree itself to the toggle handler', function() {
       $el.find('[title="top hat"] [ivh-treeview-toggle]').click();
       scope.$apply();
-      expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1);
+      expect(handlerSpy.calls.mostRecent().args[2]).toBe(scope.bag1);
     });
 
     it('should not generate an error when there is no handler', function() {
@@ -239,6 +245,7 @@ describe('Directive ivhTreeview', function() {
 
       expect(handlerSpy.calls.mostRecent().args[0]).toEqual({
         ivhNode: scope.bag1[0],
+        ivhIsExpanded: true,
         ivhTree: scope.bag1
       });
     });

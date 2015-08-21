@@ -22,8 +22,8 @@ angular.module('ivh.treeview').directive('ivhTreeviewToggle', [function() {
       element.bind('click', function() {
         if(!trvw.isLeaf(node)) {
           scope.$apply(function() {
-            trvw.onToggle(node);
             trvw.toggleExpanded(node);
+            trvw.onToggle(node);
           });
         }
       });
