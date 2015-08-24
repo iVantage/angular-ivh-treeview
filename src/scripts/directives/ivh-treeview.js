@@ -202,6 +202,25 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       /**
        * Returns `true` if current filter should hide `node`, false otherwise
        *
+       * @todo Note that for object and function filters each node gets hit with
+       * `isVisible` N-times where N is its depth in the tree. We may be able to
+       * optimize `isVisible` in this case by:
+       *
+       * - On first call to `isVisible` in a given digest cycle walk the tree to
+       *   build a flat array of nodes.
+       * - Run the array of nodes through the filter.
+       * - Build a map (`id`/$scopeId --> true) for the nodes that survive the
+       *   filter
+       * - On subsequent calls to `isVisible` just lookup the node id in our
+       *   map.
+       * - Clean the map with a $timeout (?)
+       *
+       * In theory the result of a call to `isVisible` could change during a
+       * digest cycle as scope variables are updated... I think calls would
+       * happen bottom up (i.e. from "leaf" to "root") so that might not
+       * actually be an issue. Need to investigate if this ends up feeling for
+       * large/deep trees.
+       *
        * @param {Object} node A tree node
        * @return {Boolean} Whether or not `node` is filtered out
        */
