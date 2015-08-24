@@ -192,16 +192,18 @@ describe('Directive ivhTreeview', function() {
       it('should hide filtered out nodes', function() {
         expect($el.find('[title="baseball"]').closest('.ng-hide').length > 0).toBe(true);
       });
+
       it('should show parent nodes', function() {
         expect($el.find('[title="top hat"]').closest('.ng-hide').length > 0).toBe(false);
       });
+
       it('should show filtered nodes', function() {
         expect($el.find('[title="fedora"]').closest('.ng-hide').length > 0).toBe(false);
       });
+
       it('should hide filtered out child nodes', function() {
         expect($el.find('[title="gatsby"]').closest('.ng-hide').length > 0).toBe(true);
       });
-
     });
 
     describe('function filtering', function() {
@@ -216,16 +218,18 @@ describe('Directive ivhTreeview', function() {
       it('should hide filtered out nodes', function() {
         expect($el.find('[title="baseball"]').closest('.ng-hide').length > 0).toBe(true);
       });
+
       it('should show parent nodes', function() {
         expect($el.find('[title="top hat"]').closest('.ng-hide').length > 0).toBe(false);
       });
+
       it('should show filtered nodes', function() {
         expect($el.find('[title="fedora"]').closest('.ng-hide').length > 0).toBe(false);
       });
+
       it('should hide filtered out child nodes', function() {
         expect($el.find('[title="gatsby"]').closest('.ng-hide').length > 0).toBe(true);
       });
-
     });
   });
 
