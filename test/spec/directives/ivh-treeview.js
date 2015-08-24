@@ -324,9 +324,10 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should pass the checkbox state to the change handler', function() {
-      $el.find('[title="top hat"] [type=checkbox]').first().click();
+      var $cb = $el.find('[title="top hat"] [type=checkbox]').first();
+      $cb.click();
       scope.$apply();
-      expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe($cb.prop('checked'));
     });
 
     it('should pass the tree itself to the change handler', function() {

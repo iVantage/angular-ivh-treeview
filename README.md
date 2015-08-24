@@ -136,10 +136,10 @@ startup](http://jsbin.com/pajeze/2/edit)
 
 ### Validate on Startup
 
-`ivh.treeview` tries not to assume control of your model any more than
-necessary. It does provide the ability (opt-in) to validate your tree data on
-startup. Use `ivh-treeview-validate="true"` at the attribute level or set the
-`validate` property in `ivhTreeviewOptionsProvider` to get this behavior.
+`ivh.treeview` will not assume control of your model on startup if you do not
+want it to. You can opt out of validation on startup by setting
+`ivh-treeview-validate="false"` at the attribute level or by globally setting
+the `validate` property in `ivhTreeviewOptionsProvider`.
 
 ***Demo***: [Default selected state and validate on
 startup](http://jsbin.com/pajeze/2/edit)
