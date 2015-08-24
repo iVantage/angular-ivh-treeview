@@ -207,31 +207,20 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        */
       trvw.isVisible = function(node) {
         var filter = trvw.getFilter();
-        if(!filter) {
+
+        // Quick shortcut
+        if(!filter || filterFilter([node], filter).length) {
           return true;
         }
 
-        // Quick shortcut
-        var test = !!filterFilter([node], filter).length;
-
-        if(test === true) {
-          return test;
-        }
-
-        // if we have object || function filter
-        // we have to check children separatedly
+        // If we have an object or function filter we have to check children
+        // separately
         if(typeof filter === 'object' || typeof filter === 'function') {
-          // Collect children
           var children = trvw.children(node);
-
-          if(children.length > 0) {
-            // if any child is visible
-            // then so is this node
-            for(var i = 0; i < children.length; i++) {
-              // quick escape if match is found
-              if(trvw.isVisible(children[i]) === true) {
-                return true;
-              }
+          // If any child is visible then so is this node
+          for(var ix = children.length; ix--;) {
+            if(trvw.isVisible(children[ix])) {
+              return true;
             }
           }
         }
