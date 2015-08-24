@@ -468,36 +468,44 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       /**
        * Returns `true` if current filter should hide `node`, false otherwise
        *
+       * @todo Note that for object and function filters each node gets hit with
+       * `isVisible` N-times where N is its depth in the tree. We may be able to
+       * optimize `isVisible` in this case by:
+       *
+       * - On first call to `isVisible` in a given digest cycle walk the tree to
+       *   build a flat array of nodes.
+       * - Run the array of nodes through the filter.
+       * - Build a map (`id`/$scopeId --> true) for the nodes that survive the
+       *   filter
+       * - On subsequent calls to `isVisible` just lookup the node id in our
+       *   map.
+       * - Clean the map with a $timeout (?)
+       *
+       * In theory the result of a call to `isVisible` could change during a
+       * digest cycle as scope variables are updated... I think calls would
+       * happen bottom up (i.e. from "leaf" to "root") so that might not
+       * actually be an issue. Need to investigate if this ends up feeling for
+       * large/deep trees.
+       *
        * @param {Object} node A tree node
        * @return {Boolean} Whether or not `node` is filtered out
        */
       trvw.isVisible = function(node) {
         var filter = trvw.getFilter();
-        if(!filter) {
+
+        // Quick shortcut
+        if(!filter || filterFilter([node], filter).length) {
           return true;
         }
 
-        // Quick shortcut
-        var test = !!filterFilter([node], filter).length;
-
-        if(test === true) {
-          return test;
-        }
-
-        // if we have object || function filter
-        // we have to check children separatedly
+        // If we have an object or function filter we have to check children
+        // separately
         if(typeof filter === 'object' || typeof filter === 'function') {
-          // Collect children
           var children = trvw.children(node);
-
-          if(children.length > 0) {
-            // if any child is visible
-            // then so is this node
-            for(var i = 0; i < children.length; i++) {
-              // quick escape if match is found
-              if(trvw.isVisible(children[i]) === true) {
-                return true;
-              }
+          // If any child is visible then so is this node
+          for(var ix = children.length; ix--;) {
+            if(trvw.isVisible(children[ix])) {
+              return true;
             }
           }
         }
@@ -1306,10 +1314,8 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
 
     /**
      * Whether or not directive should validate treestore on startup
-     *
-     * Must opt-in.
      */
-    validate: false,
+    validate: true,
 
     /**
      * (internal) Collection item attribute to track intermediate states
