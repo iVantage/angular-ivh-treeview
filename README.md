@@ -5,7 +5,46 @@
 > A treeview for AngularJS with filtering, checkbox support, custom templates,
 > and more.
 
-## Example usage
+## Contents
+
+- [Example Usage](#example usage)
+- [Options](#options)
+  - [Filtering](#filtering)
+  - [Expanded by Default](#expanded-by-default)
+  - [Default Selected State](#default-selected-state)
+  - [Validate on Startup](#validate-on-startup)
+  - [Twisties](#twisties)
+  - [Tree Node Templates](#tree-node-templates)
+      - [Global Templates](#global-templates)
+      - [Inline Templates](#inline-templates)
+      - [Template Helper Directives](#template-helper-directives)
+    - [Supported Template Scope Variables](#supported-template-scope-variables)
+  - [Toggle Handlers](#toggle-handlers)
+  - [Select/Deselect Handlers](#selectdeselect-handlers)
+- [All the Options](#all-the-options)
+- [Treeview Manager Service](#treeview-manager-service)
+    - [`ivhTreeviewMgr.select(tree, node[, opts][, isSelected])`](#ivhtreeviewmgrselecttree-node-opts-isselected)
+    - [`ivhTreeviewMgr.selectAll(tree[, opts][, isSelected])`](#ivhtreeviewmgrselectalltree-opts-isselected)
+    - [`ivhTreeviewMgr.selectEach(tree, nodes[, opts][, isSelected])`](#ivhtreeviewmgrselecteachtree-nodes-opts-isselected)
+    - [`ivhTreeviewMgr.deselect(tree, node[, opts])`](#ivhtreeviewmgrdeselecttree-node-opts)
+    - [`ivhTreeviewMgr.deselectAll(tree[, opts])`](#ivhtreeviewmgrdeselectalltree-opts)
+    - [`ivhTreeviewMgr.deselectEach(tree, nodes[, opts])`](#ivhtreeviewmgrdeselecteachtree-nodes-opts)
+    - [`ivhTreeviewMgr.expand(tree, node[, opts][, isExpanded])`](#ivhtreeviewmgrexpandtree-node-opts-isexpanded)
+    - [`ivhTreeviewMgr.expandRecursive(tree[, node[, opts][,isExpanded]])`](#ivhtreeviewmgrexpandrecursivetree-node-opts-isexpanded)
+    - [`ivhTreeviewMgr.expandTo(tree, node[, opts][, isExpanded])`](#ivhtreeviewmgrexpandtotree-node-opts-isexpanded)
+    - [`ivhTreeviewMgr.collapse(tree, node[, opts])`](#ivhtreeviewmgrcollapsetree-node-opts)
+    - [`ivhTreeviewMgr.collapseRecursive(tree[, node[, opts]])`](#ivhtreeviewmgrcollapserecursivetree-node-opts)
+    - [`ivhTreeviewMgr.collapseParents(tree, node[, opts])`](#ivhtreeviewmgrcollapseparentstree-node-opts)
+    - [`ivhTreeviewMgr.validate(tree[, opts][, bias])`](#ivhtreeviewmgrvalidatetree-opts-bias)
+- [Dynamic Changes](#dynamic-changes)
+- [Tree Traversal](#tree-traversal)
+    - [`ivhTreeviewBfs(tree[, opts][, cb])`](#ivhtreeviewbfstree-opts-cb)
+- [Reporting Issues](#reporting-issues)
+- [Contributing](#contributing)
+- [Release History](#release-history)
+- [License](#license)
+
+## Example Usage
 
 In your controller...
 
@@ -103,7 +142,7 @@ supplied to Angular's `filterFilter` and applied to each node individually.
 
 ***Demo***: [Filtering](http://jsbin.com/zitiri/edit?html,output)
 
-### Expanded by default
+### Expanded by Default
 
 If you want the tree to start out expanded to a certain depth use the
 `ivh-treeview-expand-to-depth` attribute:
@@ -124,7 +163,7 @@ If you want the tree *entirely* expanded use a depth of `-1`.
 ***Demo***: [Expand to depth on
 load](http://jsbin.com/ruxedo/edit?html,js,output)
 
-### Default selected state
+### Default Selected State
 
 When using checkboxes you can have a default selected state of `true` or
 `false`. This is only relevant if you validate your tree data using
@@ -552,7 +591,7 @@ Please see our consolidated [contribution
 guidelines](https://github.com/iVantage/Contribution-Guidelines).
 
 
-## Release history
+## Release History
 
 - 2015-05-06 v0.10.0 Make node templates customizable
 - 2015-02-10 v0.9.0 All options are set-able via attributes or config object
