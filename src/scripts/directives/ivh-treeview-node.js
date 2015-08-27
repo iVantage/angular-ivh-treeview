@@ -34,7 +34,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           /**
            * @todo Provide a way to opt out of this
            */
-          var watcher = scope.$watch(function() {
+          scope.$watch(function() {
             return getChildren().length > 0;
           }, function(newVal) {
             if(newVal) {
