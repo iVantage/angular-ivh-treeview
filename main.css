@@ -18,5 +18,5 @@ pre {
 }
 
 .jumbotron {
-  background-image: url('/assets/img/symphony.png') !important;
+  background-image: url('assets/img/symphony.png') !important;
 }
