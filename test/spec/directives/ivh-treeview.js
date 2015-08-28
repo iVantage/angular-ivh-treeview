@@ -136,7 +136,7 @@ describe('Directive ivhTreeview', function() {
       scope.bag1[1].children.push({label: 'five panel baseball'});
       scope.$apply();
       expect($el.find('[title="five panel baseball"]').length).toBe(1);
-      expect($el.find('[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+      expect($el.find('[title="baseball"]').parent().hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
 
     it('should update when child nodes are added (re-assignment)', function() {
@@ -144,7 +144,7 @@ describe('Directive ivhTreeview', function() {
       scope.bag1[1].children = [{label: 'five panel baseball'}];
       scope.$apply();
       expect($el.find('[title="five panel baseball"]').length).toBe(1);
-      expect($el.find('[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+      expect($el.find('[title="baseball"]').parent().hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
 
     it('should allow an options object for overrides', function() {
