@@ -43,6 +43,13 @@ demo.controller('SillyCtrl', function(ivhTreeviewMgr) {
   self.tplLeaf = '<span class="twistie glyphicon glyphicon-map-marker"></span>';
 });
 
+demo.directive('sillyTreeNode', function() {
+  return {
+    restrict: 'AE',
+    templateUrl: 'silly-tree-node.html'
+  };
+});
+
 $(document).ready(function() {
   $('pre').each(function(ix, block) {
     hljs.highlightBlock(block);

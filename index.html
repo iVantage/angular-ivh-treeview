@@ -80,7 +80,6 @@
           </div>
           <div class="col-sm-4" ng-controller="SillyCtrl as silly">
             <div ivh-treeview="silly.stuff"
-                ivh-treeview-validate="true"
                 ivh-treeview-default-selected-state="false"
                 ivh-treeview-expand-to-depth="-1"
                 ivh-treeview-twistie-expanded-tpl="silly.tplFolderOpen"
@@ -132,8 +131,7 @@ app.controller('DemoCtrl', function() {
               <div class="col-sm-6">
                 <h5>View</h5>
                 <pre class="html">&lt;div ng-controller="DemoCtrl as demo"&gt;
-  &lt;div ivh-treeview="demo.stuff"
-       ivh-treeview-validate="true"&gt;
+  &lt;div ivh-treeview="demo.stuff"&gt;
   &lt;/div&gt;
 &lt;/div&gt;</pre>
               </div>
@@ -160,7 +158,6 @@ app.controller('DemoCtrl', function() {
 
             <h5>View</h5>
             <pre class="html">&lt;div ivh-treeview="silly.stuff"
-  ivh-treeview-validate="true"
   ivh-treeview-default-selected-state="false"
   ivh-treeview-expand-to-depth="-1"
   <strong>ivh-treeview-on-toggle="silly.setLastToggle(ivhNode, ivhTree)"</strong>
@@ -170,7 +167,6 @@ app.controller('DemoCtrl', function() {
 
           <div class="col-sm-4">
             <div ivh-treeview="silly.stuff"
-                ivh-treeview-validate="true"
                 ivh-treeview-default-selected-state="false"
                 ivh-treeview-expand-to-depth="-1"
                 ivh-treeview-on-toggle="silly.setLastToggle(ivhNode, ivhTree)"
@@ -179,11 +175,21 @@ app.controller('DemoCtrl', function() {
           </div>
         </div><!-- .row -->
 
-        <div class="row">
+        <div class="row" ng-controller="SillyCtrl as silly">
           <h3 class="col-sm-12">Demo: Custom Templates</h3>
-          <p class="col-sm-12">@todo Use templates to create a pie chart for
-          some property of the "current" node's children. Click a "node" to
-          drill down.</p>
+
+          <div class="col-sm-8">
+            <p>...</p>
+          </div>
+          <div class="col-sm-4">
+            <div ivh-treeview="silly.stuff"
+                ivh-treeview-default-selected-state="false"
+                ivh-treeview-expand-to-depth="-1">
+              <script type="text/ng-template">
+                <silly-tree-node></silly-tree-node>
+              </script>
+            </div>
+          </div>
         </div><!-- .row -->
 
         <div class="row" ng-controller="SillyCtrl as silly">
@@ -206,7 +212,6 @@ app.controller('DemoCtrl', function() {
 
           <div class="col-sm-4">
             <div ivh-treeview="silly.stuff"
-                ivh-treeview-validate="true"
                 ivh-treeview-default-selected-state="false"
                 ivh-treeview-expand-to-depth="-1"
                 ivh-treeview-filter="silly.search">
@@ -239,6 +244,22 @@ app.controller('DemoCtrl', function() {
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/languages/javascript.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="main.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- Templates -->
+    <script id="silly-tree-node.html" type="text/ng-template">
+      <div title="{{trvw.label(node)}}">
+        <span ivh-treeview-toggle>
+          <span ivh-treeview-twistie></span>
+        </span>
+        <span ng-if="trvw.useCheckboxes()"
+            ivh-treeview-checkbox>
+        </span>
+        <span class="ivh-treeview-node-label" ivh-treeview-toggle>
+          {{trvw.label(node)}}
+        </span>
+        <div ivh-treeview-children></div>
+      </div>
+    </script>
   </body>
 </html>
 
