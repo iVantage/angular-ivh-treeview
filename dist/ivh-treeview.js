@@ -615,6 +615,18 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
+       * Get the root of the tree
+       *
+       * Mostly a helper for custom templates
+       *
+       * @return {Object|Array} The tree root
+       * @private
+       */
+      trvw.getRoot = function() {
+        return $scope.root;
+      };
+
+      /**
        * Call the registered toggle handler
        *
        * Handler will get a reference to `node` and the root of the tree.
