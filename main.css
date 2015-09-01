@@ -20,3 +20,29 @@ pre {
 .jumbotron {
   background-image: url('assets/img/symphony.png') !important;
 }
+
+/**
+ * Silly tree node template
+ */
+.silly-node input.silly-label {
+  border: none;
+  padding: 2px;
+}
+
+.silly-node input.silly-label:focus {
+  background-color: yellow;
+}
+
+.silly-ascii-box,
+.silly-node .silly-twistie {
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.silly-ascii-box .x {
+  color: red;
+}
+
+.silly-ascii-box .y {
+  color: green;
+}

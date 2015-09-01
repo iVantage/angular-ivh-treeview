@@ -12,8 +12,8 @@
     <title>Angular IVH Treeview - iVantage</title>
 
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//rawgit.com/iVantage/angular-ivh-treeview/v0.10.0/dist/ivh-treeview.css" rel="stylesheet">
-    <link href="//rawgit.com/iVantage/angular-ivh-treeview/v0.10.0/dist/ivh-treeview-theme-basic.css" rel="stylesheet">
+    <link href="//rawgit.com/iVantage/angular-ivh-treeview/v1/dist/ivh-treeview.css" rel="stylesheet">
+    <link href="//rawgit.com/iVantage/angular-ivh-treeview/v1/dist/ivh-treeview-theme-basic.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css" rel="stylesheet">
     <link href="main.css" rel="stylesheet">
 
@@ -184,7 +184,10 @@ app.controller('DemoCtrl', function() {
           <div class="col-sm-4">
             <div ivh-treeview="silly.stuff"
                 ivh-treeview-default-selected-state="false"
-                ivh-treeview-expand-to-depth="-1">
+                ivh-treeview-expand-to-depth="-1"
+                ivh-treeview-twistie-expanded-tpl="'V'"
+                ivh-treeview-twistie-collapsed-tpl="'>'"
+                ivh-treeview-twistie-leaf-tpl="'-'">
               <script type="text/ng-template">
                 <silly-tree-node></silly-tree-node>
               </script>
@@ -247,16 +250,16 @@ app.controller('DemoCtrl', function() {
 
     <!-- Templates -->
     <script id="silly-tree-node.html" type="text/ng-template">
-      <div title="{{trvw.label(node)}}">
+      <div class="silly-node">
         <span ivh-treeview-toggle>
-          <span ivh-treeview-twistie></span>
+          <span class="silly-twistie" ivh-treeview-twistie></span>
         </span>
         <span ng-if="trvw.useCheckboxes()"
-            ivh-treeview-checkbox>
+            silly-ascii-box>
         </span>
-        <span class="ivh-treeview-node-label" ivh-treeview-toggle>
-          {{trvw.label(node)}}
-        </span>
+        <input type="text" class="silly-label"
+            ng-model="node.label"
+            silly-right-size-input />
         <div ivh-treeview-children></div>
       </div>
     </script>

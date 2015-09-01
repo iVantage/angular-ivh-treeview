@@ -50,6 +50,38 @@ demo.directive('sillyTreeNode', function() {
   };
 });
 
+demo.directive('sillyRightSizeInput', function() {
+  return {
+    restrict: 'AE',
+    link: function(scope, element, attrs) {
+      scope.$watch(attrs.ngModel, function(newVal) {
+        var newSize = Math.max(10, (newVal || '').length);
+        element.attr('size', newSize);
+      });
+    }
+  };
+});
+
+demo.directive('sillyAsciiBox', function(ivhTreeviewMgr) {
+  return {
+    restrict: 'AE',
+    require: '^ivhTreeview',
+    template: [
+      '<span class="silly-ascii-box">[',
+        '<span ng-show="node.selected" class="x">x</span>',
+        '<span ng-show="node.__ivhTreeviewIndeterminate" class="y">~</span>',
+        '<span ng-hide="node.selected || node.__ivhTreeviewIndeterminate"> </span>',
+      ']</span>',
+    ].join(''),
+    link: function(scope, element, attrs, trvw) {
+      element.on('click', function() {
+        ivhTreeviewMgr.select(trvw.getRoot(), scope.node, !scope.node.selected);
+        scope.$apply();
+      });
+    }
+  };
+});
+
 $(document).ready(function() {
   $('pre').each(function(ix, block) {
     hljs.highlightBlock(block);
