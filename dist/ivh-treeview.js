@@ -456,16 +456,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Get the tree node template
-       *
-       * @return {String} The node template
-       * @private
-       */
-      trvw.getNodeTpl = function() {
-        return localOpts.nodeTpl;
-      };
-
-      /**
        * Returns `true` if current filter should hide `node`, false otherwise
        *
        * @todo Note that for object and function filters each node gets hit with
@@ -615,9 +605,9 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Get the template to be used for tree nodes
+       * Get the tree node template
        *
-       * @return {String} The template
+       * @return {String} The node template
        * @private
        */
       trvw.getNodeTpl = function() {
