@@ -43,10 +43,56 @@ demo.controller('SillyCtrl', function(ivhTreeviewMgr) {
   self.tplLeaf = '<span class="twistie glyphicon glyphicon-map-marker"></span>';
 });
 
-demo.directive('sillyTreeNode', function() {
+demo.directive('sillyTreeNode', function(ivhTreeviewMgr, ivhTreeviewBfs) {
   return {
     restrict: 'AE',
-    templateUrl: 'silly-tree-node.html'
+    templateUrl: 'silly-tree-node.html',
+    require: '^ivhTreeview',
+    link: function(scope, element, attrs, trvw) {
+      var root = trvw.getRoot();
+
+      var labellify = function(label, nodes) {
+        var ix = 1;
+        var hasLabel = function(node) {
+          return node.label === label + ' ' + ix;
+        };
+        while($.grep(nodes, hasLabel).length) { ix++; }
+        return label + ' ' + ix;
+      };
+
+      scope.kill = function(nodeToKill) {
+        var cont = true;
+        ivhTreeviewBfs(root, function(node, parents) {
+          if(node === nodeToKill) {
+            cont = false;
+            if(parents.length) {
+              var nIx = parents[0].children.indexOf(node);
+              parents[0].children.splice(nIx, 1);
+              ivhTreeviewMgr.validate(root, trvw.opts());
+            } else {
+              root.length = 0;
+            }
+          }
+          return cont;
+        });
+      };
+
+      scope.spawn = function(nodeSire) {
+        var cont = true;
+        ivhTreeviewBfs(root, function(node) {
+          if(node === nodeSire) {
+            cont = false;
+            node.children = node.children || [];
+            var spawned = angular.copy(node);
+            spawned.children = [];
+            spawned.label = labellify(node.label, node.children);
+            node.children.unshift(spawned);
+            ivhTreeviewMgr.validate(root, trvw.opts());
+          }
+          return cont;
+        });
+      };
+    }
   };
 });
 
@@ -55,8 +101,13 @@ demo.directive('sillyRightSizeInput', function() {
     restrict: 'AE',
     link: function(scope, element, attrs) {
       scope.$watch(attrs.ngModel, function(newVal) {
-        var newSize = Math.max(10, (newVal || '').length);
-        element.attr('size', newSize);
+        newVal = newVal || 'I am a node!';
+        var sp = $('<span />')
+          .text(newVal)
+          .appendTo('body');
+        var width = sp.width();
+        sp.remove();
+        element.css('width', width + 4); // 2px padding either side
       });
     }
   };

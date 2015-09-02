@@ -179,7 +179,26 @@ app.controller('DemoCtrl', function() {
           <h3 class="col-sm-12">Demo: Custom Templates</h3>
 
           <div class="col-sm-8">
-            <p>...</p>
+            <p>Tree nodes are fully customizable. The tree at right makes use of
+            a user defined directive specified inline as transcluded content.
+            The node template leverages helper directives provided by IVH
+            Treeview to easily place child nodes and get twistie
+            functionality.</p>
+
+            <pre class="html">&lt;div ivh-treeview="silly.stuff"
+    ivh-treeview-default-selected-state="false"
+    ivh-treeview-expand-to-depth="-1"
+    ivh-treeview-twistie-expanded-tpl="'V'"
+    ivh-treeview-twistie-collapsed-tpl="'&gt;'"
+    ivh-treeview-twistie-leaf-tpl="'-'"&gt;
+  &lt;script type="text/ng-template"&gt;
+    <strong>&lt;silly-tree-node&gt;&lt;/silly-tree-node&gt;</strong>
+  &lt;/script&gt;
+&lt;/div&gt;</pre>
+
+            <p>These tree nodes can be edited (try clicking a node label),
+            deleted, and new nodes can be spawned as children. We're also using
+            some fun custom ASCII art checkboxes.</p>
           </div>
           <div class="col-sm-4">
             <div ivh-treeview="silly.stuff"
@@ -260,6 +279,12 @@ app.controller('DemoCtrl', function() {
         <input type="text" class="silly-label"
             ng-model="node.label"
             silly-right-size-input />
+        <a class="close" style="margin-top:2px;" ng-click="kill(node)" title="Kill">
+          &times;
+        </a>
+        <a class="close" style="margin:2px 2px 0 0" ng-click="spawn(node)" title="Spawn">
+          &plus;
+        </a>
         <div ivh-treeview-children></div>
       </div>
     </script>

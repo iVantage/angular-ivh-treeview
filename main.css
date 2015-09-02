@@ -24,9 +24,13 @@ pre {
 /**
  * Silly tree node template
  */
+.silly-node {
+  border-top: 1px solid #eee;
+}
+
 .silly-node input.silly-label {
   border: none;
-  padding: 2px;
+  padding: 3px 2px;
 }
 
 .silly-node input.silly-label:focus {
