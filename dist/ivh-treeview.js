@@ -52,6 +52,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
     },
     template: [
       '<input type="checkbox"',
+        'class="ivh-treeview-checkbox"',
         'ng-model="isSelected"',
         'ng-change="trvw.select(node, isSelected)" />'
     ].join('\n')
@@ -97,6 +98,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewChildren', function() {
       '<ul ng-if="getChildren().length" class="ivh-treeview">',
         '<li ng-repeat="child in getChildren()"',
             'ng-hide="trvw.hasFilter() && !trvw.isVisible(child)"',
+            'class="ivh-treeview-node"',
             'ng-class="{\'ivh-treeview-node-collapsed\': !trvw.isExpanded(child) && !trvw.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="childDepth">',
@@ -678,6 +680,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
             'ng-hide="trvw.hasFilter() && !trvw.isVisible(child)"',
+            'class="ivh-treeview-node"',
             'ng-class="{\'ivh-treeview-node-collapsed\': !trvw.isExpanded(child) && !trvw.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="0">',
@@ -1353,11 +1356,11 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
      * Template for tree nodes
      */
     nodeTpl: [
-      '<div title="{{trvw.label(node)}}">',
+      '<div class="ivh-treeview-node-content" title="{{trvw.label(node)}}">',
         '<span ivh-treeview-toggle>',
-          '<span ivh-treeview-twistie></span>',
+          '<span class="ivh-treeview-twistie-wrapper" ivh-treeview-twistie></span>',
         '</span>',
-        '<span ng-if="trvw.useCheckboxes()"',
+        '<span class="ivh-treeview-checkbox-wrapper" ng-if="trvw.useCheckboxes()"',
             'ivh-treeview-checkbox>',
         '</span>',
         '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',

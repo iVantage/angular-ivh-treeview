@@ -43,6 +43,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
     },
     template: [
       '<input type="checkbox"',
+        'class="ivh-treeview-checkbox"',
         'ng-model="isSelected"',
         'ng-change="trvw.select(node, isSelected)" />'
     ].join('\n')
