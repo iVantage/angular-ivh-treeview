@@ -49,7 +49,7 @@ demo.directive('sillyTreeNode', function(ivhTreeviewMgr, ivhTreeviewBfs) {
     templateUrl: 'silly-tree-node.html',
     require: '^ivhTreeview',
     link: function(scope, element, attrs, trvw) {
-      var root = trvw.getRoot();
+      var root = trvw.root();
 
       var labellify = function(label, nodes) {
         var ix = 1;
@@ -126,7 +126,7 @@ demo.directive('sillyAsciiBox', function(ivhTreeviewMgr) {
     ].join(''),
     link: function(scope, element, attrs, trvw) {
       element.on('click', function() {
-        ivhTreeviewMgr.select(trvw.getRoot(), scope.node, !scope.node.selected);
+        ivhTreeviewMgr.select(trvw.root(), scope.node, !scope.node.selected);
         scope.$apply();
       });
     }
