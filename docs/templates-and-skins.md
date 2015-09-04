@@ -13,7 +13,7 @@
 
 Custom node templates are most likely overkill for style tweaks. Making the look
 and feel of your tree match the rest of your application can often be
-accomplished with a bit of css and your own twisties.IVH Treeview ships with
+accomplished with a bit of css and your own twisties. IVH Treeview ships with
 only minimal styling and you are encouraged to apply your own styles.
 
 #### Tree Layout
