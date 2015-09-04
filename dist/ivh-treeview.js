@@ -624,7 +624,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        * @return {Object|Array} The tree root
        * @private
        */
-      trvw.getRoot = function() {
+      trvw.root = function() {
         return $scope.root;
       };
 

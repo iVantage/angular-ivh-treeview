@@ -152,6 +152,8 @@ helper functions:
 - `trvw.label(Object node) --> String` <br>
   Returns the label attribute of `node` as determined by the `labelAttribute`
   treeview option.
+- `trvw.root() --> Array|Object` <br>
+  Returns the tree root as handed to `ivh-treeview`.
 - `trvw.children(Object node) --> Array` <br>
   Returns the array of children for `node`. Returns an empty array if `node` has
   no children or the `childrenAttribute` property value is not defined.
