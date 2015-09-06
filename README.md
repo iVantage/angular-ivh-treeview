@@ -7,7 +7,8 @@
 
 ## Contents
 
-- [Example Usage](#example usage)
+- [Getting Started](#getting-started)
+- [Example Usage](#example-usage)
 - [Options](#options)
   - [Filtering](#filtering)
   - [Expanded by Default](#expanded-by-default)
@@ -39,6 +40,26 @@
 - [Contributing](#contributing)
 - [Release History](#release-history)
 - [License](#license)
+
+
+## Getting Started
+
+IVH Treeview can be installed with bower and npm:
+
+```
+bower install angular-ivh-treeivew
+# or
+npm install angular-ivh-treeview
+```
+
+Once installed, include the following files in your app:
+
+- `dist/ivh-treeview.js`
+- `dist/ivh-treeview.css`
+- `dist/ivh-treeview-theme-basic.css` (optional minimalist theme)
+
+You're now ready to use the `ivh-treeview` directive, `ivhTreeviewMgr` service,
+and `ivhTreeviewBfs` service.
 
 ## Example Usage
 
