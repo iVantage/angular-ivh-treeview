@@ -309,6 +309,9 @@ In your view...
 </div>
 ```
 
+Any option that can be set with `ivhTreeviewOptionsProvider` can be overriden
+here.
+
 
 ## Treeview Manager Service
 
