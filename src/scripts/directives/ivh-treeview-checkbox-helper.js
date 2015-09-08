@@ -28,16 +28,12 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
       scope.trvw = trvw;
 
       // Update the checkbox when the node's selected status changes
-      scope.$watch(function() {
-        return node[selectedAttr];
-      }, function(newVal, oldVal) {
+      scope.$watch('node.' + selectedAttr, function(newVal, oldVal) {
         scope.isSelected = newVal;
       });
 
       // Update the checkbox when the node's indeterminate status changes
-      scope.$watch(function() {
-        return node[indeterminateAttr];
-      }, function(newVal, oldVal) {
+      scope.$watch('node.' + indeterminateAttr, function(newVal, oldVal) {
         element.find('input').prop('indeterminate', newVal);
       });
     },
