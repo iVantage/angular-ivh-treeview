@@ -1071,6 +1071,11 @@ angular.module('ivh.treeview')
      * @return {Object} Returns the ivhTreeviewMgr instance for chaining
      */
     exports.validate = function(tree, opts, bias) {
+      if(!tree) {
+        // Guard against uninitialized trees
+        return exports;
+      }
+
       if(arguments.length > 1) {
         if(typeof opts === 'boolean') {
           bias = opts;
