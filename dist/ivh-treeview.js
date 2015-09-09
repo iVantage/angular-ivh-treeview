@@ -792,8 +792,6 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
         link = { post: link };
       }
 
-      // Break the recursion loop by removing the contents
-      element.contents().remove();
       var compiledContents;
       return {
         pre: (link && link.pre) ? link.pre : null,
