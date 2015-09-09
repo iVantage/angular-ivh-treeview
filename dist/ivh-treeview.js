@@ -72,8 +72,9 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckbox', [function() {
   'use strict';
   return {
     restrict: 'AE',
-    require: '^ivhTreeviewNode',
-    template: '<span ivh-treeview-checkbox-helper="node"></span>'
+    require: '^ivhTreeview',
+    template: '<span ivh-treeview-checkbox-helper="node"></span>',
+    link: function() {}
   };
 }]);
 
