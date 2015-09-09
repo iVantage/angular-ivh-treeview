@@ -44,8 +44,7 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
             }
           });
         });
-    },
-    template: ivhTreeviewOptions().nodeTpl
+    }
   };
 }]);
 
