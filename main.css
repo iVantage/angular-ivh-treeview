@@ -21,6 +21,18 @@ pre {
   background-image: url('assets/img/symphony.png') !important;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  -webkit-transition: background-color 600ms linear;
+  -moz-transition: background-color 600ms linear;
+  -o-transition: background-color 600ms linear;
+  -ms-transition: background-color 600ms linear;
+  transition: background-color 600ms linear;
+}
+
+.highlight {
+  background-color: lemonchiffon;
+}
+
 /**
  * Silly tree node template
  */

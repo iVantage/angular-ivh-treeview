@@ -133,6 +133,21 @@ demo.directive('sillyAsciiBox', function(ivhTreeviewMgr) {
   };
 });
 
+demo.directive('highlightAnchor', function($document, $timeout) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      element.on('click', function() {
+        var $anchor = $document.find(attrs.href);
+        $anchor.addClass('highlight');
+        $timeout(function() {
+          $anchor.removeClass('highlight');
+        }, 1000);
+      });
+    }
+  };
+});
+
 $(document).ready(function() {
   $('pre').each(function(ix, block) {
     hljs.highlightBlock(block);
