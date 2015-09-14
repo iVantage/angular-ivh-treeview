@@ -27,6 +27,14 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
       // Local access to the parent controller
       scope.trvw = trvw;
 
+      // Enforce consistent behavior across browsers by making indeterminate
+      // checkboxes become checked when clicked/selected using spacebar
+      scope.resolveIndeterminateClick = function() {
+        if(node[indeterminateAttr]) {
+          trvw.select(node, true);
+        }
+      };
+
       // Update the checkbox when the node's selected status changes
       scope.$watch('node.' + selectedAttr, function(newVal, oldVal) {
         scope.isSelected = newVal;
@@ -36,15 +44,6 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
       scope.$watch('node.' + indeterminateAttr, function(newVal, oldVal) {
         element.find('input').prop('indeterminate', newVal);
       });
-
-      // Enforce consistent behavior across browsers by making indeterminate
-      // checkboxes become checked when clicked/selected using spacebar
-      scope.resolveIndeterminateClick = function() {
-        if(node[indeterminateAttr]) {
-          trvw.select(node, true);
-        }
-      };
-
     },
     template: [
       '<input type="checkbox"',
