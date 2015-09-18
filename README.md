@@ -97,7 +97,8 @@ In your view...
 
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-filter="bagSearch"></div>
+    ivh-treeview-filter="bagSearch">
+  </div>
 </div>
 ```
 
@@ -226,7 +227,8 @@ assign these templates at the attribute level:
 ```html
 <div
   ivh-treeview="fancy.bag"
-  ivh-treeview-twistie-leaf-tpl="'-->'"></div>
+  ivh-treeview-twistie-leaf-tpl="'-->'">
+</div>
 ```
 
 Alternatively, you can pass them as part of a [full configuration
@@ -445,7 +447,7 @@ nodes to automatically validate their own selected states. You will typically
 want to use `ivhTreeviewMgr.validate` or `ivhTreeviewMgr.select` after adding
 new nodes to your tree:
 
-```
+```javascript
 // References to the tree, parent node, and children...
 var tree = getTree()
   , parent = getParent()
