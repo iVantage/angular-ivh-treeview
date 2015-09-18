@@ -188,7 +188,7 @@ When using checkboxes you can have a default selected state of `true` or
 i.e. any node without a selected state will assume the default state.
 Futhermore, when `ivhTreeviewMgr.validate` finds a node whose selected state
 differs from the default it will assign the same state to each of that node's
-children.
+childred, parent nodes are updated accordingly.
 
 Use `ivh-treeview-default-selected-state` attribute or `defaultSelectedState`
 option to set this property.
