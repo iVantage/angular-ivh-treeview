@@ -250,6 +250,42 @@ app.controller('DemoCtrl', function() {
           </div>
         </div><!-- .row -->
 
+        <div class="row" ng-controller="SillyCtrl as silly">
+          <h3 id="demo-bfs" class="col-sm-12">Demo: Breadth-First Search</h3>
+          <div class="col-sm-8">
+            <p>IVH Treeview exposes the service <code>ivhTreeviewBfs</code> which you can
+            use to do breadth-first traversals of your tree. You can stop traversal of a
+            branch by returning <code>false</code> in the callback function.</p>
+
+            Selected items: <code>{{silly.getSelectedItemLabels(silly.stuff) || 'none'}}</code>
+
+            <h5>JavaScript</h5>
+            <pre class="javascript">app.controller('DemoCtrl', function(ivhTreeviewBfs) {
+  this.stuff = [{
+    label: 'Suitcase',
+    children: [ /* ... */ ]
+  }];
+
+  this.getSelectedItemLabels = function(tree) {
+    var selectedItemLabels = [];
+    ivhTreeviewBfs(tree, function(node) {
+      if(node.selected) {
+        selectedItemLabels.push(node.label);
+      }
+    });
+    return selectedItemLabels.join(', ');
+  };
+});</pre>
+          </div>
+
+          <div class="col-sm-4">
+            <div ivh-treeview="silly.stuff"
+                ivh-treeview-default-selected-state="false"
+                ivh-treeview-expand-to-depth="-1">
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-sm-12">
             <h2>More</h3>

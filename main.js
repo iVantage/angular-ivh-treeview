@@ -11,7 +11,7 @@
 
 var demo = ng.module('demo', ['ivh.treeview']);
 
-demo.controller('SillyCtrl', function(ivhTreeviewMgr) {
+demo.controller('SillyCtrl', function(ivhTreeviewMgr, ivhTreeviewBfs) {
   var self = this;
 
   self.stuff = [{
@@ -41,6 +41,18 @@ demo.controller('SillyCtrl', function(ivhTreeviewMgr) {
   self.tplFolderOpen = '<span class="twistie glyphicon glyphicon-folder-open"></span>';
   self.tplFolderClose = '<span class="twistie glyphicon glyphicon-folder-close"></span>';
   self.tplLeaf = '<span class="twistie glyphicon glyphicon-map-marker"></span>';
+
+  self.getSelectedItemLabels = function(tree) {
+    var selectedItemLabels = [];
+
+    ivhTreeviewBfs(tree, function(node) {
+      if(node.selected) {
+        selectedItemLabels.push(node.label);
+      }
+    });
+
+    return selectedItemLabels.join(', ');
+  };
 });
 
 demo.directive('sillyTreeNode', function(ivhTreeviewMgr, ivhTreeviewBfs) {
