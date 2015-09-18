@@ -183,9 +183,15 @@ load](http://jsbin.com/ruxedo/edit?html,js,output)
 ### Default Selected State
 
 When using checkboxes you can have a default selected state of `true` or
-`false`. This is only relevant if you validate your tree data using
-`ivhTreeviewMgr.validate` which will assume this state by default. Use the
-`ivh-treeview-default-selected-state` attribute or `defaultSelectedState`.
+`false`. The default selected state is used when validating your tree data with
+`ivhTreeviewMgr.validate` which will assume this state if none is specified,
+i.e. any node without a selected state will assume the default state.
+Futhermore, when `ivhTreeviewMgr.validate` finds a node whose selected state
+differs from the default it will assign the same state to each of that node's
+children.
+
+Use `ivh-treeview-default-selected-state` attribute or `defaultSelectedState`
+option to set this property.
 
 ***Demo***: [Default selected state and validate on
 startup](http://jsbin.com/pajeze/2/edit)
@@ -239,9 +245,9 @@ details.
 
 Want to register a callback for whenever a user expands or collapses a node? Use
 the `ivh-treeview-on-toggle` attribute. Your expression will be evaluated with
-the following local variables: `ivhNode`, the node that was toggled; and
-`ivhTree`, the tree it belongs to; `ivhIsExpanded`, whether or not the node is
-now expanded.
+the following local variables: `ivhNode`, the node that was toggled; `ivhTree`,
+the tree it belongs to; `ivhIsExpanded`, whether or not the node is now
+expanded.
 
 ```html
 <div ng-controller="MyCtrl as fancy">
@@ -251,7 +257,7 @@ now expanded.
 </div>
 ```
 
-You may also supply a toggle hanlder as a function (rather than an angular
+You may also supply a toggle handler as a function (rather than an angular
 expression) using `ivh-treeview-options` or by setting a global `onToggle`
 option. In this case the function will be passed a single object with `ivhNode`
 and `ivhTree` properties.
@@ -266,7 +272,7 @@ whenever a node checkbox changes state with the following local variables:
 `ivhNode`, the node whose selected state changed; `ivhIsSelected`, the new
 selected state of the node; and `ivhTree`, the tree `ivhNode` belongs to.
 
-You may also supply a selected hanlder as a function (rather than an angular
+You may also supply a selected handler as a function (rather than an angular
 expression) using `ivh-treeview-options` or by setting a global `onCbChange`
 option. In this case the function will be passed a single object with `ivhNode`,
 `ivhIsSelected`, and `ivhTree` properties.
