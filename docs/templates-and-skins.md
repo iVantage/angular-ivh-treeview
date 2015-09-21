@@ -23,7 +23,7 @@ aid in styling:
 
 ```
 ul.ivh-treeview
-  li.ivh-treeview-node[?.ivh-treeview-node-collapsed]
+  li.ivh-treeview-node[?.ivh-treeview-node-collapsed][?.ivh-treeview-node-leaf]
     .ivh-treeview-node-content
       .ivh-treeview-twistie-wrapper
         .ivh-treeview-twistie
@@ -40,6 +40,9 @@ ul.ivh-treeview
 
 Where `ivh-treeview-node-collapsed` and the various twistie classnames are
 conditionally applied as appropriate.
+
+The top level `li` for a given node is give tne classname
+`ivh-treeview-node-leaf` when it is a leaf node.
 
 ### Global Templates
 
