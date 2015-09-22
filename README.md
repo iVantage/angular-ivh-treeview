@@ -2,9 +2,66 @@
 
 [ ![Build Status][travis-img] ][travis-link]
 
-> A treeview for AngularJS with filtering and checkbox support.
+> A treeview for AngularJS with filtering, checkbox support, custom templates,
+> and more.
 
-## Example usage
+## Contents
+
+- [Getting Started](#getting-started)
+- [Example Usage](#example-usage)
+- [Options](#options)
+  - [Filtering](#filtering)
+  - [Expanded by Default](#expanded-by-default)
+  - [Default Selected State](#default-selected-state)
+  - [Validate on Startup](#validate-on-startup)
+  - [Twisties](#twisties)
+  - [Templates and Skins](#templates-and-skins)
+  - [Toggle Handlers](#toggle-handlers)
+  - [Select/Deselect Handlers](#selectdeselect-handlers)
+- [All the Options](#all-the-options)
+- [Treeview Manager Service](#treeview-manager-service)
+    - [`ivhTreeviewMgr.select(tree, node[, opts][, isSelected])`](#ivhtreeviewmgrselecttree-node-opts-isselected)
+    - [`ivhTreeviewMgr.selectAll(tree[, opts][, isSelected])`](#ivhtreeviewmgrselectalltree-opts-isselected)
+    - [`ivhTreeviewMgr.selectEach(tree, nodes[, opts][, isSelected])`](#ivhtreeviewmgrselecteachtree-nodes-opts-isselected)
+    - [`ivhTreeviewMgr.deselect(tree, node[, opts])`](#ivhtreeviewmgrdeselecttree-node-opts)
+    - [`ivhTreeviewMgr.deselectAll(tree[, opts])`](#ivhtreeviewmgrdeselectalltree-opts)
+    - [`ivhTreeviewMgr.deselectEach(tree, nodes[, opts])`](#ivhtreeviewmgrdeselecteachtree-nodes-opts)
+    - [`ivhTreeviewMgr.expand(tree, node[, opts][, isExpanded])`](#ivhtreeviewmgrexpandtree-node-opts-isexpanded)
+    - [`ivhTreeviewMgr.expandRecursive(tree[, node[, opts][,isExpanded]])`](#ivhtreeviewmgrexpandrecursivetree-node-opts-isexpanded)
+    - [`ivhTreeviewMgr.expandTo(tree, node[, opts][, isExpanded])`](#ivhtreeviewmgrexpandtotree-node-opts-isexpanded)
+    - [`ivhTreeviewMgr.collapse(tree, node[, opts])`](#ivhtreeviewmgrcollapsetree-node-opts)
+    - [`ivhTreeviewMgr.collapseRecursive(tree[, node[, opts]])`](#ivhtreeviewmgrcollapserecursivetree-node-opts)
+    - [`ivhTreeviewMgr.collapseParents(tree, node[, opts])`](#ivhtreeviewmgrcollapseparentstree-node-opts)
+    - [`ivhTreeviewMgr.validate(tree[, opts][, bias])`](#ivhtreeviewmgrvalidatetree-opts-bias)
+- [Dynamic Changes](#dynamic-changes)
+- [Tree Traversal](#tree-traversal)
+    - [`ivhTreeviewBfs(tree[, opts][, cb])`](#ivhtreeviewbfstree-opts-cb)
+- [Reporting Issues](#reporting-issues)
+- [Contributing](#contributing)
+- [Release History](#release-history)
+- [License](#license)
+
+
+## Getting Started
+
+IVH Treeview can be installed with bower and npm:
+
+```
+bower install angular-ivh-treeivew
+# or
+npm install angular-ivh-treeview
+```
+
+Once installed, include the following files in your app:
+
+- `dist/ivh-treeview.js`
+- `dist/ivh-treeview.css`
+- `dist/ivh-treeview-theme-basic.css` (optional minimalist theme)
+
+You're now ready to use the `ivh-treeview` directive, `ivhTreeviewMgr` service,
+and `ivhTreeviewBfs` service.
+
+## Example Usage
 
 In your controller...
 
@@ -103,7 +160,7 @@ supplied to Angular's `filterFilter` and applied to each node individually.
 
 ***Demo***: [Filtering](http://jsbin.com/zitiri/edit?html,output)
 
-### Expanded by default
+### Expanded by Default
 
 If you want the tree to start out expanded to a certain depth use the
 `ivh-treeview-expand-to-depth` attribute:
@@ -119,27 +176,35 @@ If you want the tree to start out expanded to a certain depth use the
 
 You can also use the `ivhTreeviewOptionsProvider` to set a global default.
 
-If you want the tree *entirely* expanded use a depth of `-1`.
+If you want the tree *entirely* expanded use a depth of `-1`. Providing a depth
+greater than your tree's maximum depth will cause the entire tree to be
+initially expanded.
 
 ***Demo***: [Expand to depth on
 load](http://jsbin.com/ruxedo/edit?html,js,output)
 
-### Default selected state
+### Default Selected State
 
 When using checkboxes you can have a default selected state of `true` or
-`false`. This is only relevant if you validate your tree data using
-`ivhTreeviewMgr.validate` which will assume this state by default. Use the
-`ivh-treeview-default-selected-state` attribute or `defaultSelectedState`.
+`false`. The default selected state is used when validating your tree data with
+`ivhTreeviewMgr.validate` which will assume this state if none is specified,
+i.e. any node without a selected state will assume the default state.
+Futhermore, when `ivhTreeviewMgr.validate` finds a node whose selected state
+differs from the default it will assign the same state to each of that node's
+childred, parent nodes are updated accordingly.
+
+Use `ivh-treeview-default-selected-state` attribute or `defaultSelectedState`
+option to set this property.
 
 ***Demo***: [Default selected state and validate on
 startup](http://jsbin.com/pajeze/2/edit)
 
 ### Validate on Startup
 
-`ivh.treeview` tries not to assume control of your model any more than
-necessary. It does provide the ability (opt-in) to validate your tree data on
-startup. Use `ivh-treeview-validate="true"` at the attribute level or set the
-`validate` property in `ivhTreeviewOptionsProvider` to get this behavior.
+`ivh.treeview` will not assume control of your model on startup if you do not
+want it to. You can opt out of validation on startup by setting
+`ivh-treeview-validate="false"` at the attribute level or by globally setting
+the `validate` property in `ivhTreeviewOptionsProvider`.
 
 ***Demo***: [Default selected state and validate on
 startup](http://jsbin.com/pajeze/2/edit)
@@ -164,7 +229,8 @@ assign these templates at the attribute level:
 ```html
 <div
   ivh-treeview="fancy.bag"
-  ivh-treeview-twistie-leaf-tpl="'-->'"></div>
+  ivh-treeview-twistie-leaf-tpl="'-->'">
+</div>
 ```
 
 Alternatively, you can pass them as part of a [full configuration
@@ -173,152 +239,47 @@ object](https://github.com/iVantage/angular-ivh-treeview#all-the-options).
 
 ***Demo***: [Custom twisties](http://jsbin.com/gizofu/edit?html,js,output)
 
-### Tree Node Templates
+### Templates and Skins
 
-##### Global Templates
+IVH Treeview allows you to fully customize your tree nodes. See
+[docs/templates-and-skins.md](docs/templates-and-skins.md) for demos and
+details.
 
-Tree node templates can be set globally using the `nodeTpl`  options:
+### Toggle Handlers
 
-```
-app.config(function(ivhTreeviewOptionsProvider) {
-  ivhTreeviewOptionsProvider.set({
-    nodeTpl: '<custom-template></custom-template>'
-  });
-});
-```
-
-##### Inline Templates
-
-Want different node templates for different trees? This can be accomplished
-using inline templates. Inline templates can be specified in any of three ways:
-
-With the `ivh-treeview-node-tpl` attribute:
-
-```
-<div ivh-treeview="fancy.bag"
-     ivh-treeview-node-tpl="variableWithTplAsString"></div>
-```
-
-As a property in the `ivh-treeview-options` object:
-
-```
-<div ivh-treeview="fancy.bag"
-     ivh-treeview-options="{nodeTpl: variableWithTplAsString}"></div>
-```
-
-Or as transcluded content in the treeview directive itself:
-
-```
-<div ivh-treeview="fancy.bag">
-  <script type="text/ng-template">
-    <div title="{{trvw.label(node)}}">
-      <span ivh-treeview-toggle>
-        <span ivh-treeview-twistie></span>
-      </span>
-      <span ng-if="trvw.useCheckboxes()" ivh-treeview-checkbox>
-      </span>
-     <span class="ivh-treeview-node-label" ivh-treeview-toggle>
-       {{trvw.label(node)}}
-     </span>
-     <div ivh-treeview-children></div>
-   </div>
-  </script>
-</div>
-```
-
-Note the use of the ng-template script tag wrapping the rest of the transcluded
-content, this wrapper is a mandatory. Also note that this form is intended to
-serve as a convenient and declarative way to essentially provide a template
-string to your treeview. The template itself does not (currently) have access a
-transcluded scope.
-
-
-##### Template Helper Directives
-
-You have access to a number of helper directives when building your node
-templates. These are mostly optional but should make your life a bit easier, not
-that all support both element and attribute level usage:
-
-- `ivh-treeview-toggle` (*attribute*) Clicking this element will expand or
-  collapse the tree node if it is not a leaf.
-- `ivh-treeview-twistie` (*attribute*) Display as either an "expanded" or
-  "collapsed" twistie as appropriate.
-- `ivh-treeview-checkbox` (*attribute*|*element*) A checkbox that is "plugged
-  in" to the treeview.  It will reflect your node's selected state and update
-  parents and children appropriately out of the box.
-- `ivh-treeview-children` (*attribute*|*element*) The recursive step. If you
-  want your tree to display more than one level of nodes you will need to place
-  this some where, or have your own way of getting child nodes into the view.
-
-#### Supported Template Scope Variables
-
-**`node`**
-
-A reference to the tree node itself. Note that in general you should use
-controller helper methods to access node properties when possible.
-
-**`trvw`**
-
-A reference to the treeview controller with a number of useful properties and
-helper functions:
-
-- `trvw.select(Object node[, Boolean isSelected])` <br>
-  Set the seleted state of `node` to `isSelected`. The will update parent and
-  child node selected states appropriately. `isSelected` defaults to `true`.
-- `trvw.isSelected(Object node) -> Boolean` <br>
-  Returns `true` if `node` is selected and `false` otherwise.
-- `trvw.toggleSelected(Object node)` <br>
-  Toggles the selected state of `node`. This will update parent and child note
-  selected states appropriately.
-- `trvw.expand(Object node[, Boolean isExpanded])` <br>
-  Set the expanded state of `node` to `isExpanded`, i.e. expand or collapse
-  `node`. `isExpanded` defaults to `true`.
-- `trvw.isExpanded(Object node) --> Boolean` <br>
-  Returns `true` if `node` is expanded and `false` otherwise.
-- `trvw.toggleExpanded(Object node)` <br>
-  Toggle the expanded state of `node`.
-- `trvw.isLeaf(Object node) --> Boolean` <br>
-  Returns `true` if `node` is a leaf node in the tree and `false` otherwise.
-- `trvw.label(Object node) --> String` <br>
-  Returns the label attribute of `node` as determined by the `labelAttribute`
-  treeview option.
-- `trvw.children(Object node) --> Array` <br>
-  Returns the array of children for `node`. Returns an empty array if `node` has
-  no children or the `childrenAttribute` property value is not defined.
-- `trvw.opts() --> Object` <br>
-  Returns a merged version of the global and local options.
-- `trvw.isVisible(Object node) --> Boolean` <br>
-  Returns `true` if `node` should be considered visible under the current
-  **filter** and `false` otherwise. Note that this only relates to treeview
-  filters and does not take into account whether or not `node` can actually be
-  seen as a result of expanded/collapsed parents.
-- `trvw.useCheckboxes() --> Boolean` <br>
-  Returns `true` if checkboxes should be used in the template and `false`
-  otherwise.
-
-
-### Custom onClick Handlers
-
-Want to register a callback for whenever a tree node gets clicked? Use the
-`ivh-treeview-click-handler` attribute, the passed function will get called
-whenever the user clicks on a twistie or node label. Your callback will be
-passed a reference to the node and the tree that node belongs to.
+Want to register a callback for whenever a user expands or collapses a node? Use
+the `ivh-treeview-on-toggle` attribute. Your expression will be evaluated with
+the following local variables: `ivhNode`, the node that was toggled; `ivhTree`,
+the tree it belongs to; `ivhIsExpanded`, whether or not the node is now
+expanded.
 
 ```html
 <div ng-controller="MyCtrl as fancy">
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-click-handler="fancy.awesomeCallback">
+    ivh-treeview-on-toggle="fancy.awesomeCallback(ivhNode, ivhIsExpanded, ivhTree)">
 </div>
 ```
 
-### Custom onChange Handlers
+You may also supply a toggle handler as a function (rather than an angular
+expression) using `ivh-treeview-options` or by setting a global `onToggle`
+option. In this case the function will be passed a single object with `ivhNode`
+and `ivhTree` properties.
 
-Want to be notified anytime a checkbox changes state as the result of a click?
-Use the `ivh-treeview-change-handler` attribute to register a callback for
-whenever a node checkbox changes state. Your callback will be passed a reference
-to the node, the new selected status, and a reference to the entire tree the
-node belongs to.
+***Demo***: [Toggle Handler](http://jsbin.com/xegari/edit)
+
+### Select/Deselect Handlers
+
+Want to be notified any time a checkbox changes state as the result of a click?
+Use the `ivh-treeview-on-cb-change` attribute. Your expression will be evaluated
+whenever a node checkbox changes state with the following local variables:
+`ivhNode`, the node whose selected state changed; `ivhIsSelected`, the new
+selected state of the node; and `ivhTree`, the tree `ivhNode` belongs to.
+
+You may also supply a selected handler as a function (rather than an angular
+expression) using `ivh-treeview-options` or by setting a global `onCbChange`
+option. In this case the function will be passed a single object with `ivhNode`,
+`ivhIsSelected`, and `ivhTree` properties.
 
 Note that programmatic changes to a node's selected state (including selection
 change propagation) will not trigger this callback. It is only run for the
@@ -328,11 +289,11 @@ actual node clicked on by a user.
 <div ng-controller="MyCtrl as fancy">
   <div
     ivh-treeview="fancy.bag"
-    ivh-treeview-change-handler="fancy.otherAwesomeCallback">
+    ivh-treeview-on-cb-change="fancy.otherAwesomeCallback(ivhNode, ivhIsSelected, ivhTree)">
 </div>
 ```
 
-***Demo***: [Custom Change Handler](http://jsbin.com/hubico/edit?html,js,output)
+***Demo***: [Select/Deselect Handler](http://jsbin.com/febexe/edit)
 
 
 ## All the Options
@@ -345,7 +306,7 @@ In your fancy controller...
 ```javascript
 this.customOpts = {
   useCheckboxes: false,
-  clickHandler: this.awesomeCallback
+  onToggle: this.awesomeCallback
 };
 ```
 
@@ -357,6 +318,9 @@ In your view...
     ivh-treeview-options="fancy.customOpts">
 </div>
 ```
+
+Any option that can be set with `ivhTreeviewOptionsProvider` can be overriden
+here.
 
 
 ## Treeview Manager Service
@@ -378,10 +342,14 @@ selected).
 When an item is selected each of its children are also selected and the
 indeterminate state of each of the node's parents is validated.
 
+***Demo***: [Programmatic select/deselect](http://jsbin.com/kotohu/edit)
+
 #### `ivhTreeviewMgr.selectAll(tree[, opts][, isSelected])`
 
 Like `ivhTreeviewMgr.select` except every node in `tree` is either selected or
 deselected.
+
+***Demo***: [Programmatic selectAll/deselectAll](http://jsbin.com/buhife/edit)
 
 #### `ivhTreeviewMgr.selectEach(tree, nodes[, opts][, isSelected])`
 
@@ -389,20 +357,28 @@ Like `ivhTreeviewMgr.select` except an array of nodes (or node IDs) is used.
 Each node in `tree` corresponding to one of the passed `nodes` will be selected
 or deselected.
 
+***Demo***: [Programmatic selectEach/deselectEach](http://jsbin.com/burigo/edit)
+
 #### `ivhTreeviewMgr.deselect(tree, node[, opts])`
 
 A convenience method, delegates to `ivhTreeviewMgr.select` with `isSelected` set
 to `false`.
+
+***Demo***: [Programmatic select/deselect](http://jsbin.com/kotohu/edit)
 
 #### `ivhTreeviewMgr.deselectAll(tree[, opts])`
 
 A convenience method, delegates to `ivhTreeviewMgr.selectAll` with `isSelected`
 set to `false`.
 
+***Demo***: [Programmatic selectAll/deselectAll](http://jsbin.com/buhife/edit)
+
 #### `ivhTreeviewMgr.deselectEach(tree, nodes[, opts])`
 
 A convenience method, delegates to `ivhTreeviewMgr.selectEach` with `isSelected`
 set to `false`.
+
+***Demo***: [Programmatic selectEach/deselectEach](http://jsbin.com/burigo/edit)
 
 #### `ivhTreeviewMgr.expand(tree, node[, opts][, isExpanded])`
 
@@ -424,10 +400,14 @@ Expand (or collapse) `node` and all its child nodes. Note that you may omit the
 `node` parameter (i.e. expand/collapse the entire tree) but only when all other
 option parameters are also omitted.
 
+***Demo***: [Programmatic recursive expand/collapse](http://jsbin.com/wugege/edit)
+
 #### `ivhTreeviewMgr.expandTo(tree, node[, opts][, isExpanded])`
 
 Expand (or collapse) all parents of `node`. This may be used to "reveal" a
 nested node or to recursively collapse all parents of a node.
+
+***Demo***: [Programmatic reveal/hide](http://jsbin.com/musodi/edit)
 
 #### `ivhTreeviewMgr.collapse(tree, node[, opts])`
 
@@ -439,10 +419,14 @@ set to `false`.
 A convenience method, delegates to `ivhTreeviewMgr.expandRecursive` with
 `isExpanded` set to `false`,
 
+***Demo***: [Programmatic recursive expand/collapse](http://jsbin.com/wugege/edit)
+
 #### `ivhTreeviewMgr.collapseParents(tree, node[, opts])`
 
 A convenience method, delegates to `ivhTreeviewMgr.expandTo` with `isExpanded`
 set to `false`.
+
+***Demo***: [Programmatic reveal/hide](http://jsbin.com/musodi/edit)
 
 #### `ivhTreeviewMgr.validate(tree[, opts][, bias])`
 
@@ -454,6 +438,8 @@ selected state defined that differs from `opts.defaultSelectedState` (or
 `bias`). Each of that node's children are updated to match the differing node
 and parent indeterminate states are updated.
 
+***Demo***: [Programmatic select/deselect](http://jsbin.com/bexedi/edit)
+
 ## Dynamic Changes
 
 Adding and removing tree nodes on the fly is supported. Just keep in mind that
@@ -463,7 +449,7 @@ nodes to automatically validate their own selected states. You will typically
 want to use `ivhTreeviewMgr.validate` or `ivhTreeviewMgr.select` after adding
 new nodes to your tree:
 
-```
+```javascript
 // References to the tree, parent node, and children...
 var tree = getTree()
   , parent = getParent()
@@ -513,7 +499,7 @@ Please see our consolidated [contribution
 guidelines](https://github.com/iVantage/Contribution-Guidelines).
 
 
-## Release history
+## Release History
 
 - 2015-05-06 v0.10.0 Make node templates customizable
 - 2015-02-10 v0.9.0 All options are set-able via attributes or config object

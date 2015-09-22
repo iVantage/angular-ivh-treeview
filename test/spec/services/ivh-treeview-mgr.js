@@ -222,6 +222,13 @@ describe('Service: ivhTreeviewMgr', function() {
       expect(backpack.__ivhTreeviewIndeterminate).toBe(false);
     });
 
+    it('should not throw when validating empty/null trees', function() {
+      var fn = function() {
+        ivhTreeviewMgr.validate(null);
+      };
+      expect(fn).not.toThrow();
+    });
+
   });
 
   describe('#expand', function() {

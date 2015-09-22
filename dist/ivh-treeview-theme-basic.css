@@ -8,3 +8,6 @@ ul.ivh-treeview ul.ivh-treeview {
 ul.ivh-treeview .ivh-treeview-toggle {
   cursor: pointer;
 }
+ul.ivh-treeview .ivh-treeview-node-leaf .ivh-treeview-toggle {
+  cursor: auto;
+}

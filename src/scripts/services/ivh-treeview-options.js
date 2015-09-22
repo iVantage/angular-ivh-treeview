@@ -51,10 +51,8 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
 
     /**
      * Whether or not directive should validate treestore on startup
-     *
-     * Must opt-in.
      */
-    validate: false,
+    validate: true,
 
     /**
      * (internal) Collection item attribute to track intermediate states
@@ -90,11 +88,11 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
      * Template for tree nodes
      */
     nodeTpl: [
-      '<div title="{{trvw.label(node)}}">',
+      '<div class="ivh-treeview-node-content" title="{{trvw.label(node)}}">',
         '<span ivh-treeview-toggle>',
-          '<span ivh-treeview-twistie></span>',
+          '<span class="ivh-treeview-twistie-wrapper" ivh-treeview-twistie></span>',
         '</span>',
-        '<span ng-if="trvw.useCheckboxes()"',
+        '<span class="ivh-treeview-checkbox-wrapper" ng-if="trvw.useCheckboxes()"',
             'ivh-treeview-checkbox>',
         '</span>',
         '<span class="ivh-treeview-node-label" ivh-treeview-toggle>',

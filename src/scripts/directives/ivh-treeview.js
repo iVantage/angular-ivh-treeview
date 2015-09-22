@@ -28,8 +28,6 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
 
       // Specific config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
-      clickHandler: '=ivhTreeviewClickHandler',
-      changeHandler: '=ivhTreeviewChangeHandler',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
@@ -38,6 +36,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       labelAttribute: '=ivhTreeviewLabelAttribute',
       nodeTpl: '=ivhTreeviewNodeTpl',
       selectedAttribute: '=ivhTreeviewSelectedAttribute',
+      onCbChange: '&ivhTreeviewOnCbChange',
+      onToggle: '&ivhTreeviewOnToggle',
       twistieCollapsedTpl: '=ivhTreeviewTwistieCollapsedTpl',
       twistieExpandedTpl: '=ivhTreeviewTwistieExpandedTpl',
       twistieLeafTpl: '=ivhTreeviewTwistieLeafTpl',
@@ -60,6 +60,8 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // ivhTreeviewOptions provider
       var localOpts = ng.extend({}, ivhTreeviewOptions(), $scope.userOptions);
 
+      // Two-way bound attributes (=) can be copied over directly if they're
+      // non-empty
       ng.forEach([
         'childrenAttribute',
         'defaultSelectedState',
@@ -78,6 +80,24 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
         'visibleAttribute'
       ], function(attr) {
         if(ng.isDefined($scope[attr])) {
+          localOpts[attr] = $scope[attr];
+        }
+      });
+
+      // Attrs with the `&` prefix will yield a defined scope entity even if
+      // no value is specified. We must check to make sure the attribute string
+      // is non-empty before copying over the scope value.
+      var normedAttr = function(attrKey) {
+        return 'ivhTreeview' +
+          attrKey.charAt(0).toUpperCase() +
+          attrKey.slice(1);
+      };
+
+      ng.forEach([
+        'onCbChange',
+        'onToggle'
+      ], function(attr) {
+        if($attrs[normedAttr(attr)]) {
           localOpts[attr] = $scope[attr];
         }
       });
@@ -170,27 +190,51 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Get the tree node template
-       *
-       * @return {String} The node template
-       * @private
-       */
-      trvw.getNodeTpl = function() {
-        return localOpts.nodeTpl;
-      };
-
-      /**
        * Returns `true` if current filter should hide `node`, false otherwise
+       *
+       * @todo Note that for object and function filters each node gets hit with
+       * `isVisible` N-times where N is its depth in the tree. We may be able to
+       * optimize `isVisible` in this case by:
+       *
+       * - On first call to `isVisible` in a given digest cycle walk the tree to
+       *   build a flat array of nodes.
+       * - Run the array of nodes through the filter.
+       * - Build a map (`id`/$scopeId --> true) for the nodes that survive the
+       *   filter
+       * - On subsequent calls to `isVisible` just lookup the node id in our
+       *   map.
+       * - Clean the map with a $timeout (?)
+       *
+       * In theory the result of a call to `isVisible` could change during a
+       * digest cycle as scope variables are updated... I think calls would
+       * happen bottom up (i.e. from "leaf" to "root") so that might not
+       * actually be an issue. Need to investigate if this ends up feeling for
+       * large/deep trees.
        *
        * @param {Object} node A tree node
        * @return {Boolean} Whether or not `node` is filtered out
        */
       trvw.isVisible = function(node) {
         var filter = trvw.getFilter();
-        if(!filter) {
+
+        // Quick shortcut
+        if(!filter || filterFilter([node], filter).length) {
           return true;
         }
-        return !!filterFilter([node], filter).length;
+
+        // If we have an object or function filter we have to check children
+        // separately
+        if(typeof filter === 'object' || typeof filter === 'function') {
+          var children = trvw.children(node);
+          // If any child is visible then so is this node
+          for(var ix = children.length; ix--;) {
+            if(trvw.isVisible(children[ix])) {
+              return true;
+            }
+          }
+        }
+
+        return false;
       };
 
       /**
@@ -213,7 +257,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        */
       trvw.select = function(node, isSelected) {
         ivhTreeviewMgr.select($scope.root, node, localOpts, isSelected);
-        trvw.onNodeChange(node, isSelected);
+        trvw.onCbChange(node, isSelected);
       };
 
       /**
@@ -295,9 +339,9 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Get the template to be used for tree nodes
+       * Get the tree node template
        *
-       * @return {String} The template
+       * @return {String} The node template
        * @private
        */
       trvw.getNodeTpl = function() {
@@ -305,15 +349,34 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       };
 
       /**
-       * Call the registered node click handler
+       * Get the root of the tree
+       *
+       * Mostly a helper for custom templates
+       *
+       * @return {Object|Array} The tree root
+       * @private
+       */
+      trvw.root = function() {
+        return $scope.root;
+      };
+
+      /**
+       * Call the registered toggle handler
        *
        * Handler will get a reference to `node` and the root of the tree.
        *
        * @param {Object} node Tree node to pass to the handler
        * @private
        */
-      trvw.onNodeClick = function(node) {
-        ($scope.clickHandler || angular.noop)(node, $scope.root);
+      trvw.onToggle = function(node) {
+        if(localOpts.onToggle) {
+          var locals = {
+            ivhNode: node,
+            ivhIsExpanded: trvw.isExpanded(node),
+            ivhTree: $scope.root
+          };
+          localOpts.onToggle(locals);
+        }
       };
 
       /**
@@ -326,8 +389,15 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        * @param {Boolean} isSelected Selected state for `node`
        * @private
        */
-      trvw.onNodeChange = function(node, isSelected) {
-        ($scope.changeHandler || angular.noop)(node, isSelected, $scope.root);
+      trvw.onCbChange = function(node, isSelected) {
+        if(localOpts.onCbChange) {
+          var locals = {
+            ivhNode: node,
+            ivhIsSelected: isSelected,
+            ivhTree: $scope.root
+          };
+          localOpts.onCbChange(locals);
+        }
       };
     }],
     link: function(scope, element, attrs) {
@@ -342,6 +412,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       '<ul class="ivh-treeview">',
         '<li ng-repeat="child in root | ivhTreeviewAsArray"',
             'ng-hide="trvw.hasFilter() && !trvw.isVisible(child)"',
+            'class="ivh-treeview-node"',
             'ng-class="{\'ivh-treeview-node-collapsed\': !trvw.isExpanded(child) && !trvw.isLeaf(child)}"',
             'ivh-treeview-node="child"',
             'ivh-treeview-depth="0">',
@@ -350,4 +421,3 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
     ].join('\n')
   };
 }]);
-

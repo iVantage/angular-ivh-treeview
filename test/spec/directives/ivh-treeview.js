@@ -29,17 +29,17 @@ describe('Directive ivhTreeview', function() {
       '></div>'
   ].join('\n');
 
-  var tplClickHandler = [
+  var tplToggleHandler = [
     '<div',
       'ivh-treeview="bag1"',
-      'ivh-treeview-click-handler="onNodeClick"',
+      'ivh-treeview-on-toggle="onNodeToggle(ivhNode, ivhIsExpanded, ivhTree)"',
       '></div>'
   ].join('\n');
 
-  var tplChangeHandler = [
+  var tplCbClickHandler = [
     '<div',
       'ivh-treeview="bag1"',
-      'ivh-treeview-change-handler="onNodeChange"',
+      'ivh-treeview-on-cb-change="onCbChange(ivhNode, ivhIsSelected, ivhTree)"',
       '></div>'
   ].join('\n');
 
@@ -136,7 +136,7 @@ describe('Directive ivhTreeview', function() {
       scope.bag1[1].children.push({label: 'five panel baseball'});
       scope.$apply();
       expect($el.find('[title="five panel baseball"]').length).toBe(1);
-      expect($el.find('[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+      expect($el.find('[title="baseball"]').parent().hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
 
     it('should update when child nodes are added (re-assignment)', function() {
@@ -144,7 +144,7 @@ describe('Directive ivhTreeview', function() {
       scope.bag1[1].children = [{label: 'five panel baseball'}];
       scope.$apply();
       expect($el.find('[title="five panel baseball"]').length).toBe(1);
-      expect($el.find('[title="baseball"]').hasClass('ivh-treeview-node-leaf')).toBe(false);
+      expect($el.find('[title="baseball"]').parent().hasClass('ivh-treeview-node-leaf')).toBe(false);
     });
 
     it('should allow an options object for overrides', function() {
@@ -177,24 +177,81 @@ describe('Directive ivhTreeview', function() {
 
       /**
        * @todo Why does this fail?
+       * Elements are not in DOM
        */
       //expect($el.find('[title="baseball"]').is(':visible')).toBe(true);
     });
+
+    describe('object filtering', function() {
+      beforeEach(function() {
+        $el = compile(tplFilter, scope);
+        scope.myFilter = {label: 'fedora'};
+        scope.$apply();
+      });
+
+      it('should hide filtered out nodes', function() {
+        expect($el.find('[title="baseball"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+
+      it('should show parent nodes', function() {
+        expect($el.find('[title="top hat"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+
+      it('should show filtered nodes', function() {
+        expect($el.find('[title="fedora"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+
+      it('should hide filtered out child nodes', function() {
+        expect($el.find('[title="gatsby"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+    });
+
+    describe('function filtering', function() {
+      beforeEach(function() {
+        $el = compile(tplFilter, scope);
+        scope.myFilter = function (item) {
+          return item.label === 'fedora';
+        };
+        scope.$apply();
+      });
+
+      it('should hide filtered out nodes', function() {
+        expect($el.find('[title="baseball"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+
+      it('should show parent nodes', function() {
+        expect($el.find('[title="top hat"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+
+      it('should show filtered nodes', function() {
+        expect($el.find('[title="fedora"]').closest('.ng-hide').length > 0).toBe(false);
+      });
+
+      it('should hide filtered out child nodes', function() {
+        expect($el.find('[title="gatsby"]').closest('.ng-hide').length > 0).toBe(true);
+      });
+    });
   });
 
-  describe('click handlers', function() {
+  describe('toggle handlers', function() {
     var $el, handlerSpy;
 
     beforeEach(function() {
       handlerSpy = jasmine.createSpy('handlerSpy');
-      scope.onNodeClick = handlerSpy;
-      $el = compile(tplClickHandler, scope);
+      scope.onNodeToggle = handlerSpy;
+      $el = compile(tplToggleHandler, scope);
     });
 
-    it('should call the click handler once per click', function() {
+    it('should call the toggle handler once per click', function() {
       $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
       scope.$apply();
       expect(handlerSpy.calls.count()).toEqual(1);
+    });
+
+    it('should not call the toggle handler when a leaf is clicked', function() {
+      $el.find('[title="gatsby"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.count()).toEqual(0);
     });
 
     it('should pass the clicked node to the handler', function() {
@@ -203,16 +260,22 @@ describe('Directive ivhTreeview', function() {
       expect(handlerSpy.calls.mostRecent().args[0]).toBe(scope.bag1[0]);
     });
 
-    it('should pass the tree itself to the click handler', function() {
+    it('should pass the expanded state to the change handler', function() {
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
+    });
+
+    it('should pass the tree itself to the toggle handler', function() {
       $el.find('[title="top hat"] [ivh-treeview-toggle]').click();
       scope.$apply();
-      expect(handlerSpy.calls.mostRecent().args[1]).toBe(scope.bag1);
+      expect(handlerSpy.calls.mostRecent().args[2]).toBe(scope.bag1);
     });
 
     it('should not generate an error when there is no handler', function() {
-      delete scope.onNodeClick;
+      delete scope.onNodeToggle;
       var exception;
-      $el = compile(tplClickHandler, scope);
+      $el = compile(tplToggleHandler, scope);
       try {
         $el.find('[title="top hat"] [ivh-treeview-toggle]').click();
       } catch(_exception) {
@@ -220,15 +283,32 @@ describe('Directive ivhTreeview', function() {
       }
       expect(exception).toBeUndefined();
     });
+
+    it('should pass the clicked node and tree to the callback via an object when registered through an options hash', function() {
+      scope.opts = {
+        onToggle: handlerSpy
+      };
+      var tpl = '<div ivh-treeview="bag1" ivh-treeview-options="opts" ></div>';
+
+      $el = compile(tpl, scope);
+      $el.find('[title="top hat"] [ivh-treeview-toggle]').first().click();
+      scope.$apply();
+
+      expect(handlerSpy.calls.mostRecent().args[0]).toEqual({
+        ivhNode: scope.bag1[0],
+        ivhIsExpanded: true,
+        ivhTree: scope.bag1
+      });
+    });
   });
 
-  describe('change handlers', function() {
+  describe('checkbox click handlers', function() {
     var $el, handlerSpy;
 
     beforeEach(function() {
       handlerSpy = jasmine.createSpy('handlerSpy');
-      scope.onNodeChange = handlerSpy;
-      $el = compile(tplChangeHandler, scope);
+      scope.onCbChange = handlerSpy;
+      $el = compile(tplCbClickHandler, scope);
     });
 
     it('should call the change handler when checkbox state is changed', function() {
@@ -244,9 +324,10 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should pass the checkbox state to the change handler', function() {
-      $el.find('[title="top hat"] [type=checkbox]').first().click();
+      var $cb = $el.find('[title="top hat"] [type=checkbox]').first();
+      $cb.click();
       scope.$apply();
-      expect(handlerSpy.calls.mostRecent().args[1]).toBe(true);
+      expect(handlerSpy.calls.mostRecent().args[1]).toBe($cb.prop('checked'));
     });
 
     it('should pass the tree itself to the change handler', function() {
@@ -256,15 +337,32 @@ describe('Directive ivhTreeview', function() {
     });
 
     it('should not generate an error when there is no handler', function() {
-      delete scope.onNodeChange;
+      delete scope.onCbChange;
       var exception;
-      $el = compile(tplChangeHandler, scope);
+      $el = compile(tplCbClickHandler, scope);
       try {
         $el.find('[title="top hat"] [type=checkbox]').click();
       } catch(_exception) {
         exception = _exception;
       }
       expect(exception).toBeUndefined();
+    });
+
+    it('should pass the clicked node, selected state, and tree to the callback via an object when registered through an options hash', function() {
+      scope.opts = {
+        onCbChange: handlerSpy
+      };
+      var tpl = '<div ivh-treeview="bag1" ivh-treeview-options="opts" ></div>';
+
+      $el = compile(tpl, scope);
+      $el.find('[title="top hat"] [type=checkbox]').first().click();
+      scope.$apply();
+
+      expect(handlerSpy.calls.mostRecent().args[0]).toEqual({
+        ivhNode: scope.bag1[0],
+        ivhIsSelected: jasmine.any(Boolean),
+        ivhTree: scope.bag1
+      });
     });
   });
 
