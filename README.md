@@ -176,7 +176,9 @@ If you want the tree to start out expanded to a certain depth use the
 
 You can also use the `ivhTreeviewOptionsProvider` to set a global default.
 
-If you want the tree *entirely* expanded use a depth of `-1`.
+If you want the tree *entirely* expanded use a depth of `-1`. Providing a depth
+greater than your tree's maximum depth will cause the entire tree to be
+initially expanded.
 
 ***Demo***: [Expand to depth on
 load](http://jsbin.com/ruxedo/edit?html,js,output)
