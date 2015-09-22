@@ -41,7 +41,7 @@ ul.ivh-treeview
 Where `ivh-treeview-node-collapsed` and the various twistie classnames are
 conditionally applied as appropriate.
 
-The top level `li` for a given node is give tne classname
+The top level `li` for a given node is give the classname
 `ivh-treeview-node-leaf` when it is a leaf node.
 
 ### Global Templates
