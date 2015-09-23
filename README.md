@@ -485,12 +485,14 @@ current branch only.
 action](http://jsbin.com/wofunu/1/edit?html,js,output)
 
 
-## Reporting Issues
+## Reporting Issues and Getting Help
 
 When reporting an issue please take a moment to reproduce your setup by
 modifying our [starter template](http://jsbin.com/wecafa/2/edit). Only make as
 many changes as necessary to demonstrate your issue but do comment your added
 code.
+
+Please use Stack Overflow for general questions and help with implementation.
 
 
 ## Contributing
