@@ -501,6 +501,8 @@ guidelines](https://github.com/iVantage/Contribution-Guidelines).
 
 ## Release History
 
+- 2015-09-23 v1.0.0 Use expressions rather than callbacks for change/toggle
+  handlers, update default template. See MIGRATING doc for breaking changes.
 - 2015-05-06 v0.10.0 Make node templates customizable
 - 2015-02-10 v0.9.0 All options are set-able via attributes or config object
 - 2015-01-02 v0.8.0 Add ability to expand/collapse nodes programmatically
