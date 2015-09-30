@@ -1,6 +1,6 @@
 {
   "name": "angular-ivh-treeview",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "jtrussell"
   ],
@@ -18,10 +18,15 @@
   "homepage": "https://github.com/ivantage/angular-ivh-treeview",
   "ignore": [
     "**/.*",
-    "node_modules",
     "bower_components",
+    "docs",
+    "node_modules",
+    "src",
     "test",
-    "tests"
+    "CONTRIBUTING.md",
+    "gruntfile.js",
+    "MIGRATING.md",
+    "package.json"
   ],
   "dependencies": {
     "angular": "~1.2.18"
