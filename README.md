@@ -36,6 +36,7 @@
 - [Dynamic Changes](#dynamic-changes)
 - [Tree Traversal](#tree-traversal)
     - [`ivhTreeviewBfs(tree[, opts][, cb])`](#ivhtreeviewbfstree-opts-cb)
+- [Optimizations and Known Limitations](#optimizations-and-known-limitations)
 - [Reporting Issues](#reporting-issues)
 - [Contributing](#contributing)
 - [Release History](#release-history)
@@ -484,6 +485,26 @@ current branch only.
 ***Demo***: [`ivhTreeviewBfs` in
 action](http://jsbin.com/wofunu/1/edit?html,js,output)
 
+
+## Optimizations and Known Limitations
+
+### Performance at Scale
+
+The default node template assumes a reasonable number of tree nodes. As your
+tree grows (3k-10k+ nodes) you will likely notice a significant dip in
+performance. This can be mitigated by using a custom template with a few easy
+tweaks.
+
+**Only process visible nodes** by adding an `ng-if` to the
+`ivh-treeview-children` element. This small change will result in significant
+performance boosts for large trees as now only the visible nodes (i.e. nodes
+with all parents expanded) will be processed. This change will likely be added
+to the default template in version 1.1.
+
+**Use Angular's bind-once syntx in a custom template**. The default template
+supports angular@1.2.x and so does not leverage the native double-colon syntax
+to make one time bindings. By binding once where possible you can trim a large
+number of watches from your trees.
 
 ## Reporting Issues and Getting Help
 
