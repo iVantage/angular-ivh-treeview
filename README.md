@@ -48,7 +48,7 @@
 IVH Treeview can be installed with bower and npm:
 
 ```
-bower install angular-ivh-treevew
+bower install angular-ivh-treeview
 # or
 npm install angular-ivh-treeview
 ```
