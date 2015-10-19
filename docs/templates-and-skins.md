@@ -24,6 +24,9 @@ aid in styling:
 ```
 ul.ivh-treeview
   li.ivh-treeview-node[?.ivh-treeview-node-collapsed][?.ivh-treeview-node-leaf]
+
+    <!-- begin node template -->
+
     .ivh-treeview-node-content
       .ivh-treeview-twistie-wrapper
         .ivh-treeview-twistie
@@ -35,6 +38,7 @@ ul.ivh-treeview
       .ivh-treeview-node-label
       ul.ivh-treeview
         [... more nodes]
+
   [... more nodes]
 ```
 
