@@ -23,3 +23,7 @@ This document contains notes for migrating between major version numbers of
 - The `validate` option now deafults to `true`, this means trees will be
   validated by default. Set this option to `false` if you prefer the previous
   behavior.
+
+### Node Templates
+
+- Templates now reference the treeview controller instance as `trvw` instead of `ctrl`.
