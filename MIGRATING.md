@@ -7,7 +7,7 @@ This document contains notes for migrating between major version numbers of
 
 ## Major Version 1
 
-### Click and Change Hanlders
+### Click and Change Handlers
 
 - The `ivh-treeview-click-handler` attribute was renamed to
   `ivh-treeview-on-toggle`. Similarly, `ivh-treeview-change-handler` was renamed
