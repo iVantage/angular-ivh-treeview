@@ -159,6 +159,37 @@ app.config(function(ivhTreeviewOptionsProvider) {
 We support filtering through the `ivh-treeview-filter` attribute, this value is
 supplied to Angular's `filterFilter` and applied to each node individually.
 
+IVH Treeview uses `ngHide` to hide filtered out nodes. If you would like to
+customize the hide/show behavior of nodes as they are filtered in and out of
+view (e.g. with `ngAnimate`) you can target elements with elements with the
+`.ivh-treeview-node` class:
+
+```css
+/* with e.g. keyframe animations */
+.ivh-treeview-node.ng-enter {
+  animation: my-enter-animation 0.5s linear;
+}
+
+.ivh-treeview-node.ng-leave {
+  animation: my-leave-animation 0.5s linear;
+}
+
+/* or class based animations */
+.ivh-treeview-node.ng-hide {
+  transition: 0.5s linear all;
+  opacity: 0;
+}
+
+/* alternatively, just strike-through filtered out nodes */
+.ivh-treeview-node.ng-hide {
+  display: block !important;
+}
+
+.ivh-treeview-node.ng-hide .ivh-treeview-node-label {
+  color: red;
+  text-decoration: line-through;
+}
+
 ***Demo***: [Filtering](http://jsbin.com/zitiri/edit?html,output)
 
 ### Expanded by Default
