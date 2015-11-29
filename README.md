@@ -189,6 +189,7 @@ view (e.g. with `ngAnimate`) you can target elements with elements with the
   color: red;
   text-decoration: line-through;
 }
+```
 
 ***Demo***: [Filtering](http://jsbin.com/zitiri/edit?html,output)
 
