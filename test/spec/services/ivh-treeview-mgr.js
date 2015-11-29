@@ -77,6 +77,12 @@ describe('Service: ivhTreeviewMgr', function() {
       expect(flatcap.selected).toBe(true);
     });
 
+    it('should allow numeric ids', function() {
+      var t = {id: 1, label: 'One'};
+      ivhTreeviewMgr.select(t, 1);
+      expect(t.selected).toBe(true);
+    });
+
     it('should make parents indeterminate if there are unselected siblings', function() {
       ivhTreeviewMgr.select(tree, fedora);
       expect(stuff.__ivhTreeviewIndeterminate).toBe(true);

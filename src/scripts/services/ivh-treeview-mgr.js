@@ -58,7 +58,7 @@ angular.module('ivh.treeview')
     };
 
     var findNode = function(tree, node, opts, cb) {
-      var useId = ng.isString(node)
+      var useId = isId(node)
         , proceed = true
         , idAttr = opts.idAttribute;
 
@@ -82,6 +82,10 @@ angular.module('ivh.treeview')
       });
 
       return cb(foundNode, foundParents);
+    };
+
+    var isId = function(val) {
+      return ng.isString(val) || ng.isNumber(val);
     };
 
     /**
@@ -108,7 +112,7 @@ angular.module('ivh.treeview')
       opts = ng.extend({}, options, opts);
       isSelected = ng.isDefined(isSelected) ? isSelected : true;
 
-      var useId = ng.isString(node)
+      var useId = isId(node)
         , proceed = true
         , idAttr = opts.idAttribute;
 
@@ -301,7 +305,7 @@ angular.module('ivh.treeview')
       opts = ng.extend({}, options, opts);
       isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
 
-      var useId = ng.isString(node)
+      var useId = isId(node)
         , expandedAttr = opts.expandedAttribute;
 
       if(!useId) {
@@ -343,7 +347,7 @@ angular.module('ivh.treeview')
       opts = ng.extend({}, options, opts);
       isExpanded = ng.isDefined(isExpanded) ? isExpanded : true;
 
-      var useId = ng.isString(node)
+      var useId = isId(node)
         , expandedAttr = opts.expandedAttribute
         , branch;
 
