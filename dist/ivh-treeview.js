@@ -143,8 +143,13 @@ angular.module('ivh.treeview').directive('ivhTreeviewNode', ['ivhTreeviewCompile
           scope.trvw = trvw;
           scope.childDepth = scope.depth + 1;
 
-          // Expand/collapse the node as dictated by the expandToDepth property
-          trvw.expand(node, trvw.isInitiallyExpanded(scope.depth));
+          // Expand/collapse the node as dictated by the expandToDepth property.
+          // Note that we will respect the expanded state of this node if it has
+          // been expanded by e.g. `ivhTreeviewMgr.expandTo` but not yet
+          // rendered.
+          if(!trvw.isExpanded(node)) {
+            trvw.expand(node, trvw.isInitiallyExpanded(scope.depth));
+          }
 
           /**
            * @todo Provide a way to opt out of this
