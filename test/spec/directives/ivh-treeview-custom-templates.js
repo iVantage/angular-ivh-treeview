@@ -28,7 +28,6 @@ describe('Directive: ivhTreeview + custom node templates', function() {
     }];
   });
 
-
   it('should allow custom templates using the global settings', function() {
     module('ivh.treeview', function(ivhTreeviewOptionsProvider) {
       ivhTreeviewOptionsProvider.set({
