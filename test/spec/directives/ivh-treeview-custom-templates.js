@@ -85,6 +85,37 @@ describe('Directive: ivhTreeview + custom node templates', function() {
       expect($el.find('.spicier.custom.template').length).toBe(2);
     });
 
+    it('should be able to expand to children of non-rendered nodes', inject(function($rootScope, ivhTreeviewMgr) {
+      var $s = $rootScope.$new();
+
+      $s.bag = [{
+        id: 0,
+        children: [{
+          id: 1,
+          children: [{
+            id: 2,
+            children: [{
+              id: 3
+            }]
+          }]
+        }]
+      }];
+
+      var $el = c([
+        '<div ivh-treeview="bag">',
+          '<script type="text/ng-template">',
+            '<div class="spicier custom template">',
+              '<span id="{{node.id}}"></span>',
+              '<div ivh-treeview-children ng-if="trvw.isExpanded(node)"></div>',
+            '</div>',
+          '</script>',
+        '</div>'
+      ].join('\n'), $s);
+      ivhTreeviewMgr.expandTo($s.bag, 3);
+      $s.$apply();
+      expect($el.find('#3').length).toBe(1);
+    }));
+
   });
 
 });
