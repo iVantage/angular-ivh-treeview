@@ -59,6 +59,15 @@ Once installed, include the following files in your app:
 - `dist/ivh-treeview.css`
 - `dist/ivh-treeview-theme-basic.css` (optional minimalist theme)
 
+And add the `ivh.treeview` module to your main Angular module:
+
+```javascript
+angular.module('myApp', [
+  'ivh.treeview'
+  // other module dependencies...
+]);
+```
+
 You're now ready to use the `ivh-treeview` directive, `ivhTreeviewMgr` service,
 and `ivhTreeviewBfs` service.
 
