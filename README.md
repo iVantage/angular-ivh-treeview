@@ -164,6 +164,33 @@ app.config(function(ivhTreeviewOptionsProvider) {
 });
 ```
 
+Note that you can also use the `ivhTreeviewOptions` service to inspect global
+options at runtime. For an explanation of each option see the comments in the
+[source for ivhTreeviewOptions][trvw-opts].
+
+```javascript
+app.controller('MyCtrl', function(ivhTreeviewOptions) {
+  var opts = ivhTreeviewOptions();
+
+  // opts.idAttribute === 'id'
+  // opts.labelAttribute === 'label'
+  // opts.childrenAttribute === 'children'
+  // opts.selectedAttribute === 'selected'
+  // opts.useCheckboxes === true
+  // opts.expandToDepth === 0
+  // opts.indeterminateAttribute === '__ivhTreeviewIndeterminate'
+  // opts.expandedAttribute === '__ivhTreeviewExpanded'
+  // opts.defaultSelectedState === true
+  // opts.validate === true
+  // opts.twistieExpandedTpl === '(-)'
+  // opts.twistieCollapsedTpl === '(+)'
+  // opts.twistieLeafTpl === 'o'
+  // opts.nodeTpl =(eh)= '...'
+});
+
+```
+
+
 ### Filtering
 
 We support filtering through the `ivh-treeview-filter` attribute, this value is
@@ -587,3 +614,4 @@ guidelines](https://github.com/iVantage/Contribution-Guidelines).
 [bootstrap]: http://getbootstrap.com/
 [travis-img]: https://travis-ci.org/iVantage/angular-ivh-treeview.svg?branch=master
 [travis-link]: https://travis-ci.org/iVantage/angular-ivh-treeview
+[trvw-opts]: https://github.com/iVantage/angular-ivh-treeview/blob/master/src/scripts/services/ivh-treeview-options.js#L13-L103
