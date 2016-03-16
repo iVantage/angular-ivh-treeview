@@ -55,12 +55,12 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', function() {
     validate: true,
 
     /**
-     * (internal) Collection item attribute to track intermediate states
+     * Collection item attribute to track intermediate states
      */
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
 
     /**
-     * (internal) Collection item attribute to track expanded status
+     * Collection item attribute to track expanded status
      */
     expandedAttribute: '__ivhTreeviewExpanded',
 

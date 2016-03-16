@@ -153,6 +153,7 @@ app.config(function(ivhTreeviewOptionsProvider) {
     useCheckboxes: true,
     expandToDepth: 0,
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
+    expandedAttribute: '__ivhTreeviewExpanded',
     defaultSelectedState: true,
     validate: true,
     twistieExpandedTpl: '(-)',
