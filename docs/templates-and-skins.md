@@ -90,7 +90,7 @@ Or as transcluded content in the treeview directive itself:
       <span ivh-treeview-toggle>
         <span ivh-treeview-twistie></span>
       </span>
-      <span ng-if="trvw.useCheckboxes()" ivh-treeview-checkbox>
+      <span ng-if="trvw.shouldUseCheckboxes()" ivh-treeview-checkbox>
       </span>
      <span class="ivh-treeview-node-label" ivh-treeview-toggle>
        {{trvw.label(node)}}
@@ -164,7 +164,7 @@ helper functions:
 - `trvw.label(Object node) --> String` <br>
   Returns the label attribute of `node` as determined by the `labelAttribute`
   treeview option.
-- `trvw.root() --> Array|Object` <br>
+- `trvw.getRoot() --> Array|Object` <br>
   Returns the tree root as handed to `ivh-treeview`.
 - `trvw.children(Object node) --> Array` <br>
   Returns the array of children for `node`. Returns an empty array if `node` has
@@ -176,7 +176,7 @@ helper functions:
   **filter** and `false` otherwise. Note that this only relates to treeview
   filters and does not take into account whether or not `node` can actually be
   seen as a result of expanded/collapsed parents.
-- `trvw.useCheckboxes() --> Boolean` <br>
+- `trvw.shouldUseCheckboxes() --> Boolean` <br>
   Returns `true` if checkboxes should be used in the template and `false`
   otherwise.
 
