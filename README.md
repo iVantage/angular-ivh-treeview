@@ -575,6 +575,12 @@ supports angular@1.2.x and so does not leverage the native double-colon syntax
 to make one time bindings. By binding once where possible you can trim a large
 number of watches from your trees.
 
+### Known Issues
+
+- Creating multiple treeviews within an ngRepeat loops creates an issue where
+  each treeview accesses the same controller instance after initial load. See
+  issue #113.
+
 ## Reporting Issues and Getting Help
 
 When reporting an issue please take a moment to reproduce your setup by
