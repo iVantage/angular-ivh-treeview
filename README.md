@@ -580,6 +580,11 @@ number of watches from your trees.
 - Creating multiple treeviews within an ngRepeat loops creates an issue where
   each treeview accesses the same controller instance after initial load. See
   issue #113.
+- We use Angular's `filterFilter` for filtering, by default this compares your
+  filter string with at all object attributes. This directive attaches an
+  attribute to your tree nodes to track its selected state (e.g.  `selected:
+  false`). If you want your filter to ignore the selection tracking attribute
+  use an object or function filter. See issue #151.
 
 ## Reporting Issues and Getting Help
 
