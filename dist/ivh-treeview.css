@@ -1,0 +1,27 @@
+/**
+ * Treeview styles
+ *
+ * @private
+ * @package ivh.treeview
+ * @copyright 2014 iVantage Health Analytics, Inc.
+ */
+ul.ivh-treeview li.ivh-treeview-node-collapsed ul.ivh-treeview {
+  display: none;
+}
+ul.ivh-treeview .ivh-treeview-twistie-leaf,
+ul.ivh-treeview .ivh-treeview-twistie-collapsed {
+  display: none;
+}
+ul.ivh-treeview .ivh-treeview-node-collapsed .ivh-treeview-twistie-collapsed {
+  display: inline;
+}
+ul.ivh-treeview .ivh-treeview-node-collapsed .ivh-treeview-twistie-expanded {
+  display: none;
+}
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-twistie-leaf {
+  display: inline;
+}
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-twistie-expanded,
+ul.ivh-treeview li.ivh-treeview-node-leaf .ivh-treeview-twistie-collapsed {
+  display: none;
+}

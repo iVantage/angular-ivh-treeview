@@ -1,0 +1,13 @@
+ul.ivh-treeview {
+  list-style-type: none;
+  padding-left: 0;
+}
+ul.ivh-treeview ul.ivh-treeview {
+  padding-left: 15px;
+}
+ul.ivh-treeview .ivh-treeview-toggle {
+  cursor: pointer;
+}
+ul.ivh-treeview .ivh-treeview-node-leaf .ivh-treeview-toggle {
+  cursor: auto;
+}
