@@ -157,9 +157,303 @@ describe('Directive ivhTreeview', function() {
       expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
     });
 
+    it('should display/hide checkboxes depending on useCheckboxes value in options object', function() {
+      scope.customOpts = {
+        useCheckboxes: true
+      };
+      $el = compile(tplOptions, scope);
+      expect($el.find('input[type="checkbox"]').length).toBe(6);
+
+      scope.customOpts = {
+        useCheckboxes: false
+      };
+      $el = compile(tplOptions, scope);
+      expect($el.find('input[type="checkbox"]').length).toBe(0);
+    });
+
     it('should allow attribute level twistie templates', function() {
       $el = compile(tplInlineTpls, scope);
       expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
+    });
+  });
+
+  describe('treeview controller: trvw', function () {
+    var $s, c, $el, trvwScope, trvwRoot, trvwFirstChild;
+
+    describe('#getRoot', function () {
+      it('should get the root node', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope).toBeDefined();
+        expect(trvwScope).not.toBeNull();
+
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwRoot).toBe(scope.bag1);
+      });
+    });
+
+    describe('#hasLocalTwistieTpls', function () {
+      it('should return false if no twesties set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.hasLocalTwistieTpls).toBe(false);
+      });
+
+      it('should return true if twesties are set in custom options', function () {
+        scope.customOpts = {
+          twistieExpandedTpl: 'dummy twestie'
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.hasLocalTwistieTpls).toBe(true);
+      });
+
+      it('should return true if twesties are set via inline template', function () {
+        $el = compile(tplInlineTpls, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.hasLocalTwistieTpls).toBe(true);
+      });
+    });
+
+    describe('#hasFilter', function () {
+      it('should return false if no filter set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.hasFilter()).toBe(false);
+      });
+
+      it('should return true if a custom filter is defined', function () {
+        scope.myFilter = 'baseball';
+        $el = compile(tplFilter, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.hasFilter()).toBe(true);
+      });
+    });
+
+    describe('#getFilter', function () {
+      it('should return empty string if no filter set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.getFilter()).toBe('');
+      });
+
+      it('should return filter set if via filter attribute', function () {
+        scope.myFilter = 'baseball';
+        $el = compile(tplFilter, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.getFilter()).toBe('baseball');
+      });
+    });
+
+    describe('#shouldUseCheckboxes', function () {
+      it('should return default useCheckboxes option if no value is set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.shouldUseCheckboxes()).toBe(true);
+      });
+
+      it('should return useCheckboxes value set in custom options', function () {
+        scope.customOpts = {
+          useCheckboxes: false
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.shouldUseCheckboxes()).toBe(false);
+      });
+    });
+
+    describe('#isInitiallyExpanded', function () {
+      it('should return false after initialization if no expandToDepth value is set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        // due to expandToDepth option (default 0 => the tree will be entirely collapsed)
+        expect(trvwScope.isInitiallyExpanded(0)).toBe(false);
+        expect(trvwScope.isInitiallyExpanded(1)).toBe(false);
+        expect(trvwScope.isInitiallyExpanded(2)).toBe(false);
+      });
+
+      it('should return true after initialization for levels lower than the value set to expandToDepth in custom options', function () {
+        scope.customOpts = {
+          expandToDepth: 1
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.isInitiallyExpanded(0)).toBe(true);
+        expect(trvwScope.isInitiallyExpanded(1)).toBe(false);
+        expect(trvwScope.isInitiallyExpanded(2)).toBe(false);
+      });
+    });
+
+    describe('#getNodeTpl', function () {
+      it('should return default value if no nodeTpl set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.getNodeTpl()).toContain('<div class="ivh-treeview-node-content" title="{{trvw.label(node)}}">');
+      });
+
+      it('should return nodeTpl passed in custom options', function () {
+        scope.customOpts = {
+          nodeTpl: 'dummy template'
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+        expect(trvwScope.getNodeTpl()).toBe('dummy template');
+      });
+    });
+
+    describe('#label', function () {
+      it('should return the label of the node', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwScope.label(trvwRoot[0])).toBe(scope.bag1[0].label);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        expect(trvwScope.label(trvwFirstChild)).toBe(scope.bag1[0].children[0].label);
+      });
+    });
+
+    describe('#children', function () {
+      it('should return the children of the node', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwScope.children(trvwRoot[0]).length).toBe(scope.bag1[0].children.length);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        expect(trvwScope.children(trvwFirstChild).length).toBe(0);
+      });
+    });
+
+    describe('#isVisible', function () {
+      it('should return whether the node is visible', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwScope.isVisible(trvwRoot[0])).toBe(true);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        expect(trvwScope.isVisible(trvwFirstChild)).toBe(true);
+      });
+    });
+
+    describe('#isSelected', function () {
+
+      it('should return true after initialization if no defaultSelectedState value is set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        // due to defaultSelectedState option = true
+        expect(trvwScope.isSelected(trvwRoot[0])).toBe(true);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        // due to defaultSelectedState option = true
+        expect(trvwScope.isSelected(trvwFirstChild)).toBe(true);
+      });
+
+      it('should return false after initialization if defaultSelectedState is set to false in custom options', function () {
+        scope.customOpts = {
+          defaultSelectedState: false
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwScope.isSelected(trvwRoot[0])).toBe(false);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        expect(trvwScope.isSelected(trvwFirstChild)).toBe(false);
+      });
+    });
+
+    describe('#isExpanded', function () {
+      it('should return false after initialization if no expandToDepth value is set in custom options', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        // due to expandToDepth option (default 0 => the tree will be entirely collapsed)
+        expect(trvwScope.isExpanded(trvwRoot[0])).toBe(false);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        // due to expandToDepth option (default 0 => the tree will be entirely collapsed)
+        expect(trvwScope.isExpanded(trvwFirstChild)).toBe(false);
+      });
+
+      it('should return true after initialization for levels lower than the value set to expandToDepth in custom options', function () {
+        scope.customOpts = {
+          expandToDepth: 1
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root (depth 0)
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwScope.isExpanded(trvwRoot[0])).toBe(true);
+
+        // assert first child (depth 1)
+        var trvwFirstChild = trvwRoot[0].children[0];
+        expect(trvwScope.isExpanded(trvwFirstChild)).toBe(false);
+      });
+    });
+
+    describe('#isLeaf', function () {
+      it('should return whether the node is a leaf', function () {
+        $el = compile(tplBasic, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        // assert root
+        trvwRoot = trvwScope.getRoot();
+        expect(trvwScope.isLeaf(trvwRoot[0])).toBe(false);
+
+        // assert first child
+        var trvwFirstChild = trvwRoot[0].children[0];
+        expect(trvwScope.isLeaf(trvwFirstChild)).toBe(true);
+      });
+    });
+
+    describe('#opts', function () {
+      it('should return default options merged with custom options', function () {
+        scope.customOpts = {
+          useCheckboxes: false,
+          nodeTpl: 'dummy template'
+        };
+        $el = compile(tplOptions, scope);
+        trvwScope = scope.$$childHead.trvw;
+
+        expect(trvwScope.opts()).toEqual(jasmine.objectContaining({
+          idAttribute: 'id',
+          labelAttribute: 'label',
+          childrenAttribute: 'children',
+          selectedAttribute: 'selected',
+          expandToDepth: 0,
+          useCheckboxes: false,
+          validate: true,
+          indeterminateAttribute: '__ivhTreeviewIndeterminate',
+          expandedAttribute: '__ivhTreeviewExpanded',
+          defaultSelectedState: true,
+          twistieExpandedTpl: '(-)',
+          twistieCollapsedTpl: '(+)',
+          twistieLeafTpl: 'o',
+          nodeTpl: 'dummy template'
+        }));
+      });
     });
   });
 
@@ -209,7 +503,7 @@ describe('Directive ivhTreeview', function() {
     describe('function filtering', function() {
       beforeEach(function() {
         $el = compile(tplFilter, scope);
-        scope.myFilter = function (item) {
+        scope.myFilter = function(item) {
           return item.label === 'fedora';
         };
         scope.$apply();
