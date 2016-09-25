@@ -1,9 +1,9 @@
-/*global jQuery, describe, beforeEach, afterEach, it, module, inject, expect */
+/*global jasmine, jQuery, describe, beforeEach, afterEach, it, module, inject, expect */
 
 describe('Directive: ivhTreeview + custom node templates', function() {
   'use strict';
 
-  var nodeTpl, nodeTpl2, bag;
+  var nodeTpl, nodeTpl2, nodeTpl3, bag;
 
   beforeEach(function() {
     nodeTpl = [
@@ -17,6 +17,15 @@ describe('Directive: ivhTreeview + custom node templates', function() {
       '<div class="spicier custom template">',
         'It is a {{trvw.label(node)}}',
         '<div ivh-treeview-children></div>',
+      '</div>'
+    ].join('\n');
+
+    nodeTpl3 = [
+      '<div class="spiciest custom template">',
+        '<label ng-class="trvw.isLeaf(node) ? \'child\' : \'parent\'">' +
+          'It is a {{trvw.label(node)}} {{$parent.myCtrl.myVar}} {{$parent.myCtrl.myFunction()}}' +
+        '</label>',
+      '<div ivh-treeview-children></div>',
       '</div>'
     ].join('\n');
 
@@ -118,6 +127,47 @@ describe('Directive: ivhTreeview + custom node templates', function() {
 
   });
 
+  describe('transcluded scope', function () {
+    var $s, c;
+    beforeEach(module('ivh.treeview'));
+    beforeEach(inject(function($rootScope, $compile) {
+      $s = $rootScope.$new();
+      $s.bag = bag;
+      c = function(tpl, scp) {
+        scp = scp || $s;
+        var $el = $compile(tpl)(scp);
+        scp.$apply();
+        return $el;
+      };
+    }));
+
+    it('should have access to functions and variables in transcluded scope', function () {
+      $s.opts = {
+        nodeTpl: nodeTpl3
+      };
+      $s.myCtrl = {
+        myVar: 'hooray!',
+        myFunction: jasmine.createSpy('myFunction').and.returnValue('And it has access to transcluded scope!')
+      };
+
+      var $el = c('<div ivh-treeview="bag" ivh-treeview-options="opts"></div>');
+      expect($el.find('.spiciest.custom.template').length).toBe(2);
+
+      // asserting parent node
+      expect($el.find('.parent').length).toBe(1);
+      var parentNode = $el.find('.parent')[0];
+      expect(parentNode.innerText).toContain('parent hooray!');
+      expect(parentNode.innerText).toContain('And it has access to transcluded scope!');
+
+      // asserting child node
+      expect($el.find('.child').length).toBe(1);
+      var childNode = $el.find('.child')[0];
+      expect(childNode.innerText).toContain('child hooray!');
+      expect(childNode.innerText).toContain('And it has access to transcluded scope!');
+
+      // double check that the function in the controller was called
+      expect($s.myCtrl.myFunction).toHaveBeenCalled();
+    });
+  });
+
 });
-
-
