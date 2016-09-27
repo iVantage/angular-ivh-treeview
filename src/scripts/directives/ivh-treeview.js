@@ -111,9 +111,12 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
           transcludedNodeTpl += (c.innerHTML || '').trim();
         });
         if(transcludedNodeTpl.length) {
-          transcludedScope = scope;
           localOpts.nodeTpl = transcludedNodeTpl;
         }
+
+        // regardless of whether or not the default or custom template is used
+        // transcluded scope should always be kept
+        transcludedScope = scope;
       });
 
       /**
@@ -347,6 +350,16 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
        */
       trvw.getNodeTpl = function() {
         return localOpts.nodeTpl;
+      };
+
+      /**
+       * Get the tree node scope (transcluded scope)
+       *
+       * @return {Object} The node scope
+       * @private
+       */
+      trvw.getTranscludedNodeScope = function() {
+        return transcludedScope;
       };
 
       /**

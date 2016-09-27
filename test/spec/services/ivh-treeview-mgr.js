@@ -327,7 +327,7 @@ describe('Service: ivhTreeviewMgr', function() {
 
   describe('#collapse', function() {
 
-    it('should be able to callapse a single node', function() {
+    it('should be able to collapse a single node', function() {
       angular.forEach(nodes, function(n) {
         n.__ivhTreeviewExpanded = true;
       });
@@ -339,7 +339,7 @@ describe('Service: ivhTreeviewMgr', function() {
       });
     });
 
-    it('should be able to callapse a single node by id', function() {
+    it('should be able to collapse a single node by id', function() {
       angular.forEach(nodes, function(n) {
         n.__ivhTreeviewExpanded = true;
       });

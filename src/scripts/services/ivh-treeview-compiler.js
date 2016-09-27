@@ -28,6 +28,7 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
       }
 
       var compiledContents;
+      var transcludedNodeScope;
       return {
         pre: (link && link.pre) ? link.pre : null,
         /**
@@ -37,9 +38,15 @@ angular.module('ivh.treeview').factory('ivhTreeviewCompiler', ['$compile', funct
           // Compile our template
           if(!compiledContents) {
             compiledContents = $compile(trvw.getNodeTpl());
+            transcludedNodeScope = trvw.getTranscludedNodeScope();
           }
+
+          // the new node scope will prototypically inherit from the transcluded scope
+          // and it's parent will be the current treeview-node scope
+          var nodeScope = scope.$new(false, transcludedNodeScope);
+
           // Add the compiled template
-          compiledContents(scope, function(clone) {
+          compiledContents(nodeScope, function(clone) {
             element.append(clone);
           });
 
