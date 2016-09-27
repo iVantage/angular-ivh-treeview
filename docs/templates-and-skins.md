@@ -106,8 +106,8 @@ Or as transcluded content in the treeview directive itself:
 Note the use of the ng-template script tag wrapping the rest of the transcluded
 content, this wrapper is a mandatory. Also note that this form is intended to
 serve as a convenient and declarative way to essentially provide a template
-string to your treeview. The template itself does not (currently) have access a
-transcluded scope.
+string to your treeview. Also note that your template will still have access to
+the transcluded scope.
 
 
 ### Template Helper Directives
