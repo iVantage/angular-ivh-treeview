@@ -604,7 +604,7 @@ guidelines](https://github.com/iVantage/Contribution-Guidelines).
 
 ## Release History
 
-- 2015-11-29 v1.0.2 Allow numeric ids as well ass tring ids
+- 2015-11-29 v1.0.2 Allow numeric ids as well as string ids
 - 2015-09-23 v1.0.0 Use expressions rather than callbacks for change/toggle
   handlers, update default template. See MIGRATING doc for breaking changes.
 - 2015-05-06 v0.10.0 Make node templates customizable
