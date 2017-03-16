@@ -1,6 +1,6 @@
 {
   "name": "angular-ivh-treeview",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Treeview for angular with filtering and checkboxes",
   "main": "dist/ivh-treeview.js",
   "directories": {
