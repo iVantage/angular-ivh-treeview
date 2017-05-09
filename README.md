@@ -37,7 +37,7 @@
 - [Tree Traversal](#tree-traversal)
     - [`ivhTreeviewBfs(tree[, opts][, cb])`](#ivhtreeviewbfstree-opts-cb)
 - [Optimizations and Known Limitations](#optimizations-and-known-limitations)
-- [Reporting Issues](#reporting-issues)
+- [Reporting Issues](#reporting-issues-and-getting-help)
 - [Contributing](#contributing)
 - [Release History](#release-history)
 - [License](#license)
