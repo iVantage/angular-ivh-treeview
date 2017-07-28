@@ -151,6 +151,7 @@ app.config(function(ivhTreeviewOptionsProvider) {
     childrenAttribute: 'children',
     selectedAttribute: 'selected',
     useCheckboxes: true,
+    disableCheckboxSelectionPropagation: false,
     expandToDepth: 0,
     indeterminateAttribute: '__ivhTreeviewIndeterminate',
     expandedAttribute: '__ivhTreeviewExpanded',
