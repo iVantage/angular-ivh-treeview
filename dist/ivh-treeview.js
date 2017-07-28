@@ -923,6 +923,10 @@ angular.module('ivh.treeview')
       }
     };
 
+    var isId = function(val) {
+      return ng.isString(val) || ng.isNumber(val);
+    };
+
     var findNode = function(tree, node, opts, cb) {
       var useId = isId(node)
         , proceed = true
@@ -948,10 +952,6 @@ angular.module('ivh.treeview')
       });
 
       return cb(foundNode, foundParents);
-    };
-
-    var isId = function(val) {
-      return ng.isString(val) || ng.isNumber(val);
     };
 
     /**
