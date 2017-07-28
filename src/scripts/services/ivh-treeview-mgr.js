@@ -129,8 +129,12 @@ angular.module('ivh.treeview')
             makeSelected.bind(opts) :
             makeDeselected.bind(opts);
 
-          ivhTreeviewBfs(n, opts, cb);
-          ng.forEach(p, validateParent.bind(opts));
+          if (opts.disableCheckboxSelectionPropagation) {
+            cb(n);
+          } else {
+            ivhTreeviewBfs(n, opts, cb);
+            ng.forEach(p, validateParent.bind(opts));
+          }
         }
 
         return proceed;

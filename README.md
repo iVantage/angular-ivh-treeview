@@ -177,6 +177,7 @@ app.controller('MyCtrl', function(ivhTreeviewOptions) {
   // opts.childrenAttribute === 'children'
   // opts.selectedAttribute === 'selected'
   // opts.useCheckboxes === true
+  // opts.disableCheckboxSelectionPropagation === false
   // opts.expandToDepth === 0
   // opts.indeterminateAttribute === '__ivhTreeviewIndeterminate'
   // opts.expandedAttribute === '__ivhTreeviewExpanded'

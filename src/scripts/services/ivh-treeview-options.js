@@ -55,6 +55,14 @@ angular.module('ivh.treeview').provider('ivhTreeviewOptions', [
     useCheckboxes: true,
 
     /**
+     * If set to true the checkboxes are independent on each other (no state
+     * propagation to children and revalidation of parents' states).
+     * If you set to true, you should set also `validate` property to `false`
+     * and avoid explicit calling of `ivhTreeviewMgr.validate()`.
+     */
+    disableCheckboxSelectionPropagation: false,
+
+    /**
      * Whether or not directive should validate treestore on startup
      */
     validate: true,

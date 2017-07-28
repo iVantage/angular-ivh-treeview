@@ -93,6 +93,32 @@ describe('Service: ivhTreeviewMgr', function() {
 
   });
 
+  describe('#select (disabled propagation)', function() {
+
+    it('should not affect child nodes', function() {
+      var options = {
+        disableCheckboxSelectionPropagation: true
+      };
+      ivhTreeviewMgr.select(tree, hats, options);
+      expect(fedora.selected).toBeFalsy();
+      expect(flatcap.selected).toBeFalsy();
+    });
+
+    it('should NOT affect parents (indeterminate state is not used at all)', function() {
+      var options = {
+        disableCheckboxSelectionPropagation: true
+      };
+      ivhTreeviewMgr.select(tree, fedora, options);
+
+       // Indeterminte state is not handled with disableCheckboxSelectionPropagation option set
+      expect(stuff.__ivhTreeviewIndeterminate).toBeFalsy();
+      expect(stuff.selected).toBeFalsy();
+      expect(hats.__ivhTreeviewIndeterminate).toBeFalsy();
+      expect(hats.selected).toBeFalsy();
+    });
+
+  });
+
   describe('#selectAll', function() {
 
     it('should select all nodes in a tree', function() {
@@ -147,6 +173,33 @@ describe('Service: ivhTreeviewMgr', function() {
       ivhTreeviewMgr.deselect(tree, hats);
       expect(stuff.__ivhTreeviewIndeterminate).toBe(true);
       expect(stuff.selected).toBe(false); // Indeterminte nodes are not selected
+    });
+
+  });
+
+  describe('#deselect (disabled propagation)', function() {
+
+    beforeEach(function() {
+      angular.forEach(nodes, function(n) {
+        n.selected = true;
+      });
+      stuff.selected = true;
+    });
+
+    var options = {
+      disableCheckboxSelectionPropagation: true
+    };
+
+    it('should deselect only hats, child nodes remain selected', function() {
+      ivhTreeviewMgr.deselect(tree, hats, options);
+      expect(hats.selected).toBe(false);
+      expect(fedora.selected).toBe(true);
+      expect(flatcap.selected).toBe(true);
+    });
+
+    it('should not affect parents state', function() {
+      ivhTreeviewMgr.deselect(tree, hats, options);
+      expect(stuff.selected).toBe(true);
     });
 
   });

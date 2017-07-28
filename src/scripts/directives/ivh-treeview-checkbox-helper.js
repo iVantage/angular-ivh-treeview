@@ -30,6 +30,12 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
       // Enforce consistent behavior across browsers by making indeterminate
       // checkboxes become checked when clicked/selected using spacebar
       scope.resolveIndeterminateClick = function() {
+
+        //intermediate state is not handled when CheckBoxes state propagation is disabled
+        if (opts.disableCheckboxSelectionPropagation) {
+          return;
+        }
+
         if(node[indeterminateAttr]) {
           trvw.select(node, true);
         }
@@ -40,10 +46,12 @@ angular.module('ivh.treeview').directive('ivhTreeviewCheckboxHelper', [function(
         scope.isSelected = newVal;
       });
 
-      // Update the checkbox when the node's indeterminate status changes
-      scope.$watch('node.' + indeterminateAttr, function(newVal, oldVal) {
-        element.find('input').prop('indeterminate', newVal);
-      });
+      if (!opts.disableCheckboxSelectionPropagation) {
+        // Update the checkbox when the node's indeterminate status changes
+        scope.$watch('node.' + indeterminateAttr, function(newVal, oldVal) {
+          element.find('input').prop('indeterminate', newVal);
+        });
+      }
     },
     template: [
       '<input type="checkbox"',

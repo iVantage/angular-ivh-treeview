@@ -29,6 +29,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       // Specific config options
       childrenAttribute: '=ivhTreeviewChildrenAttribute',
       defaultSelectedState: '=ivhTreeviewDefaultSelectedState',
+      disableCheckboxSelectionPropagation: '=ivhTreeviewDisableCheckboxSelectionPropagation',
       expandToDepth: '=ivhTreeviewExpandToDepth',
       idAttribute: '=ivhTreeviewIdAttribute',
       indeterminateAttribute: '=ivhTreeviewIndeterminateAttribute',
@@ -65,6 +66,7 @@ angular.module('ivh.treeview').directive('ivhTreeview', ['ivhTreeviewMgr', funct
       ng.forEach([
         'childrenAttribute',
         'defaultSelectedState',
+        'disableCheckboxSelectionPropagation',
         'expandToDepth',
         'idAttribute',
         'indeterminateAttribute',
