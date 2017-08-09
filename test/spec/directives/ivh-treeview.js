@@ -21,6 +21,7 @@ describe('Directive ivhTreeview', function() {
   var tplObjRoot = '<div ivh-treeview="bag1[0]"></div>';
   var tplOptions = '<div ivh-treeview="bag1" ivh-treeview-options="customOpts"></div>';
   var tplInlineTpls = '<div ivh-treeview="bag1" ivh-treeview-twistie-collapsed-tpl="\'[BOOM]\'"></div>';
+  var tplChildrenAttr = '<div ivh-treeview="bag1" ivh-treeview-children-attribute="\'items\'"></div>';
 
   var tplFilter = [
     '<div',
@@ -160,6 +161,25 @@ describe('Directive ivhTreeview', function() {
     it('should allow attribute level twistie templates', function() {
       $el = compile(tplInlineTpls, scope);
       expect($el.find('.ivh-treeview-twistie-collapsed').eq(0).text().trim()).toBe('[BOOM]');
+    });
+
+    it('should allow a custom child attribute', function() {
+      scope.bag1 = [{
+        label: 'top hat',
+        items: [{
+          label: 'flat cap'
+        }, {
+          label: 'fedora',
+          items: [
+            {label: 'gatsby'},
+            {label: 'gatsby 2'}
+          ]
+        }]
+      }, {
+        label: 'baseball', items: []
+      }];
+      $el = compile(tplChildrenAttr, scope);
+      expect($el.find('[title="gatsby"]').length > 0).toBe(true);
     });
   });
 
